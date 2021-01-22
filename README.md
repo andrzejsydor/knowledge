@@ -8,6 +8,10 @@
 
 [NoSQLBooster](https://nosqlbooster.com)
 
+## Online
+
+[Structurizr](https://structurizr.com/)
+
 # Links
 
 [JavaMagazine](https://blogs.oracle.com/javamagazine)
