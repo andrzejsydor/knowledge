@@ -21,3 +21,5 @@
 ## Other
 
 [javascript-algorithms](https://github.com/trekhleb/javascript-algorithms)
+
+[https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/)
