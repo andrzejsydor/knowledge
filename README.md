@@ -2,6 +2,8 @@
 
 - [Tools](https://github.com/andrzejsydor/knowledge#tools)
 
+- [Problems](https://github.com/andrzejsydor/knowledge#problems)
+
 - [Links](https://github.com/andrzejsydor/knowledge#links)
 
 # Tools
@@ -11,6 +13,10 @@
 ## Online
 
 [Structurizr](https://structurizr.com/)
+
+# Problems
+
+
 
 # Links
 
