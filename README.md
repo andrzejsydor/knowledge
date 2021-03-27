@@ -10,6 +10,8 @@
 
 [NoSQLBooster](https://nosqlbooster.com)
 
+[MobaXterm](https://mobaxterm.mobatek.net/)
+
 ## Online
 
 [Structurizr](https://structurizr.com/)
