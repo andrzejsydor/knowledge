@@ -40,6 +40,11 @@ curl "https://www.example.com" --ssl-no-revoke -x 127.0.0.1:8081
 
 [https://github.com/s4kibs4mi/java-developer-roadmap](https://github.com/s4kibs4mi/java-developer-roadmap)
 
+[BigO Notation](https://bigocheatsheet.io/)
+
+[https://bigocheatsheet.com](https://bigocheatsheet.com/)
+
+
 ## Other
 
 [javascript-algorithms](https://github.com/trekhleb/javascript-algorithms)
