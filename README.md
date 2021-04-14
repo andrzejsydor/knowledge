@@ -50,3 +50,5 @@ curl "https://www.example.com" --ssl-no-revoke -x 127.0.0.1:8081
 [javascript-algorithms](https://github.com/trekhleb/javascript-algorithms)
 
 [https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/)
+
+[cheatsheet-kubernetes-A4](https://github.com/dennyzhang/cheatsheet-kubernetes-A4)
