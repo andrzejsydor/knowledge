@@ -2,6 +2,8 @@
 
 - [Tools](https://github.com/andrzejsydor/knowledge#tools)
 
+- [dev](https://github.com/andrzejsydor/knowledge#dev)
+
 - [Problems](https://github.com/andrzejsydor/knowledge#problems)
 
 - [Links](https://github.com/andrzejsydor/knowledge#links)
@@ -23,6 +25,12 @@
 ## Windows
 
 [Double Commander](https://doublecmd.sourceforge.io/)
+
+# dev
+
+## Kafka
+
+[Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
 
 # Problems
 
