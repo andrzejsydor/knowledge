@@ -18,6 +18,8 @@
 
 [Rainbow Brackets](https://plugins.jetbrains.com/plugin/10080-rainbow-brackets)
 
+[Key Promoter X](https://plugins.jetbrains.com/plugin/9792-key-promoter-x)
+
 ## Online
 
 [Structurizr](https://structurizr.com/)
