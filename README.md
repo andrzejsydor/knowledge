@@ -30,6 +30,12 @@
 
 # dev
 
+## Microservices
+
+### Resilience
+
+[Resilience Patterns](https://github.com/resilience4j/resilience4j#4-resilience-patterns)
+
 ## Kafka
 
 [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
