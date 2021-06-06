@@ -42,6 +42,12 @@
 
 # Problems
 
+## zip with encrypt
+
+```sh
+zip -er directory output
+```
+
 ## curl: Unknown error
 
 [curl: Unknown error (0x80092012) - The revocation function was unable to check revocation for the certificate](https://stackoverflow.com/questions/54938026/curl-unknown-error-0x80092012-the-revocation-function-was-unable-to-check-r)
