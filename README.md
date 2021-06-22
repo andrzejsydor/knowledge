@@ -20,6 +20,10 @@
 
 [Key Promoter X](https://plugins.jetbrains.com/plugin/9792-key-promoter-x)
 
+## Visual Studio Code
+
+[GitLens](https://gitlens.amod.io/)
+
 ## Online
 
 [Structurizr](https://structurizr.com/)
