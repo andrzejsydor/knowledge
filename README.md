@@ -4,6 +4,8 @@
 
 - [dev](https://github.com/andrzejsydor/knowledge#dev)
 
+- [repos](https://github.com/andrzejsydor/knowledge#repos)
+
 - [Problems](https://github.com/andrzejsydor/knowledge#problems)
 
 - [Links](https://github.com/andrzejsydor/knowledge#links)
@@ -43,6 +45,10 @@
 ## Kafka
 
 [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
+
+# repos
+
+[https://github.com/Hakky54/log-captor](https://github.com/Hakky54/log-captor)
 
 # Problems
 
