@@ -66,6 +66,17 @@ zip -er directory output
 curl "https://www.example.com" --ssl-no-revoke -x 127.0.0.1:8081
 ```
 
+## MySQL Docker backup & restore
+
+
+```
+docker exec CONTAINER /usr/bin/mysqldump -u root --password=root DATABASE > backup.sql
+```
+
+```
+cat backup.sql | docker exec -i CONTAINER /usr/bin/mysql -u root --password=root DATABASE
+```
+
 # Links
 
 [JavaMagazine](https://blogs.oracle.com/javamagazine)
