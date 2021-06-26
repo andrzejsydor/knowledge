@@ -10,6 +10,10 @@
 
 - [Links](https://github.com/andrzejsydor/knowledge#links)
 
+## pages
+
+- [Books](https://github.com/andrzejsydor/knowledge/blob/main/BOOKS.md)
+
 # Tools
 
 [NoSQLBooster](https://nosqlbooster.com)
