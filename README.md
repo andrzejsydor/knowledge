@@ -26,6 +26,8 @@
 
 [Key Promoter X](https://plugins.jetbrains.com/plugin/9792-key-promoter-x)
 
+[JPA Buddy](https://www.jpa-buddy.com/)
+
 ## Visual Studio Code
 
 [GitLens](https://gitlens.amod.io/)
