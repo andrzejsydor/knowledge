@@ -28,6 +28,8 @@
 
 [JPA Buddy](https://www.jpa-buddy.com/)
 
+[.ignore](https://plugins.jetbrains.com/plugin/7495--ignore)
+
 ## Visual Studio Code
 
 [GitLens](https://gitlens.amod.io/)
