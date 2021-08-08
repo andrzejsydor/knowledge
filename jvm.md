@@ -29,3 +29,23 @@ jmap -histo <pid>
 ## Links
 
 [Diagnosing a Running JVM](https://www.baeldung.com/running-jvm-diagnose)
+
+[Find out your Java heap memory size](https://github.com/andrzejsydor/psc/issues/55)
+
+### Windows
+
+```
+java -XX:+PrintFlagsFinal -version | findstr /i "HeapSize PermSize ThreadStackSize"
+````
+
+### Linux
+
+```
+java -XX:+PrintFlagsFinal -version | grep -iE 'HeapSize|PermSize|ThreadStackSize'
+```
+
+### MacOS
+
+```
+java -XX:+PrintFlagsFinal -version | grep -iE 'heapsize|permsize|threadstacksize'
+```
