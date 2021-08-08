@@ -87,6 +87,9 @@ cat backup.sql | docker exec -i CONTAINER /usr/bin/mysql -u root --password=root
 
 [https://bigocheatsheet.com](https://bigocheatsheet.com/)
 
+## Hibernate
+
+[Spring Data JPA – How to Return DTOs from Native Queries](https://thorben-janssen.com/spring-data-jpa-dto-native-queries/)
 
 ## Other
 
