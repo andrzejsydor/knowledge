@@ -20,7 +20,7 @@
 
 [MobaXterm](https://mobaxterm.mobatek.net/)
 
-## [IntelliJ](.intellij.md)
+## [IntelliJ](intellij.md)
 
 ## Visual Studio Code
 
