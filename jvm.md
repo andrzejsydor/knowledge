@@ -2,9 +2,19 @@
 
 ## Tips
 
+### [jps - Java Virtual Machine Process Status Tool](https://docs.oracle.com/javase/7/docs/technotes/tools/share/jps.html)
+
+```
+jps # jps: Print a list of Java processes and information about them
+jps -h
+jps -v # shows params
+```
+
 ### [jcmd](https://docs.oracle.com/en/java/javase/11/tools/jcmd.html#GUID-59153599-875E-447D-8D98-0078A5778F05)
 
-
+```
+jmap -histo <pid>
+```
 
 ### [jmap](https://docs.oracle.com/en/java/javase/11/tools/jmap.html#GUID-D2340719-82BA-4077-B0F3-2803269B7F41)
 
