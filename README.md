@@ -2,6 +2,8 @@
 
 - [Tools](https://github.com/andrzejsydor/knowledge#tools)
 
+-- [Collaborative Tools](collaborative.md)
+
 -- [JVM](jvm.md)
 
 - [dev](https://github.com/andrzejsydor/knowledge#dev)
