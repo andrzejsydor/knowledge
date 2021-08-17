@@ -24,6 +24,8 @@
 
 [Key Promoter X](https://plugins.jetbrains.com/plugin/9792-key-promoter-x)
 
+[PlantUML](https://plugins.jetbrains.com/plugin/7017-plantuml-integration)
+
 [JPA Buddy](https://www.jpa-buddy.com/)
 
 [.ignore](https://plugins.jetbrains.com/plugin/7495--ignore)
