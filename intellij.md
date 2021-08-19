@@ -26,6 +26,8 @@
 
 [PlantUML](https://plugins.jetbrains.com/plugin/7017-plantuml-integration)
 
+[Diargams.net](https://plugins.jetbrains.com/plugin/15635-diagrams-net-integration)
+
 [JPA Buddy](https://www.jpa-buddy.com/)
 
 [.ignore](https://plugins.jetbrains.com/plugin/7495--ignore)
