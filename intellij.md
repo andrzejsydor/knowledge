@@ -28,6 +28,8 @@
 
 [Diargams.net](https://plugins.jetbrains.com/plugin/15635-diagrams-net-integration)
 
+[VisualVM](https://plugins.jetbrains.com/plugin/7115-visualvm-launcher)
+
 [JPA Buddy](https://www.jpa-buddy.com/)
 
 [.ignore](https://plugins.jetbrains.com/plugin/7495--ignore)
