@@ -6,6 +6,8 @@
 
 -- [JVM](jvm.md)
 
+-- [IntelliJ](intellij.md)
+
 - [dev](https://github.com/andrzejsydor/knowledge#dev)
 
 - [repos](https://github.com/andrzejsydor/knowledge#repos)
@@ -25,8 +27,6 @@
 [NoSQLBooster](https://nosqlbooster.com)
 
 [MobaXterm](https://mobaxterm.mobatek.net/)
-
-## [IntelliJ](intellij.md)
 
 ## Visual Studio Code
 
