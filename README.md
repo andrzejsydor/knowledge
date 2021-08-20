@@ -40,6 +40,20 @@
 
 [Double Commander](https://doublecmd.sourceforge.io/)
 
+## Code Quality
+
+[checkstyle](https://checkstyle.sourceforge.io/)
+
+[ArchUnit](https://www.archunit.org/)
+
+[modernizer-maven-plugin](https://github.com/gaul/modernizer-maven-plugin)
+
+[SpotBugs (a new FindBugs)](https://spotbugs.github.io/)
+
+[]()
+
+[]()
+
 # dev
 
 ## Microservices
