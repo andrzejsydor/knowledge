@@ -50,9 +50,9 @@
 
 [SpotBugs (a new FindBugs)](https://spotbugs.github.io/)
 
-[]()
+[PMD](https://pmd.github.io/)
 
-[]()
+[JaCoCo](https://www.jacoco.org/)
 
 # dev
 
