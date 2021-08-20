@@ -54,6 +54,8 @@
 
 [JaCoCo](https://www.jacoco.org/)
 
+[mutation testing](https://pitest.org/)
+
 # dev
 
 ## Microservices
