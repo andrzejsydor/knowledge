@@ -1,5 +1,7 @@
 # Docker
 
+-- Understanding how uid and gid work in Docker containers
+
 ## Docker Security
 
 [https://github.com/andrzejsydor/devops/tree/master/_security](https://github.com/andrzejsydor/devops/tree/master/_security)
@@ -15,6 +17,30 @@
 [https://docs.anchore.com/current/docs/engine/quickstart/](https://docs.anchore.com/current/docs/engine/quickstart/)
 
 [https://docs.anchore.com/current/](https://docs.anchore.com/current/)
+
+
+### Understanding how uid and gid work in Docker containers
+
+```
+docker run -d ubuntu:latest sleep infinity
+ps aux | grep sleep
+```
+
+```
+echo $UID
+```
+
+```
+FROM ubuntu:latest
+RUN useradd -r -u 1001 -g appuser appuser
+USER appuser
+ENTRYPOINT [“sleep”, “infinity”]
+```
+
+```
+docker run -d --user 1001 ubuntu:latest sleep infinity
+ps aux | grep sleep
+```
 
 # Links
 
