@@ -88,6 +88,13 @@ zip -er directory output
 curl "https://www.example.com" --ssl-no-revoke -x 127.0.0.1:8081
 ```
 
+## How to check user id & group id?
+
+```
+cat /etc/passwd
+cat /etc/group
+```
+
 ## MySQL Docker backup & restore
 
 
