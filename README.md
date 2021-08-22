@@ -8,6 +8,8 @@
 
 -- [IntelliJ](intellij.md)
 
+-- [Docker](docker.md)
+
 - [dev](https://github.com/andrzejsydor/knowledge#dev)
 
 - [repos](https://github.com/andrzejsydor/knowledge#repos)
