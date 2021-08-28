@@ -33,3 +33,9 @@
 [JPA Buddy](https://www.jpa-buddy.com/)
 
 [.ignore](https://plugins.jetbrains.com/plugin/7495--ignore)
+
+## License
+
+[Can I use my personal license for commercial development?](https://sales.jetbrains.com/hc/en-gb/articles/207241015-Can-I-use-my-personal-license-for-commercial-development-)
+
+[Subscription Options Comparison](https://www.jetbrains.com/store/comparison.html#LicenseComparison)
