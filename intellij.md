@@ -1,10 +1,10 @@
 # IntelliJ
 
-- [Tips](https://github.com/andrzejsydor/intellij#tips)
+- [Tips](https://github.com/andrzejsydor/knowledge/blob/main/intellij.md#tips)
 
-- [Plugins](https://github.com/andrzejsydor/intellij#plugins)
+- [Plugins](https://github.com/andrzejsydor/knowledge/blob/main/intellij.md#plugins)
 
-- [License](https://github.com/andrzejsydor/intellij#license)
+- [License](https://github.com/andrzejsydor/knowledge/blob/main/intellij.md#license)
 
 ## Tips
 
