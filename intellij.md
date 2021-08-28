@@ -1,5 +1,11 @@
 # IntelliJ
 
+- [Tips](https://github.com/andrzejsydor/intellij#tips)
+
+- [Plugins](https://github.com/andrzejsydor/intellij#plugins)
+
+- [License](https://github.com/andrzejsydor/intellij#license)
+
 ## Tips
 
 [10 places you don’t need to use the mouse in IntelliJ IDEA](https://blog.jetbrains.com/idea/2021/08/10-places-you-don-t-need-to-use-the-mouse-in-intellij-idea/)
