@@ -127,6 +127,10 @@ sysctl -a | grep Processor
 
 [https://bigocheatsheet.com](https://bigocheatsheet.com/)
 
+[Web Developer RoadMap](https://github.com/kamranahmedse/developer-roadmap)
+
+[Awesome Cheatsheets](https://github.com/LeCoupa/awesome-cheatsheets)
+
 ## Hibernate
 
 [Spring Data JPA – How to Return DTOs from Native Queries](https://thorben-janssen.com/spring-data-jpa-dto-native-queries/)
