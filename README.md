@@ -10,6 +10,8 @@
 
 -- [Docker](Docker.md)
 
+-- [Git](git.md)
+
 -- [Browser Plugins](browser-plugins.md)
 
 - [dev](https://github.com/andrzejsydor/knowledge#dev)
