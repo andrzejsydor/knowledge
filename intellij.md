@@ -40,6 +40,11 @@
 
 [.ignore](https://plugins.jetbrains.com/plugin/7495--ignore)
 
+### Others
+
+[JMH Java Microbenchmark Harness](https://plugins.jetbrains.com/plugin/7529-jmh-java-microbenchmark-harness)
+
+
 ## License
 
 [Can I use my personal license for commercial development?](https://sales.jetbrains.com/hc/en-gb/articles/207241015-Can-I-use-my-personal-license-for-commercial-development-)
