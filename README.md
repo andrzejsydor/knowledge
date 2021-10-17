@@ -156,6 +156,8 @@ sysctl -a | grep Processor
 
 [Spring Data JPA – How to Return DTOs from Native Queries](https://thorben-janssen.com/spring-data-jpa-dto-native-queries/)
 
+[The JPA and Hibernate second-level cache](https://vladmihalcea.com/jpa-hibernate-second-level-cache/)
+
 ## Other
 
 [javascript-algorithms](https://github.com/trekhleb/javascript-algorithms)
