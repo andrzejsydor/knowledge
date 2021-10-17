@@ -133,15 +133,24 @@ sysctl -a | grep Processor
 
 [Web Developer RoadMap](https://github.com/kamranahmedse/developer-roadmap)
 
-[Awesome Cheatsheets](https://github.com/LeCoupa/awesome-cheatsheets)
-
 [Web Development Resources](https://github.com/markodenic/web-development-resources)
-
-[Awesome Design Pattern](https://github.com/DovAmir/awesome-design-patterns)
 
 [Tech Interview Handbook](https://github.com/yangshun/tech-interview-handbook)
 
+## Awesome
+
+[Awesome Java](https://github.com/akullpp/awesome-java)
+
+[Awesome Design Pattern](https://github.com/DovAmir/awesome-design-patterns)
+
 [Awesome Interview Questions](https://github.com/DopplerHQ/awesome-interview-questions)
+
+[Awesome Microservices](https://github.com/mfornos/awesome-microservices)
+
+[Awesome REST](https://github.com/marmelab/awesome-rest)
+
+[Awesome Cheatsheets](https://github.com/LeCoupa/awesome-cheatsheets)
+
 
 ## Hibernate
 
