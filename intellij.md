@@ -40,6 +40,9 @@
 
 [.ignore](https://plugins.jetbrains.com/plugin/7495--ignore)
 
+[Save Actions](https://plugins.jetbrains.com/plugin/7642-save-actions)
+
+
 ### Others
 
 [JMH Java Microbenchmark Harness](https://plugins.jetbrains.com/plugin/7529-jmh-java-microbenchmark-harness)
