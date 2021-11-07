@@ -46,6 +46,11 @@
 
 [Key Promoter X](https://plugins.jetbrains.com/plugin/9792-key-promoter-x)
 
+[GitToolBox](https://plugins.jetbrains.com/plugin/7499-gittoolbox)
+
+[Grep Console](https://plugins.jetbrains.com/plugin/7125-grep-console)
+
+[]()
 
 
 ### Others
