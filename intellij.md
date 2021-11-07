@@ -50,7 +50,9 @@
 
 [Grep Console](https://plugins.jetbrains.com/plugin/7125-grep-console)
 
-[]()
+[Regex Rename Files](https://plugins.jetbrains.com/plugin/17063-regex-rename-files)
+
+[Lombok](https://plugins.jetbrains.com/plugin/6317-lombok)
 
 
 ### Others
