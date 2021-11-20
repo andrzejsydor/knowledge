@@ -52,6 +52,9 @@
 
 [Regex Rename Files](https://plugins.jetbrains.com/plugin/17063-regex-rename-files)
 
+[Tabnine](https://www.tabnine.com/install/intellij)
+[Tabnine page](https://www.tabnine.com/)
+
 [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok)
 
 
