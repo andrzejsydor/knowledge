@@ -36,6 +36,10 @@
 
 [MobaXterm](https://mobaxterm.mobatek.net/)
 
+[Postman](https://www.postman.com/)
+
+[SoapUI](https://www.soapui.org/downloads/soapui/)
+
 ## Visual Studio Code
 
 [GitLens](https://gitlens.amod.io/)
