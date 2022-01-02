@@ -84,7 +84,39 @@
 
 [https://github.com/Hakky54/log-captor](https://github.com/Hakky54/log-captor)
 
-# Problems
+# Tips & Problems
+
+## log4j & gradle find dependency
+
+### dependencyInsight
+
+Single module project:
+`gradle dependencyInsight --dependency log4j-core`
+
+Multi module project:
+```
+gradle :app:dependencyInsight --dependency log4j-core
+gradle :background:dependencyInsight --dependency log4j-core
+```
+
+### Custom `findDependency` task
+
+In the `build.gradle` add:
+```
+task findDependency(type: DependencyInsightReportTask) {}
+```
+then
+`gradle findDependency --configuration compile --dependency log4j`
+
+For multi-module projects:
+```
+allprojects {
+    task findDependency(type: DependencyInsightReportTask) {}
+}
+```
+
+
+
 
 ## zip with encrypt
 
