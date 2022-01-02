@@ -141,6 +141,8 @@ sysctl -a | grep Processor
 
 [Tech Interview Handbook](https://github.com/yangshun/tech-interview-handbook)
 
+[List of Free Learning Resources In Many Languages](https://github.com/EbookFoundation/free-programming-books)
+
 ## Awesome
 
 [Awesome Java](https://github.com/akullpp/awesome-java)
