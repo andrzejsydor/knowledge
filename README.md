@@ -14,6 +14,8 @@
 
 -- [Browser Plugins](browser-plugins.md)
 
+-- [MacOS](macos.md)
+
 -- [WSL](wsl.md)
 
 - [dev](https://github.com/andrzejsydor/knowledge#dev)
