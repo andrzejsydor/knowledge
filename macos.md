@@ -17,3 +17,9 @@ brew install --cask postman
 brew install --cask intellij-idea
 brew install --cask google-chrome
 ```
+
+## Tips
+
+### Showing hidden files via Mac Finder
+
+Command + Shift + . (period) 
