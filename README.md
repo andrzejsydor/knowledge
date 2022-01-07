@@ -30,6 +30,8 @@
 
 - [Books](https://github.com/andrzejsydor/knowledge/blob/main/BOOKS.md)
 
+- [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
+
 # Tools
 
 [PlantUML](https://plantuml.com/download)
