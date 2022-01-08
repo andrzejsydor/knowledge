@@ -23,3 +23,17 @@ brew install --cask google-chrome
 ### Showing hidden files via Mac Finder
 
 Command + Shift + . (period) 
+
+## Apps
+
+### Commander
+
+[Commander One](https://mac.eltima.com/commander-one-purchase.html)
+
+promo code: **CMNDRMT-30**
+
+### Windows Manager
+
+[Rectangle](https://rectangleapp.com/)
+
+[Magnet](https://apps.apple.com/us/app/magnet/id441258766?mt=12)
