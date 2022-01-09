@@ -121,13 +121,17 @@ allprojects {
 }
 ```
 
-
-
-
 ## zip with encrypt
 
 ```sh
 zip -er directory output
+zip -r -e output.zip /path/to/folder/
+```
+
+### unzip
+
+```sh
+zip -r -e -P 'YOUR_PASSWORD_HERE' output.zip /path/to/folder/
 ```
 
 ## curl: Unknown error
