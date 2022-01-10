@@ -18,6 +18,12 @@ brew install --cask intellij-idea
 brew install --cask google-chrome
 ```
 
+[BAT - a cat clone with wings](https://github.com/sharkdp/bat)
+```
+brew install bat
+```
+
+
 ## Tips
 
 ### Showing hidden files via Mac Finder
