@@ -30,6 +30,8 @@
 
 [Key Promoter X](https://plugins.jetbrains.com/plugin/9792-key-promoter-x)
 
+[CodeGlance](https://github.com/vektah/CodeGlance)
+
 [PlantUML](https://plugins.jetbrains.com/plugin/7017-plantuml-integration)
 
 [Diargams.net](https://plugins.jetbrains.com/plugin/15635-diagrams-net-integration)
