@@ -9,7 +9,7 @@
 #### apps
 
 ```
-brew install git
+brew install git bat lnav
 brew install --cask iterm2
 brew install --cask rectangle
 brew install --cask visual-studio-code
@@ -23,6 +23,10 @@ brew install --cask google-chrome
 brew install bat
 ```
 
+[The Logfile Navigator](https://lnav.org/)
+```
+brew install lnav
+```
 
 ## Tips
 
