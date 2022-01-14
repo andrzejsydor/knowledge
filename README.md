@@ -183,6 +183,8 @@ sysctl -a | grep Processor
 
 [Tech Interview Handbook](https://github.com/yangshun/tech-interview-handbook)
 
+[Java Concurrency Patterns and Features](https://github.com/LeonardoZ/java-concurrency-patterns)
+
 [List of Free Learning Resources In Many Languages](https://github.com/EbookFoundation/free-programming-books)
 
 ## Awesome
