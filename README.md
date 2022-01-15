@@ -12,6 +12,8 @@
 
 -- [Git](git.md)
 
+-- [Hibernate](hibernate.md)
+
 -- [Browser Plugins](browser-plugins.md)
 
 -- [MacOS](macos.md)
