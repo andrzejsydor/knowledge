@@ -22,3 +22,9 @@ spring.jpa.properties.hibernate.generate_statistics=true
 ## Hibernate Types
 
 [Hibernate Types](https://github.com/vladmihalcea/hibernate-types)
+
+# Hibernate
+
+[Spring Data JPA – How to Return DTOs from Native Queries](https://thorben-janssen.com/spring-data-jpa-dto-native-queries/)
+
+[The JPA and Hibernate second-level cache](https://vladmihalcea.com/jpa-hibernate-second-level-cache/)
