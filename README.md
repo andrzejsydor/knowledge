@@ -102,6 +102,7 @@ Single module project:
 `gradle dependencyInsight --dependency log4j-core`
 
 Multi module project:
+
 ```
 gradle :app:dependencyInsight --dependency log4j-core
 gradle :background:dependencyInsight --dependency log4j-core
@@ -110,13 +111,16 @@ gradle :background:dependencyInsight --dependency log4j-core
 ### Custom `findDependency` task
 
 In the `build.gradle` add:
+
 ```
 task findDependency(type: DependencyInsightReportTask) {}
 ```
+
 then
 `gradle findDependency --configuration compile --dependency log4j`
 
 For multi-module projects:
+
 ```
 allprojects {
     task findDependency(type: DependencyInsightReportTask) {}
@@ -210,6 +214,10 @@ sysctl -a | grep Processor
 [https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/)
 
 [cheatsheet-kubernetes-A4](https://github.com/dennyzhang/cheatsheet-kubernetes-A4)
+
+[JHipster](https://github.com/jhipster)
+
+
 
 ### free blog services
 
