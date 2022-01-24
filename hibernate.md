@@ -25,6 +25,14 @@ spring.jpa.properties.hibernate.generate_statistics=true
 
 # Hibernate
 
+[Thorben Janssen YT](https://www.youtube.com/channel/UCYeDPubBiFCZXIOgGYoyADw)
+
+[Implementing equals() and hashCode()](https://thorben-janssen.com/ultimate-guide-to-implementing-equals-and-hashcode-with-hibernate/)
+
+[The best way to implement equals, hashCode, and toString with JPA and Hibernate](https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/)
+
+[Modeling self-referencing associations with Hibernate](https://thorben-janssen.com/self-referencing-associations/?ck_subscriber_id=198329661)
+
 [Spring Data JPA – How to Return DTOs from Native Queries](https://thorben-janssen.com/spring-data-jpa-dto-native-queries/)
 
 [The JPA and Hibernate second-level cache](https://vladmihalcea.com/jpa-hibernate-second-level-cache/)
