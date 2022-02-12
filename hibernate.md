@@ -6,6 +6,20 @@
 spring.jpa.properties.hibernate.generate_statistics=true
 ```
 
+### Don’t use show_sql to log SQL queries
+Better way
+```
+org.hibernate.SQL=DEBUG
+org.hibernate.type.descriptor.sql:DEBUG
+
+# SQL statements and parameters
+log4j.logger.org.hibernate.SQL=debug
+log4j.logger.org.hibernate.orm.jdbc.bind=trace
+# Statistics and slow queries
+log4j.logger.org.hibernate.stat=debug
+log4j.logger.org.hibernate.SQL_SLOW=info
+```
+
 ## HikariCP
 
 [https://github.com/openbouquet/HikariCP](https://github.com/openbouquet/HikariCP)
@@ -36,3 +50,9 @@ spring.jpa.properties.hibernate.generate_statistics=true
 [Spring Data JPA – How to Return DTOs from Native Queries](https://thorben-janssen.com/spring-data-jpa-dto-native-queries/)
 
 [The JPA and Hibernate second-level cache](https://vladmihalcea.com/jpa-hibernate-second-level-cache/)
+
+[https://thorben-janssen.com/hibernate-logging-guide/](https://thorben-janssen.com/hibernate-logging-guide/)
+
+[Native Queries – How to call native SQL queries with JPA & Hibernate](https://thorben-janssen.com/jpa-native-queries/)
+
+
