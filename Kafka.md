@@ -4,8 +4,13 @@
 
 [https://kafka.apache.org/quickstart](quickstart)
 
-[https://kafka.apache.org/downloads](Kafka Download)
+[Kafka Download](https://kafka.apache.org/downloads)
 
+### kafkacat
+
+[kcat](https://github.com/edenhill/kcat)
+
+[https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html](https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html)
 
 ## Scripts
 
