@@ -6,11 +6,11 @@
 
 [Kafka Download](https://kafka.apache.org/downloads)
 
-### kafkacat
-
-[kcat](https://github.com/edenhill/kcat)
+### [kafkacat](https://github.com/edenhill/kcat)
 
 [https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html](https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html)
+
+### [Conductor](https://www.conduktor.io/)
 
 ## Scripts
 
