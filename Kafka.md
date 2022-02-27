@@ -6,6 +6,10 @@
 
 [Kafka Download](https://kafka.apache.org/downloads)
 
+[Kafka for M1(kymeric/cp-kafka)](https://hub.docker.com/r/kymeric/cp-kafka)
+
+
+
 ### [kafkacat](https://github.com/edenhill/kcat)
 
 [https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html](https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html)
