@@ -32,6 +32,11 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [How do I configure HikariCP in my Spring Boot app in my application.properties files?](https://stackoverflow.com/questions/26490967/how-do-i-configure-hikaricp-in-my-spring-boot-app-in-my-application-properties-f)
 
+## JPlusOne
+
+[JPlusOne Hibernate n+1](https://github.com/adgadev/jplusone)
+
+
 
 ## Hibernate Types
 
