@@ -197,6 +197,8 @@ sysctl -a | grep Processor
 
 [Awesome Java](https://github.com/akullpp/awesome-java)
 
+[Awesome Software Architecture](https://github.com/mehdihadeli/awesome-software-architecture)
+
 [Awesome Design Pattern](https://github.com/DovAmir/awesome-design-patterns)
 
 [Awesome Interview Questions](https://github.com/DopplerHQ/awesome-interview-questions)
