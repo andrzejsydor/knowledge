@@ -84,8 +84,6 @@
 
 ## [Kafka](Kafka.md)
 
-[Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
-
 # repos
 
 [https://github.com/Hakky54/log-captor](https://github.com/Hakky54/log-captor)
