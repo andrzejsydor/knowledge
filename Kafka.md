@@ -1,5 +1,7 @@
 # Kafka
 
+## [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
+
 # Tools
 
 ## [https://akhq.io/docs/#installation](akhq.io)
