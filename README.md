@@ -54,9 +54,7 @@
 
 [Structurizr](https://structurizr.com/)
 
-## Windows
-
-[Double Commander](https://doublecmd.sourceforge.io/)
+## [Windows](windows.md)
 
 ## Code Quality
 
