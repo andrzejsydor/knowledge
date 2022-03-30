@@ -47,3 +47,10 @@ promo code: **CMNDRMT-30**
 [Rectangle](https://rectangleapp.com/)
 
 [Magnet](https://apps.apple.com/us/app/magnet/id441258766?mt=12)
+
+### stats
+
+
+```
+brew install --cask stats
+```
