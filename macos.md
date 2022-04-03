@@ -19,11 +19,13 @@ brew install --cask google-chrome
 ```
 
 [BAT - a cat clone with wings](https://github.com/sharkdp/bat)
+
 ```
 brew install bat
 ```
 
 [The Logfile Navigator](https://lnav.org/)
+
 ```
 brew install lnav
 ```
@@ -54,3 +56,14 @@ promo code: **CMNDRMT-30**
 ```
 brew install --cask stats
 ```
+
+
+
+## Problems
+
+### Problem 5000 / 7000 blocked
+
+Why is Control Center on Monterey listening to port 5000 and port 7000?
+
+https://developer.apple.com/forums/thread/682332
+
