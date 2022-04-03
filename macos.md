@@ -67,3 +67,11 @@ Why is Control Center on Monterey listening to port 5000 and port 7000?
 
 https://developer.apple.com/forums/thread/682332
 
+### Port mappings
+
+```
+lsof -nP | grep LISTEN
+```
+
+https://forums.docker.com/t/port-mappings-are-not-released/10565/33
+
