@@ -1,4 +1,7 @@
+```
 # Kafka
+
+- [problems](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#problems)
 
 ## [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
 
@@ -7,6 +10,17 @@
 ## [https://akhq.io/docs/#installation](akhq.io)
 
 Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, schema registry, connect and more...
+
+# Problems
+
+## Poison Pill
+
+[What is a poison pill?](https://www.confluent.io/blog/spring-kafka-can-your-kafka-consumers-handle-a-poison-pill/#:~:text=A%20poison%20pill%20(in%20the,A%20deserialization%20failure)
+
+
+[https://stephantromer.dev/blog/how-to-handle-poison-pills-in-kafka](https://stephantromer.dev/blog/how-to-handle-poison-pills-in-kafka)
+
+
 
 # Links
 
@@ -63,5 +77,4 @@ Dump the log segments:
 Rotate the logs: 
 
 	bin/kafka-configs.sh --zookeeper zookeeper1:2181/kafka --alter --entity-type topics --entity-name topic-1 --add-config segment.ms=60000
-
-
+```
