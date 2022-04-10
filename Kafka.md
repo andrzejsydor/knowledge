@@ -19,7 +19,7 @@ Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, sc
 
 ## Poison Pill
 
-[What is a poison pill?](https://www.confluent.io/blog/spring-kafka-can-your-kafka-consumers-handle-a-poison-pill/#:~:text=A%20poison%20pill%20(in%20the,A%20deserialization%20failure)
+[What is a poison pill?](https://www.confluent.io/blog/spring-kafka-can-your-kafka-consumers-handle-a-poison-pill/#poison-pill)
 
 
 [https://stephantromer.dev/blog/how-to-handle-poison-pills-in-kafka](https://stephantromer.dev/blog/how-to-handle-poison-pills-in-kafka)
