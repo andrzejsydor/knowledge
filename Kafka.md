@@ -1,7 +1,11 @@
 
 # Kafka
 
-- [problems](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#problems)
+- [Tools](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#tools)
+
+- [Problems](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#problems)
+
+- [Links](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#links)
 
 ## [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
 
