@@ -1,4 +1,4 @@
-```
+
 # Kafka
 
 - [problems](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#problems)
@@ -77,4 +77,4 @@ Dump the log segments:
 Rotate the logs: 
 
 	bin/kafka-configs.sh --zookeeper zookeeper1:2181/kafka --alter --entity-type topics --entity-name topic-1 --add-config segment.ms=60000
-```
+
