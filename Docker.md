@@ -10,6 +10,10 @@
 
 [Trivy](https://github.com/aquasecurity/trivy)
 
+[Clair](https://github.com/quay/clair)
+
+[Snyk](https://snyk.io/product/container-vulnerability-management/)
+
 ## Anchore Engine
 
 [https://hub.docker.com/r/anchore/anchore-engine/](https://hub.docker.com/r/anchore/anchore-engine/)
