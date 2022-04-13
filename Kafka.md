@@ -7,6 +7,8 @@
 
 - [Links](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#links)
 
+- [Certification](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#certification)
+
 ## [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
 
 # Tools
@@ -30,10 +32,11 @@ Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, sc
 
 [https://kafka.apache.org/quickstart](quickstart)
 
+[Kafka Documentation](https://kafka.apache.org/documentation/)
+
 [Kafka Download](https://kafka.apache.org/downloads)
 
 [Kafka for M1(kymeric/cp-kafka)](https://hub.docker.com/r/kymeric/cp-kafka)
-
 
 
 ### [kafkacat](https://github.com/edenhill/kcat)
@@ -42,7 +45,14 @@ Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, sc
 
 ### [Conductor](https://www.conduktor.io/)
 
-## Scripts
+# Certification
+
+[Certification](https://www.confluent.io/certification/)
+
+[https://codingnconcepts.com/post/apache-kafka-ccdak-exam-notes/](https://codingnconcepts.com/post/apache-kafka-ccdak-exam-notes/)
+
+
+# Scripts
 
 ### Topics:
 
