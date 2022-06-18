@@ -28,7 +28,7 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public class StringToLocalDateTimeConverter
+public class StringToMyIdTimeConverter
   implements Converter<String, MyId> {
 
     @Override
