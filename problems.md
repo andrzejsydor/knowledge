@@ -39,3 +39,35 @@ public class StringToMyIdTimeConverter
     }
 }
 ```
+
+## Lombok extend Value
+
+```
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+
+import java.util.UUID;
+
+@Getter
+@AllArgsConstructor
+@EqualsAndHashCode
+public class MyId {
+    private final UUID id;
+}
+```
+
+```
+import lombok.EqualsAndHashCode;
+import lombok.Value;
+
+import java.util.UUID;
+
+@Value
+@EqualsAndHashCode(callSuper = true)
+public class ConcreteId extends MyId {
+    public ConcreteId(UUID id) {
+        super(id);
+    }
+}
+```
