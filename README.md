@@ -235,3 +235,18 @@ sysctl -a | grep Processor
 
 [#docker](https://github.com/andrzejsydor/knowledge/search?q=%23docker)
 
+# Slack
+
+- jvm-poland.slack.com
+
+- kubernetes.slack.com
+
+- techstudyslack.slack.com
+
+- tutorialsdojo.slack.com
+
+- cloud-native.slack.com
+
+- tech-leaders-hq.slack.com
+
+
