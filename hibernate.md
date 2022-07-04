@@ -36,6 +36,11 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [JPlusOne Hibernate n+1](https://github.com/adgadev/jplusone)
 
+## Hypersistence Optimizer
+
+[Hypersistence Optimizer](https://vladmihalcea.com/hypersistence-optimizer/)
+
+[hypersistence-optimizer](https://github.com/vladmihalcea/hypersistence-optimizer)
 
 
 ## Hibernate Types
