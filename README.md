@@ -50,6 +50,13 @@
 
 [SoapUI](https://www.soapui.org/downloads/soapui/)
 
+[JMeter](https://jmeter.apache.org/)
+
+[Locust](https://locust.io/)
+
+[Structurizr](https://structurizr.com/pricing)
+
+
 ## Visual Studio Code
 
 [GitLens](https://gitlens.amod.io/)
