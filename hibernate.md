@@ -28,6 +28,8 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [https://www.baeldung.com/spring-boot-hikari](https://www.baeldung.com/spring-boot-hikari)
 
+[https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing](https://github.com/brettwooldridge/HikariCP/wiki/About-Pool-Sizing)
+
 ### HikariCP stackoverflow
 
 [How do I configure HikariCP in my Spring Boot app in my application.properties files?](https://stackoverflow.com/questions/26490967/how-do-i-configure-hikaricp-in-my-spring-boot-app-in-my-application-properties-f)
