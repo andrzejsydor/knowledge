@@ -3,6 +3,22 @@
 
 -- Understanding how uid and gid work in Docker containers
 
+## Docker
+
+### Docker data-root
+
+```
+--data-root is the path where persisted data such as images, volumes, and cluster state are stored. The default value is /var/lib/docker. To avoid any conflict with other daemons, set this parameter separately for each daemon.
+```
+
+[https://docs.docker.com/engine/reference/commandline/dockerd/](https://docs.docker.com/engine/reference/commandline/dockerd/)
+
+then:
+```
+$ sudo systemctl restart docker.socket 
+$ sudo systemctl restart docker
+```
+
 ## Docker Indefinitely
 
 ### Pseudo-TTY
