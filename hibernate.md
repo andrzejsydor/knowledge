@@ -57,6 +57,8 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [The best way to implement equals, hashCode, and toString with JPA and Hibernate](https://vladmihalcea.com/the-best-way-to-implement-equals-hashcode-and-tostring-with-jpa-and-hibernate/)
 
+[How to generate UUIDs as primary keys with Hibernate](https://thorben-janssen.com/generate-uuids-primary-keys-hibernate/)
+
 [Modeling self-referencing associations with Hibernate](https://thorben-janssen.com/self-referencing-associations/?ck_subscriber_id=198329661)
 
 [Spring Data JPA – How to Return DTOs from Native Queries](https://thorben-janssen.com/spring-data-jpa-dto-native-queries/)
