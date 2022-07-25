@@ -54,6 +54,8 @@
 
 [Locust](https://locust.io/)
 
+[JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
+
 [Structurizr](https://structurizr.com/pricing)
 
 
