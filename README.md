@@ -32,6 +32,8 @@
 
 [Postman](https://www.postman.com/)
 
+[httpie](https://httpie.io/)
+
 [SoapUI](https://www.soapui.org/downloads/soapui/)
 
 [JMeter](https://jmeter.apache.org/)
