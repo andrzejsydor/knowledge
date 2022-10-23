@@ -36,6 +36,7 @@
 
 [SoapUI](https://www.soapui.org/downloads/soapui/)
 
+[[JMeter/JMeter]]
 [JMeter](https://jmeter.apache.org/)
 
 [Locust](https://locust.io/)
