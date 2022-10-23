@@ -67,6 +67,8 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [https://thorben-janssen.com/hibernate-logging-guide/](https://thorben-janssen.com/hibernate-logging-guide/)
 
+[6 Performance Pitfalls when using Spring Data JPA](https://thorben-janssen.com/6-performance-pitfalls-when-using-spring-data-jpa/)
+
 [Native Queries – How to call native SQL queries with JPA & Hibernate](https://thorben-janssen.com/jpa-native-queries/)
 
 # Tips
