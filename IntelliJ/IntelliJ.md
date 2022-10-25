@@ -1,6 +1,7 @@
-# IntelliJ
+ # IntelliJ
 
 - [Tips](https://github.com/andrzejsydor/knowledge/blob/main/intellij.md#tips)
+- [Shortcuts in IntelliJ IDEA](IntelliJ_Shortcuts.md)
 
 - [Plugins](https://github.com/andrzejsydor/knowledge/blob/main/intellij.md#plugins)
 
