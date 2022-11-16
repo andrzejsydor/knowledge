@@ -46,6 +46,8 @@
 
 [Snapwatch](https://snapwatch.io/)
 
+[JRebel](https://www.jrebel.com/)
+
 ## Visual Studio Code
 
 [GitLens](https://gitlens.amod.io/)
