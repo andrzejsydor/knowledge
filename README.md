@@ -197,6 +197,8 @@ sysctl -a | grep Processor
 
 [List of Free Learning Resources In Many Languages](https://github.com/EbookFoundation/free-programming-books)
 
+[The Twelve-Factor App](https://12factor.net/)
+
 ## Awesome
 
 [Awesome Java](https://github.com/akullpp/awesome-java)
