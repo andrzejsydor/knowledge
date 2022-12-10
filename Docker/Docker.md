@@ -28,6 +28,15 @@ docker run -it ubuntu bash
 docker run -d -t ubuntu
 ```
 
+### container IPs
+
+Each container has it's IP in a private subnet (which is 172.17.0.0/16 by default). 
+The IP can change with restart but can be looked up should you need it:
+
+```
+docker inspect --format '{{.NetworkSettings.IPAddress}}' <containerId>
+```
+
 ### Never Ending Commands
 
 ```
