@@ -115,6 +115,21 @@ docker run -d --user 1001 ubuntu:latest sleep infinity
 ps aux | grep sleep
 ```
 
+# Dockerfile
+
+## USER in Dockerfiles
+
+By default docker runs everything as root but you can use USER in Dockerfiles. There's no user namespacing in docker so the container sees the users on the host but only uids hence you need the add the users in the container.
+
+## Dockefile caching
+
+Use caching properly for your Dockerfiles: docker containers are built very quickly as long as you make use of the caching capability. A quick set of gotchas and advices:
+- ADD & VOLUMES are cache invalidators.
+- RUN commands are cached while unchanged.
+- Dockerfile execution is sequential, hence: order matters and a changed step deprecate the next caches.
+- Group your RUN commands (shell sequences) together per type (e.g. ssh related). This allows you to tune and forget a "feature" of your container and focus on the next one without ever blowing up your cache.
+- Maintain common command orders in between your various Dockerfiles. This allow to use "common" caching from one container to another for as long as they share common features
+
 # Links
 
 [https://github.com/andrzejsydor/devops](https://github.com/andrzejsydor/devops)
