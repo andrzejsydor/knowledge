@@ -28,6 +28,16 @@ docker run -it ubuntu bash
 docker run -d -t ubuntu
 ```
 
+### looking up port mappings
+
+`docker run` accepts explicit port mappings as parameters or you can specify -P to map all ports automatically. The latter has the advantage of preventing conflicts and looking up the assigned ports can be done as follows:
+ 
+ ```
+docker port <containerId> <portNumber>
+# or
+docker inspect --format '{{.NetworkSettings.Ports}}' <containerId>
+```
+
 ### container IPs
 
 Each container has it's IP in a private subnet (which is 172.17.0.0/16 by default). 
