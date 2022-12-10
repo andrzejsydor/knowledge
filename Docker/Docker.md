@@ -41,6 +41,17 @@ docker run ubuntu while true; do sleep 1; done
 docker run ubuntu sleep infinity
 ```
 
+### wait
+
+```
+	#!/bin/sh
+	while ! nc -z config-server 8888 ; do
+	    echo "Waiting for upcoming Config Server"
+	    sleep 2
+	done
+	java -jar /opt/spring-cloud/lib/config-client.jar
+```
+
 ## Docker Security #security
 
 [https://github.com/andrzejsydor/devops/tree/master/_security](https://github.com/andrzejsydor/devops/tree/master/_security)
