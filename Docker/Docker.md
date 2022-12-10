@@ -115,6 +115,20 @@ docker run -d --user 1001 ubuntu:latest sleep infinity
 ps aux | grep sleep
 ```
 
+# Copy files
+
+## Container -> Local Host
+
+```
+docker cp <containerId>:/file/path/in/container/file /host/local/path/file
+```
+
+## Local Host -> Container
+
+```
+docker cp /host/local/path/file <containerId>:/file/path/in/container/file
+```
+
 # Dockerfile
 
 ## USER in Dockerfiles
@@ -133,5 +147,9 @@ Use caching properly for your Dockerfiles: docker containers are built very quic
 # Links
 
 [https://github.com/andrzejsydor/devops](https://github.com/andrzejsydor/devops)
+
+[Docker - copy files](https://mkyong.com/docker/how-to-copy-files-from-docker-container-to-host/)
+
+[Docker - copy files](https://www.baeldung.com/ops/docker-copying-files)
 
 [random Docker tips](https://csabapalfi.github.io/random-docker-tips/)
