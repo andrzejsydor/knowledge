@@ -38,6 +38,12 @@ Note: The double dash (--) separates the arguments you want to pass to the comma
 
 https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/
 
+### Session affinity
+
+https://kubernetes.io/docs/reference/networking/virtual-ips/#session-affinity
+
+https://stackoverflow.com/questions/58955409/how-to-use-session-affinity-on-requests-to-kubernetes-service
+
 ## Links
 
 [Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
