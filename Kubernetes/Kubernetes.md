@@ -37,3 +37,9 @@ kubectl certificate approve <name of the CSR>
 Note: The double dash (--) separates the arguments you want to pass to the command from the kubectl arguments.
 
 https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/
+
+## Links
+
+[Volumes](https://kubernetes.io/docs/concepts/storage/volumes/)
+
+[Storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
