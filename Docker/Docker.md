@@ -71,6 +71,21 @@ docker run ubuntu sleep infinity
 	java -jar /opt/spring-cloud/lib/config-client.jar
 ```
 
+### Multiple Commands in Docker Run
+
+#### `docker run`
+
+```
+docker run centos:latest sh -c "whoami && date"
+```
+
+#### Using CMD/ENTRYPOINT in the Dockerfile
+
+```
+...
+ENTRYPOINT ["sh", "-c", "whoami && date"]
+```
+
 ## Docker Security #security
 
 [https://github.com/andrzejsydor/devops/tree/master/_security](https://github.com/andrzejsydor/devops/tree/master/_security)
