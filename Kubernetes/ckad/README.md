@@ -19,6 +19,12 @@ https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 
 ```
 
+# [Deployments](CKAD_deployments.md)
+https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+
+```
+
+```
 # [Events](CKAD_events.md)
 
 ```
@@ -47,6 +53,8 @@ kubectl get pod <pod> -n <namespace>
 # shorts
 ```
 pod->po
+replicaset->rs
+deployment->deploy
 ```
 
 # other
