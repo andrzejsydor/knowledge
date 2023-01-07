@@ -19,6 +19,16 @@ https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 
 ```
 
+# [Events](CKAD_events.md)
+
+```
+kubectl get events -n dev -o wide
+```
+
+# Lifecycle Events
+https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycle-event/
+
+
 ## ?!
 ```
 alias k=kubectl
