@@ -19,13 +19,18 @@ https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
 
 ```
 
-# [Deployments](CKAD_deployments.md)
+## [Deployments](CKAD_deployments.md)
 https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 
 ```
-
+kubectl describe <deployment>
 ```
-# [Events](CKAD_events.md)
+## [Resource Quotas](CKAD_resource_quotas.md)
+https://kubernetes.io/docs/concepts/policy/resource-quotas/
+```
+kubectl get resourcequota
+```
+## [Events](CKAD_events.md)
 
 ```
 kubectl get events -n dev -o wide
