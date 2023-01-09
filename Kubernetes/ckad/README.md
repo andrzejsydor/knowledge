@@ -53,6 +53,8 @@ kubectl get pod <pod> -n <namespace>
 # tips
 ```
 --all-namespaces
+kubectl get pod <pod> -o yaml > pod_name.yaml
+kubectl logs <pod> -c <container> 
 ```
 
 # shorts
