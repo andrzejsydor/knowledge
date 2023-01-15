@@ -25,6 +25,8 @@ https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 ```
 kubectl describe <deployment>
 ```
+## [Health Check](CKAD_health_check.md)
+
 ## [Resource Quotas](CKAD_resource_quotas.md)
 https://kubernetes.io/docs/concepts/policy/resource-quotas/
 ```
