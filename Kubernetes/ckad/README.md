@@ -26,6 +26,8 @@ https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
 
 ```
 kubectl describe <deployment>
+kubectl edit deployment <name>
+kubectl get deployment <name>
 ```
 ## [Health Check](CKAD_health_check.md)
 
