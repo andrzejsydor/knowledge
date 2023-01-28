@@ -3,6 +3,12 @@
 https://kubernetes.io/docs/concepts/configuration/configmap/
 
 ```
+kubectl create configmap <name>
+kubectl get configmap <name> -o yaml
+kubectl apply -f <file> --force
+```
+
+```
 apiVersion: v1
 kind: ConfigMap
 metadata:
