@@ -8,3 +8,8 @@ metadata:
   labels:
     name: dev
 ```
+
+```
+kubectl create ns <name>
+kubectl get ns <name> -o yaml
+```
