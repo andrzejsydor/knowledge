@@ -60,6 +60,7 @@
 
 [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok)
 
+[Maven Helper](https://plugins.jetbrains.com/plugin/7179-maven-helper/versions)
 
 ### Others
 
