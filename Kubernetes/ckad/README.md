@@ -71,6 +71,7 @@ kubectl logs <pod> -c <container>
 pod->po
 replicaset->rs
 deployment->deploy
+service->svc
 ```
 
 # other

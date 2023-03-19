@@ -1,10 +1,10 @@
 # Secret
 
-```
+```shell
 echo text | base64
 ```
 
-```
+```yaml
 apiVersion: v1
 kind: Secret
 metadata:
@@ -15,7 +15,7 @@ data:
   code: dHJ1c3RubzEK
 ```
 
-```
+```yaml
 apiVersion: v1
 kind: Pod
 metadata:
