@@ -1,10 +1,11 @@
 # CKAD Tasks
 
-
 - For all use ns: `ckad`
 ```
 k create ns ckad
 ```
+
+## Basic
 
 - create pod 'nginx', image: `nginx`
 
@@ -31,6 +32,9 @@ k logs busybox
 
 -- `curl k8s-control:<node_port>`
 
+## Volumes
+
+- create PV `pv1`, PVC `pvc1`, pod `busybox` that write
 
 
 ## Network Policy
