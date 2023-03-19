@@ -1,6 +1,6 @@
 # Namespaces
 
-```
+```yaml
 apiVersion: v1
 kind: Namespace
 metadata:
@@ -9,7 +9,7 @@ metadata:
     name: dev
 ```
 
-```
+```shell
 kubectl create ns <name>
 kubectl get ns <name> -o yaml
 ```
