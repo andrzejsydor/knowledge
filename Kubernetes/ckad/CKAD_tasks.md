@@ -25,6 +25,25 @@ k run busybox --image=busybox --restart=Never -- env
 k logs busybox
 ```
 
+- create deployment of `nginx`, replicas 2
+
+-- service (Type: NodePort)
+
+-- `curl k8s-control:<node_port>`
+
+
+
+## Network Policy
+
+- create pod `nginx` and `busybox`
+
+-- define Network Policy that allow network access between the pods
+
+```
+k get networkpolicy
+k describe networkpolicy <name>
+```
+
 ## Tips
 
 ```
