@@ -34,6 +34,15 @@ k run busybox --image=busybox --restart=Never -- env
 k logs busybox
 ```
 
+### Basic 4 Alpine+Curl
+
+```shell
+k run al1 --image=alpine --rm -i --tty -- sh
+k run al1 --image=alpine --rm -i -t -- sh
+
+apk add curl
+```
+
 ## Config Map
 
 - create Config Map k1=v1, k2=v2
@@ -43,6 +52,14 @@ k create configmap --help
 k create configmap cm1 --from-literal=k1=v1 --from-literal=k2=v2
 ```
 
+```shell
+k create po b1 --image=busybox -o yaml >> b1.yaml
+```
+
+```yaml
+
+```
+
 - create Config Map with file `haproxy.cfg`
 
 -- create Ambassador container image `haproxy`
@@ -50,6 +67,10 @@ k create configmap cm1 --from-literal=k1=v1 --from-literal=k2=v2
 ## Deployment
 
 - create deployment of `nginx`, replicas 2
+
+```shell
+kubectl create deployment nx --image=nginx --port 80 --replicas=3 -o yaml
+```
 
 -- service (Type: NodePort)
 

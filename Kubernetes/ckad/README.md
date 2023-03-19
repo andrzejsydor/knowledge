@@ -10,6 +10,7 @@ kubectl get namespaces --show-labels
 
 ## [ConfigMap](CKAD_ConfigMap.md)
 https://kubernetes.io/docs/concepts/configuration/configmap/
+
 ## [Secret](CKAD_secret.md)
 https://kubernetes.io/docs/concepts/configuration/secret/#use-cases
 
