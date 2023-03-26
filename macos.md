@@ -17,6 +17,8 @@ brew install --cask atom
 brew install --cask postman
 brew install --cask intellij-idea
 brew install --cask google-chrome
+brew install --cask drawio
+#brew install plantuml
 ```
 
 [BAT - a cat clone with wings](https://github.com/sharkdp/bat)
