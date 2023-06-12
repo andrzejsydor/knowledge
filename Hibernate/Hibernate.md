@@ -71,6 +71,8 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [Native Queries – How to call native SQL queries with JPA & Hibernate](https://thorben-janssen.com/jpa-native-queries/)
 
+[A beginner’s guide to database locking and the lost update phenomena](https://vladmihalcea.com/a-beginners-guide-to-database-locking-and-the-lost-update-phenomena/)
+
 # Tips
 
 [The Spring Data findAll Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
