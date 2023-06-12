@@ -77,3 +77,6 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [The Spring Data findAll Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
 
+[Spring Data JPA MultipleBagFetchException](https://vladmihalcea.com/spring-data-jpa-multiplebagfetchexception/)
+
+
