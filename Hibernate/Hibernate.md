@@ -79,4 +79,7 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [Spring Data JPA MultipleBagFetchException](https://vladmihalcea.com/spring-data-jpa-multiplebagfetchexception/)
 
+[Spring MDC Transaction Logging](https://vladmihalcea.com/spring-mdc-transaction-logging/)
+
+
 
