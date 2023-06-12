@@ -81,5 +81,5 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [Spring MDC Transaction Logging](https://vladmihalcea.com/spring-mdc-transaction-logging/)
 
-
+[The best way to validate the DDL schema with Spring and Hibernate](https://vladmihalcea.com/validate-ddl-schema-spring-hibernate/)
 
