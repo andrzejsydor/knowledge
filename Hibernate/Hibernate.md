@@ -73,6 +73,8 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [A beginner’s guide to database locking and the lost update phenomena](https://vladmihalcea.com/a-beginners-guide-to-database-locking-and-the-lost-update-phenomena/)
 
+[Spring Transaction and Connection Management](https://vladmihalcea.com/spring-transaction-connection-management/)
+
 # Tips
 
 [The Spring Data findAll Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
