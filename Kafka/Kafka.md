@@ -8,6 +8,10 @@
 [Kafka Security]([https://kafka.apache.org/documentation/#security](https://kafka.apache.org/documentation/#security))
 
 
+#### Kafka trust properties
+[spring.kafka.consumer.properties.spring.json.trusted.packages](http://spring.kafka.consumer.properties.spring.json.trusted.packages) specifies comma-delimited list of package patterns allowed for deserialization. '*' means deserialize all packages.
+
+
 ## Message delivery
 
 * none: The producer considers the records successfully delivered once it sends the records to the broker. This is basically “fire and forget.”
