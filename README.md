@@ -88,6 +88,8 @@
 
 [togglz - Feature Flags for the Java platform](https://www.togglz.org/)
 
+[openfeature](https://openfeature.dev)
+
 [jOOQ](https://www.jooq.org/)
 
 # repos
