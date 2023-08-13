@@ -92,6 +92,19 @@
 
 [jOOQ](https://www.jooq.org/)
 
+### dev - observability stack tools
+
+[OpenTelemetry](https://opentelemetry.io/) - for tracing, he also has an OTEL collector container running locally to route the data to the various tools.
+
+[Jaeger](https://www.jaegertracing.io/) - for visualizing traces
+
+[Micrometer](https://micrometer.io/) - for collecting metrics
+
+[Prometheus](https://prometheus.io/) - for saving matrics
+
+[Grafana](https://grafana.com/oss/) -  for visualizing metrics
+
+
 # repos
 
 [https://github.com/Hakky54/log-captor](https://github.com/Hakky54/log-captor)
