@@ -70,6 +70,7 @@ kubectl logs <pod> -c <container>
 # shorts
 ```
 pod->po
+namespaces->ns
 replicaset->rs
 deployment->deploy
 service->svc
