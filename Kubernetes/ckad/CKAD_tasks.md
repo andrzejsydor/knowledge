@@ -56,9 +56,6 @@ k create configmap cm1 --from-literal=k1=v1 --from-literal=k2=v2
 k create po b1 --image=busybox -o yaml >> b1.yaml
 ```
 
-```yaml
-
-```
 
 - create Config Map with file `haproxy.cfg`
 
