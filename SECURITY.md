@@ -15,5 +15,6 @@
 
 [OWASP Top 10](https://owasp.org/Top10/)
 
+[OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 
-
+[PortSwigger](https://portswigger.net/web-security/all-topics)
