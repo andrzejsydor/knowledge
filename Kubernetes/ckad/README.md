@@ -52,8 +52,6 @@ https://kubernetes.io/docs/tasks/configure-pod-container/attach-handler-lifecycl
 
 ## ?!
 ```
-alias k=kubectl
-
 kubectl config get-contexts
 kubectl config use-context <context>
 
@@ -67,7 +65,14 @@ kubectl get pod <pod> -o yaml > pod_name.yaml
 kubectl logs <pod> -c <container> 
 ```
 
-# shorts
+## Alias
+
+`alias k=kubectl`
+`alias kg="kubectl get"`
+`alias kaf="kubectl apply -f"`
+`export do="--dry-run=client -o yaml"``
+
+## shorts
 ```
 pod->po
 namespaces->ns
