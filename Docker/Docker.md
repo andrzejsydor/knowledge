@@ -168,3 +168,5 @@ Use caching properly for your Dockerfiles: docker containers are built very quic
 [Docker - copy files](https://www.baeldung.com/ops/docker-copying-files)
 
 [random Docker tips](https://csabapalfi.github.io/random-docker-tips/)
+
+[Docker Labs Debug Tools](https://hub.docker.com/extensions/docker/labs-debug-tools-extension)
