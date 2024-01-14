@@ -232,6 +232,8 @@ sysctl -a | grep Processor
 
 ## Other
 
+[https://architecture-antipatterns.tech/](https://architecture-antipatterns.tech/)
+
 [javascript-algorithms](https://github.com/trekhleb/javascript-algorithms)
 
 [https://www.conventionalcommits.org/en/v1.0.0/](https://www.conventionalcommits.org/en/v1.0.0/)
