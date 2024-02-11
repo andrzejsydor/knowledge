@@ -4,7 +4,7 @@
 
 ## [k6](https://k6.io/) [https://github.com/grafana/k6](https://github.com/grafana/k6)
 
-## [https://locust.io/](Locust)
+## [Locust](https://locust.io/)
 
 Define user behaviour with Python code, and swarm your system with millions of simultaneous users.
 
