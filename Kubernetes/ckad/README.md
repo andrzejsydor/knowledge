@@ -68,9 +68,12 @@ kubectl logs <pod> -c <container>
 ## Alias
 
 `alias k=kubectl`
+
 `alias kg="kubectl get"`
+
 `alias kaf="kubectl apply -f"`
-`export do="--dry-run=client -o yaml"``
+
+`export do="--dry-run=client -o yaml"`
 
 ## shorts
 ```
