@@ -79,6 +79,7 @@ namespaces->ns
 replicaset->rs
 deployment->deploy
 service->svc
+endpoints->ep
 ```
 
 # other
