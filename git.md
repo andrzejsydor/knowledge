@@ -9,6 +9,13 @@ Global user: `git config --global user.name`
 Local user: `git config user.name`
 
 
+## Cloning a new repository with Token
+
+```
+git clone https://[TOKEN]@github.com/[REPO-OWNER]/[REPO-NAME]
+```
+
+
 ## `–force-with-lease`
 
 [https://blog.developer.atlassian.com/force-with-lease/](https://blog.developer.atlassian.com/force-with-lease/)
