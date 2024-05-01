@@ -2,6 +2,11 @@
 
 ## Config
 
+Show Config list: `git config -l`
+
+Global user: `git config --global user.name`
+
+Local user: `git config user.name`
 
 
 ## `–force-with-lease`
