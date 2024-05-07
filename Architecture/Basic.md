@@ -25,6 +25,19 @@ tags:
 - Idiomatic
 - Domain-based
 
+# GRASP #GRASP
+
+**GRASP stands for general responsibility assignment software patterns** and is a collection of, “_nine fundamental principles in object design and responsibility assignment_”, as described by Craig Larman in his book Applying UML and Patterns (1997).
+
+- **Creator** – Who creates an object or a new instance of a class?
+- **Information Expert** – What responsibilities can be assigned to an object?
+- **Low Coupling** – How are objects connected to each other? How do you support low dependency, low change impact, and increased reuse?
+- **Controller** – How are requests delegated from UI layer objects to domain layer objects, including coordinating the system operation?
+- **High Cohesion** – How are the operations of elements functionally related? How do you keep objects focused, understandable, and manageable, (including supporting Low Coupling)?
+- **Polymorphism** – How do you handle alternative elements based on type? How do you create pluggable software components?
+- **Indirection** – Focused on avoiding a direct coupling between two or more elements through the use of intermediate units to handle inter-element communication, so as to avoid a direct connection.
+- **Pure Fabrication** – Called a ‘service’ in [domain-driven design](https://www.boldare.com/blog/what-is-domain-driven-design/), this class does not represent anything from the problem domain but is created to ensure High Cohesion and Low Coupling are achieved.
+- **Protected Variations** – Designing objects, subsystems, and systems so that variations in these elements does not impact on other elements?
 
 
 # Links
