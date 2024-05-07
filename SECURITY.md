@@ -1,3 +1,8 @@
+---
+tags:
+  - security
+---
+
 # Authentication vs Authorization
 
 ## 
@@ -18,3 +23,4 @@
 [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 
 [PortSwigger](https://portswigger.net/web-security/all-topics)
+
