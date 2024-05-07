@@ -1,6 +1,7 @@
 ---
 tags:
   - SOLID
+  - CUPID
 ---
 
 # SOLID #SOLID
@@ -12,6 +13,18 @@ tags:
 - L﻿iskov substitution principle
 - I﻿nterface segregation principle
 - D﻿ependency inversion principle
+
+# CUPID #CUPID
+
+**CUPID is the creation of Dan North, originating as a criticism of the SOLID principles above.**
+**CUPID principles have the same basic philosophy as SOLID: when coding, think about the people who will come after you.**
+
+- Composable
+- Unix
+- Predictable
+- Idiomatic
+- Domain-based
+
 
 
 # Links
