@@ -7,3 +7,6 @@
 [Session Buddy](https://sessionbuddy.com/)
 
 [grammarly](https://www.grammarly.com/)
+
+[sider.ai](https://sider.ai/)
+
