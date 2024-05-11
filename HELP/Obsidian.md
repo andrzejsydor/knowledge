@@ -1,9 +1,14 @@
 ---
 tags:
   - Plugin
+  - Obsidian
+  - Help
 ---
 
-# Obsidian
+# #Obsidian #Help 
+
+
+[Obsidian Tags](https://help.obsidian.md/Editing+and+formatting/Tags)
 
 ## Plugins #Plugin 
 
