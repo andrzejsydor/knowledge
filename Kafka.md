@@ -11,13 +11,16 @@
 
 ## [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
 
+## [Kafka Deep Dive](https://lucid.app/lucidchart/5580e561-c75f-495d-b480-e303a74d84e1/view)
+
+
 # Tools
 
-## [https://akhq.io/docs/#installation](akhq.io)
+## [akhq.io](https://akhq.io/docs/#installation)
 
 Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, schema registry, connect and more...
 
-# Problems
+# #Problems
 
 ## Poison Pill
 
@@ -28,7 +31,7 @@ Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, sc
 
 
 
-# Links
+# Links #link 
 
 [https://kafka.apache.org/quickstart](quickstart)
 
