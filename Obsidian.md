@@ -17,3 +17,7 @@ tags:
 
 [Obsidian Tag Wrangler Plugin](https://github.com/pjeby/tag-wrangler)
 
+[Obsidian Commander](https://github.com/phibr0/obsidian-commander)
+
+[Advanced Tables for Obsidian](https://github.com/tgrosinger/advanced-tables-obsidian)
+
