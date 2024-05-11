@@ -58,7 +58,6 @@
 
 [Structurizr](https://structurizr.com/)
 
-## [Windows](windows.md)
 
 ## Code Quality
 
