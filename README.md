@@ -260,7 +260,17 @@ sysctl -a | grep Processor
 
 # Tags
 
-[#docker](https://github.com/andrzejsydor/knowledge/search?q=%23docker)
+
+```dataview
+TABLE WITHOUT ID (tag + "(" + length(rows.file.link) + ")") AS Tags, join(rows.file.folder) AS Folder, 
+join(rows.file.link, ", ") AS Files 
+FROM "" 
+WHERE file.tags FLATTEN file.tags AS tag 
+GROUP BY tag 
+SORT length(rows.file.link) DESC
+```
+
+
 
 # Slack
 

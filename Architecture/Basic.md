@@ -4,7 +4,7 @@ tags:
   - CUPID
 ---
 
-# SOLID #SOLID
+# #SOLID
 
 **The mnemonic acronym SOLID incorporates a set of software principles of object-oriented design.** Originally introduced by Robert C. Martin in his 2000 paper _“Design Principles and Design Patterns”_, and later turned into an acronym by Michael Feathers, the ingredients of SOLID are:
 
