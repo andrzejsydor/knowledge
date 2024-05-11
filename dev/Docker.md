@@ -159,7 +159,7 @@ Use caching properly for your Dockerfiles: docker containers are built very quic
 - Group your RUN commands (shell sequences) together per type (e.g. ssh related). This allows you to tune and forget a "feature" of your container and focus on the next one without ever blowing up your cache.
 - Maintain common command orders in between your various Dockerfiles. This allow to use "common" caching from one container to another for as long as they share common features
 
-# Links
+# Links #link 
 
 [https://github.com/andrzejsydor/devops](https://github.com/andrzejsydor/devops)
 
