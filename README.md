@@ -1,6 +1,8 @@
 # Knowledge - content
 
-- [Tools](https://github.com/andrzejsydor/knowledge#tools)
+- [Tools](https://github.com/andrzejsydor/knowledge#tools) 
+
+[HELP/Obsidian](./HELP/Obsidian.md)
 
 -- [Collaborative Tools](collaborative.md) / [JVM](jvm.md) / [IntelliJ](IntelliJ/IntelliJ.md) / [Docker](Docker.md) / [Git](git.md) / [Hibernate](Hibernate/Hibernate.md) / [Browser Plugins](browser-plugins.md) / [MacOS](macos.md) / [WSL](wsl.md)
 

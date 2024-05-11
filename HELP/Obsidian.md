@@ -21,3 +21,16 @@ tags:
 
 [Advanced Tables for Obsidian](https://github.com/tgrosinger/advanced-tables-obsidian)
 
+## Diagrams 
+
+#link #Help 
+[GitHub - Creating diagrams](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams)
+
+```mermaid
+graph TD;
+    A-->B;
+    A-->C;
+    B-->D;
+    C-->D;
+```
+
