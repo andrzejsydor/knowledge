@@ -4,7 +4,7 @@
 
 [HELP/Obsidian](./HELP/Obsidian.md)
 
--- [Collaborative Tools](collaborative.md) / [JVM](jvm.md) / [IntelliJ](IntelliJ/IntelliJ.md) / [Docker](Docker.md) / [Git](git.md) / [Hibernate](Hibernate/Hibernate.md) / [Browser Plugins](browser-plugins.md) / [MacOS](macos.md) / [WSL](wsl.md)
+-- [Collaborative Tools](collaborative.md) / [JVM](jvm.md) / [IntelliJ](IntelliJ/IntelliJ.md) / [Docker](Docker.md) / [Git](git.md) / [Hibernate](Hibernate.md) / [Browser Plugins](browser-plugins.md) / [MacOS](macos.md) / [WSL](wsl.md)
 
 - [dev](https://github.com/andrzejsydor/knowledge#dev)
 

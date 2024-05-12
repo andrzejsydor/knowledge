@@ -49,9 +49,11 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [Hibernate Types](https://github.com/vladmihalcea/hibernate-types)
 
-# Hibernate
+# #Hibernate #link 
 
 [Thorben Janssen YT](https://www.youtube.com/channel/UCYeDPubBiFCZXIOgGYoyADw)
+
+[How does orphanRemoval work with JPA and Hibernate](https://vladmihalcea.com/orphanremoval-jpa-hibernate/)
 
 [Implementing equals() and hashCode()](https://thorben-janssen.com/ultimate-guide-to-implementing-equals-and-hashcode-with-hibernate/)
 
@@ -75,7 +77,7 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [Spring Transaction and Connection Management](https://vladmihalcea.com/spring-transaction-connection-management/)
 
-# Tips
+# Tips 
 
 [The Spring Data findAll Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
 
