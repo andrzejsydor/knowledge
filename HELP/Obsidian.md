@@ -3,12 +3,16 @@ tags:
   - Plugin
   - Obsidian
   - Help
+aliases:
+  - Help
 ---
 
 # #Obsidian #Help 
 
 
 [Obsidian Tags](https://help.obsidian.md/Editing+and+formatting/Tags)
+
+[Obsidian Aliases](https://help.obsidian.md/Linking+notes+and+files/Aliases)
 
 ## Plugins #Plugin 
 
