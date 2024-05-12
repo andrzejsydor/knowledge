@@ -16,6 +16,8 @@
 
 - [Courses](https://github.com/andrzejsydor/knowledge#courses)
 
+- [Blogs](https://github.com/andrzejsydor/knowledge#blogs)
+
 - [Tags](https://github.com/andrzejsydor/knowledge#tags)
 
 ## pages
@@ -258,6 +260,25 @@ sysctl -a | grep Processor
 # Courses
 
 [90DaysOfDevOps](https://github.com/MichaelCade/90DaysOfDevOps/blob/main/Days/day49.md)
+
+# Blogs #link
+
+[AWS Architecture Blog](https://aws.amazon.com/blogs/architecture/)
+
+[stripe](https://stripe.com/blog)
+
+[slack engineering](https://slack.engineering/)
+
+[Discord Blog](https://discord.com/category/engineering)
+
+[LinkedIn Engineering Blog](https://www.linkedin.com/blog/engineering)
+
+[Engineering at Meta](https://engineering.fb.com/)
+
+[The Cloudflare Blog](https://blog.cloudflare.com/tag/developers)
+
+[The Netflix Tech Blog](https://netflixtechblog.com/)
+
 
 # Tags
 
