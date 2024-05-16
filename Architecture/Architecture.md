@@ -3,7 +3,6 @@ tags:
   - Architecture
   - Outbox_Pattern
   - Inbox_Pattern
-  - ShedLock
 ---
 # Architecture
 
@@ -23,7 +22,7 @@ tags:
 
 # Other
 
-### ShedLock #ShedLock
+### ShedLock
 
 ShedLock — a Java library that makes sure our scheduled tasks run only once at the same time **and is an alternative to [Quartz](https://www.baeldung.com/quartz)**
 
@@ -32,4 +31,4 @@ ShedLock — a Java library that makes sure our scheduled tasks run only once at
 
 [# Outbox, Inbox patterns and delivery guarantees explained](https://event-driven.io/en/outbox_inbox_patterns_and_delivery_guarantees_explained/) #Outbox_Pattern 
 
-[# ShedLock with Spring](https://www.baeldung.com/shedlock-spring) #ShedLock 
+[# ShedLock with Spring](https://www.baeldung.com/shedlock-spring) 

@@ -1,3 +1,8 @@
+---
+tags:
+  - Kafka
+---
+
 
 # Kafka
 
@@ -20,7 +25,7 @@
 
 Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, schema registry, connect and more...
 
-# #Problems
+# #Problem
 
 ## Poison Pill
 
@@ -31,7 +36,7 @@ Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, sc
 
 
 
-# Links #link 
+# Links #Link 
 
 [https://kafka.apache.org/quickstart](quickstart)
 

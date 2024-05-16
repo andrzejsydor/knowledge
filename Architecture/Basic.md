@@ -40,7 +40,10 @@ tags:
 - **Protected Variations** – Designing objects, subsystems, and systems so that variations in these elements does not impact on other elements?
 
 
-# Links
+# Links #link 
 
 [What is SOLID, and why is it more than just an acronym?](https://www.boldare.com/blog/solid-cupid-grasp-principles-object-oriented-design/#what-is-solid,-and-why-is-it-more-than-just-an-acronym?)
 
+# Course #Course #Learn
+
+- [ ] [Developer to Architect](https://www.developertoarchitect.com/lessons/)

@@ -1,8 +1,8 @@
 ---
 tags:
-  - task
+  - Task
 ---
-# Tasks #task 
+# Tasks #Task 
 
 ## List of tasks
 ```tasks
