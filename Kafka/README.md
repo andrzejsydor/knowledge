@@ -4,13 +4,13 @@ tags:
 ---
 
 
-# Kafka
+# #Kafka
 
 - [Tools](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#tools)
 
 - [Problems](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#problems)
 
-- [Links](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#links)
+- [Links](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#links-link)
 
 - [Certification](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#certification)
 

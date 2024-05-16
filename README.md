@@ -89,7 +89,7 @@
 
 [Resilience Patterns](https://github.com/resilience4j/resilience4j#4-resilience-patterns)
 
-## [Kafka](Kafka.md)
+## [README](Kafka/README.md)
 
 ## dev - tools
 

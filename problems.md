@@ -1,4 +1,9 @@
-# Problems
+---
+tags:
+  - Problem
+---
+
+# Problems #Problem 
 
 ## PathVariable as a DTO
 
