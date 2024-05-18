@@ -1,6 +1,19 @@
-# Java
+---
+tags:
+  - Java
+---
 
-[Constraing Composition](https://www.baeldung.com/java-bean-validation-constraint-composition)
+# #Java
+
+---
+- [Constraing Composition](#Constraining-Composition)
+- [Spring](#Spring)
+- [Other](#Other)
+	- [Failsafe](##Failsafe)
+---
+
+
+## [Constraing Composition](https://www.baeldung.com/java-bean-validation-constraint-composition)
 
 JSR 380: Bean Validation 2.0
 
@@ -20,7 +33,9 @@ public Optional<@PastLocalDate> getDateOfBirth() {
 ```
 
 ###########################
-# Spring MVC test - page response
+
+# #Spring
+## Spring MVC test - page response
 
 ```java
 package com.example.demo;
@@ -152,4 +167,24 @@ public class RestPageImpl<T> extends PageImpl<T> {
         super(new ArrayList<>());
     }
 }
+```
+
+
+
+# Other
+
+## Failsafe
+[Failsafe](https://failsafe.dev/) is a lightweight, zero-dependency library for handling failures in Java 8+. It has a concise API for handling everyday use cases and the flexibility to handle everything else.
+
+```Java
+RetryPolicy<Object> retryPolicy = RetryPolicy.builder()
+  .handle(ConnectException.class)
+  .withDelay(Duration.ofSeconds(1))
+  .withMaxRetries(3)
+  .build();
+
+// Run with retries 
+Failsafe.with(retryPolicy).run(() -> connect());  
+// Get with retries 
+Connection connection = Failsafe.with(retryPolicy).get(() -> connect());`
 ```
