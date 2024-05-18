@@ -26,6 +26,9 @@ tags:
 
 ShedLock — a Java library that makes sure our scheduled tasks run only once at the same time **and is an alternative to [Quartz](https://www.baeldung.com/quartz)**
 
+### #TOGAF 
+[The Open Group Architecture Framework](https://en.wikipedia.org/wiki/The_Open_Group_Architecture_Framework#:~:text=TOGAF%20is%20a%20high%2Dlevel,existing%2C%20proven%20technologies%20and%20products.) -  [Enterprise architecture framework](https://en.wikipedia.org/wiki/Enterprise_Architecture_framework "Enterprise Architecture framework") for [Enterprise Architecture](https://en.wikipedia.org/wiki/Enterprise_architecture "Enterprise architecture")  that provides an approach for designing, planning, implementing, and governing an enterprise information technology architecture. TOGAF is a high-level approach to design. It is typically modeled at four levels: Business, Application, Data, and Technology. It relies heavily on modularization, standardization, and already existing, proven technologies and products.
+
 
 # Links
 

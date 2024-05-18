@@ -14,7 +14,7 @@ tags:
 - I﻿nterface segregation principle
 - D﻿ependency inversion principle
 
-# CUPID #CUPID
+# #CUPID
 
 **CUPID is the creation of Dan North, originating as a criticism of the SOLID principles above.**
 **CUPID principles have the same basic philosophy as SOLID: when coding, think about the people who will come after you.**
@@ -25,7 +25,7 @@ tags:
 - Idiomatic
 - Domain-based
 
-# GRASP #GRASP
+# #GRASP
 
 **GRASP stands for general responsibility assignment software patterns** and is a collection of, “_nine fundamental principles in object design and responsibility assignment_”, as described by Craig Larman in his book Applying UML and Patterns (1997).
 
