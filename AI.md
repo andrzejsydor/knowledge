@@ -3,7 +3,7 @@ tags:
   - AI
 ---
 
-# AI #AI 
+# #AI 
 
 ## [ChatGPT](https://chat.openai.com/)
 
@@ -21,7 +21,15 @@ Explain the following codes and give me a clear, concise and readable explanatio
 return id==null ? -1 : id;
 """
 
-# AI links
+# Tools
+
+## 4 AI Tools To Boost Productivity
+[Asana](https://asana.com/)
+[Grammarly](https://grammarly.com/)
+[ChatGPT](https://chatgpt.com/)
+[Zapier](https://zapier.com/app/home)
+
+# AI links #Link
 
 [OpenAI](https://openai.com/)
 
