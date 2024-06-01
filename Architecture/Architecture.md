@@ -3,6 +3,7 @@ tags:
   - Architecture
   - Outbox_Pattern
   - Inbox_Pattern
+  - C4
 ---
 # Architecture
 
@@ -19,6 +20,19 @@ tags:
 - **At-most once**
 - **At-least once**
 - **Exactly-once**
+
+
+## Modelling vs Diagramming
+
+![](Architecture_Media/Modelling_vs_Diagramming.png)
+
+## #C4
+
+[C4 Model - Getting Started Workshop by IcePanel](https://miro.com/app/board/uXjVPEoyaok=/?fromEmbed=1)
+
+![](Architecture_Media/C4_model_cheat_sheet.png)
+
+
 
 # Other
 
