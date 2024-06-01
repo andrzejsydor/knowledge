@@ -49,7 +49,7 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [Hibernate Types](https://github.com/vladmihalcea/hibernate-types)
 
-# #Hibernate #link 
+# #Hibernate #Link 
 
 [Thorben Janssen YT](https://www.youtube.com/channel/UCYeDPubBiFCZXIOgGYoyADw)
 

@@ -199,7 +199,7 @@ sysctl -a | grep brand_string
 sysctl -a | grep Processor
 ```
 
-# Links #link 
+# Links #Link 
 
 [JavaMagazine](https://blogs.oracle.com/javamagazine)
 
@@ -261,7 +261,7 @@ sysctl -a | grep Processor
 
 [90DaysOfDevOps](https://github.com/MichaelCade/90DaysOfDevOps/blob/main/Days/day49.md)
 
-# Blogs #link
+# Blogs #Link
 
 [AWS Architecture Blog](https://aws.amazon.com/blogs/architecture/)
 
