@@ -7,6 +7,13 @@ tags:
 ---
 # Architecture
 
+- [Architecture](#Architecture)
+	- 
+- [C4](#C4)
+- [Other](#Other)
+- [Links](#Links)
+
+
 **Outbox Pattern** #Outbox_Pattern  - it ensures that a message was sent (e.g. to a queue) successfully at least once. With this pattern, instead of directly publishing a message to the queue, we store it in temporary storage (e.g. database table).
 
 **Inbox Pattern** #Inbox_Pattern - it is similar to Outbox Pattern. It’s used to handle incoming messages (e.g. from a queue). Accordingly, we have a table in which we’re storing incoming events. Contrary to outbox pattern, we first save the event in the database, then we’re returning ACK to queue
