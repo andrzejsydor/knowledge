@@ -8,7 +8,8 @@ tags:
 # Architecture
 
 - [Architecture](#Architecture)
-	- 
+	- [DDD](./DDD.md)
+	- [CQRS](./CQRS.md)
 - [C4](#C4)
 - [Other](#Other)
 - [Links](#Links)
