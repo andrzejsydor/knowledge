@@ -1,4 +1,4 @@
---
+---
 
 tags:
 
@@ -24,6 +24,20 @@ CQRS - Command Query Responsibility Segregation
 
 
 
+Benefits:
+
+ - Clear boundaries between the system behaviour
+
+ - Closer to business logic
+
+ - Loose coupling
+
+ - Reduced cognitive load
+
+ - Easier scaling, optimisations and architectural changes
+
+ - Predictability
+
 PROS:
 
  - Scalability
@@ -40,7 +54,9 @@ CONS:
 
  - Learning Curve
 
-Eventual Consistency
+ - Eventual Consistency
+
+
 
 
 
@@ -65,6 +81,25 @@ Eventual Consistency
 
 
 
+
+
+[https://lab.scub.net/command-query-responsibility-segregation-cqrs-93e35d1929ec](https://lab.scub.net/command-query-responsibility-segregation-cqrs-93e35d1929ec)
+
+
+
+
+[https://www.eventstore.com/cqrs-pattern](https://www.eventstore.com/cqrs-pattern)
+
+
+
+
+
+
+## #Stackoverflow
+
+
+
+
 [https://stackoverflow.com/questions/34255490/difference-between-cqrs-and-cqs](https://stackoverflow.com/questions/34255490/difference-between-cqrs-and-cqs)
 
 
@@ -72,4 +107,10 @@ Eventual Consistency
 
 
 
-[https://lab.scub.net/command-query-responsibility-segregation-cqrs-93e35d1929ec](https://lab.scub.net/command-query-responsibility-segregation-cqrs-93e35d1929ec)
+## #PDF
+
+
+
+
+[https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf)
+
