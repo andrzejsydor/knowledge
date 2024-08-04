@@ -19,7 +19,7 @@
 
 `Ctrl+Shift+F12 (⇧⌘ F12)`
 
-- Quick view of source of classes, interfaces, enums, records, methods, variable declarations, etc.
+- Quick view of the source of classes, interfaces, enums, records, methods, variable declarations, etc.
 
 `Ctrl+Shift+I`
 
@@ -61,6 +61,8 @@
 [Lombok](https://plugins.jetbrains.com/plugin/6317-lombok)
 
 [Maven Helper](https://plugins.jetbrains.com/plugin/7179-maven-helper/versions)
+
+[EnvFile](https://plugins.jetbrains.com/plugin/7861-envfile/)
 
 ### Others
 
