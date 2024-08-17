@@ -9,6 +9,8 @@ tags:
 
 ## [Sider](https://chromewebstore.google.com/detail/sider-pasek-chatgpt-+-vis/difoiogjjojoaoomphldepapgpbgkhkb)
 
+## [There's An AI](https://theresanai.com/)
+
 # Prompt's
 
 ### Please explain in ${lang}: "${selection}"
