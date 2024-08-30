@@ -8,6 +8,8 @@ Global user: `git config --global user.name`
 
 Local user: `git config user.name`
 
+Local user email: `git config --local user.email "name@mail.com`
+
 
 ## Cloning a new repository with Token
 
