@@ -83,6 +83,16 @@
 
 [Architecture](./Architecture/Architecture.md)
 
+## dev roadmaps
+
+[https://github.com/andrzejsydor/developer-roadmap](https://github.com/andrzejsydor/developer-roadmap)
+
+[Spring Boot Developer](https://roadmap.sh/spring-boot)
+
+[Backend Developer](https://roadmap.sh/backend)
+
+[AWS Roadmap](https://roadmap.sh/aws)
+
 ## Microservices
 
 ### Resilience
