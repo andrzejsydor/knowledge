@@ -11,6 +11,7 @@ tags:
 	- [DDD](./DDD.md)
 	- [CQRS](./CQRS.md)
 - [C4](#C4)
+- [Tools](#Tools)
 - [Other](#Other)
 - [Links](#Links)
 
@@ -39,8 +40,18 @@ tags:
 
 [C4 Model - Getting Started Workshop by IcePanel](https://miro.com/app/board/uXjVPEoyaok=/?fromEmbed=1)
 
+[The C4 model for visualising software architecture](https://c4model.com/)
+
 ![](Architecture_Media/C4_model_cheat_sheet.png)
 
+
+# #Tools
+
+[PlantUML](https://plantuml.com/)
+
+[Structurizr](https://structurizr.com/)
+
+[Archi](https://www.archimatetool.com/)
 
 
 # Other
