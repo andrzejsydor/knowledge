@@ -10,6 +10,7 @@ tags:
 - [Architecture](#Architecture)
 	- [DDD](./DDD.md)
 	- [CQRS](./CQRS.md)
+- [Docs](#Docs)
 - [C4](#C4)
 - [Tools](#Tools)
 - [Other](#Other)
@@ -35,6 +36,16 @@ tags:
 ## Modelling vs Diagramming
 
 ![](Architecture_Media/Modelling_vs_Diagramming.png)
+
+## #Docs
+
+### ADRs - (Architecture Decision Records)
+
+ADR statuses:
+- Request for Comment (RFC)
+- Proposed
+- Accepted
+- Superseded
 
 ## #C4
 
