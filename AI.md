@@ -11,7 +11,7 @@ tags:
 
 ## [There's An AI](https://theresanai.com/)
 
-# Prompt's
+# Prompts
 
 ### Please explain in ${lang}: "${selection}"
 Please explain in English: "Kafka"
