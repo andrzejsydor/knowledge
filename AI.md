@@ -16,8 +16,10 @@ tags:
 ### Please explain in ${lang}: "${selection}"
 Please explain in English: "Kafka"
 
+### Check grammar for the below sentence and propose updates if needed. Then translate it into Polish.
+
 ### Explain the following codes and give me a clear, concise and readable explanation.Respond in the ${lang} language.""" ${selection} """
-Explain the following codes and give me a clear, concise and readable explanation.Respond in the English language.
+Explain the following codes and give me a clear, concise and readable explanation. Respond in the English language.
 
 """
 return id==null ? -1 : id;
