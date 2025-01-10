@@ -64,6 +64,8 @@ ADR statuses:
 
 [Archi](https://www.archimatetool.com/)
 
+[arc42](https://arc42.org/)
+[arc42 - software architecture](https://github.com/arc42)
 
 # Other
 
