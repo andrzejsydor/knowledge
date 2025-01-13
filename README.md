@@ -44,11 +44,11 @@
 
 [Locust](https://locust.io/)
 
+[CATS](https://github.com/andrzejsydor/cats) - OpenAPI - REST API fuzzer and negative testing tool. Run thousands of self-healing API tests within minutes with no coding effort!
+
 [JProfiler](https://www.ej-technologies.com/products/jprofiler/overview.html)
 
 [Structurizr](https://structurizr.com/pricing)
-
-[Snapwatch](https://snapwatch.io/)
 
 [JRebel](https://www.jrebel.com/)
 
