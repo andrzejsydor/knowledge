@@ -30,6 +30,9 @@ git clone https://[TOKEN]@github.com/[REPO-OWNER]/[REPO-NAME]
 
 [https://www.atlassian.com/git/tutorials/saving-changes/git-stash](https://www.atlassian.com/git/tutorials/saving-changes/git-stash)
 
+## Notes
+
+[https://git-scm.com/docs/git-notes](git-notes - Add or inspect object notes)
 
 ### drop & clean
 `git stash drop`
