@@ -7,6 +7,8 @@ tags:
 # #dev
 
 
+[Boy Scout Rule](https://biratkirat.medium.com/step-8-the-boy-scout-rule-robert-c-martin-uncle-bob-9ac839778385) - “Leave Things BETTER than you found them.” ~ Robert Baden Powell
+
 ## #Link 
 
 [Dapr](https://dapr.io/) provides integrated APIs for communication, state, and workflow. Dapr leverages industry best practices for security, resiliency, and observability, so you can focus on your code.
@@ -18,7 +20,7 @@ tags:
 
 ## #Maven
 
-[openrewrite](https://docs.openrewrite.org/)
+[OpenRewrite](https://docs.openrewrite.org/)
 
 ### #Link 
 
