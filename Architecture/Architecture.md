@@ -5,7 +5,11 @@ tags:
   - Inbox_Pattern
   - C4
 ---
-# Architecture
+# #Architecture
+_Never shoot for the best architecture, but rather the least worst architecture._
+
+In system design, prioritizing a pragmatically sufficient architecture over an idealized model often results in more sustainable and maintainable solutions. Focusing on the least suboptimal approach ensures practicality and facilitates effective implementation.
+
 
 - [Architecture](#Architecture)
 	- [DDD](./DDD.md)
