@@ -17,3 +17,5 @@ tags:
 # Apps
 
 [Notion](http://notion.com/)
+
+[RemNote](https://www.remnote.com/)
