@@ -13,3 +13,7 @@ tags:
 - **Use of Digital Tools**: Leverage note-taking applications that allow for easy editing, searching, and sharing of notes when appropriate.
 - **Highlighting and Annotation**: Emphasize important concepts and add personal annotations to deepen comprehension and recall.
 - **Minimal Distractions**: Create a focused environment by minimizing interruptions and organizing note-taking materials effectively.
+
+# Apps
+
+[Notion](http://notion.com/)
