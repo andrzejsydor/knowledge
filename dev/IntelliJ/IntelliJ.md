@@ -27,6 +27,8 @@
 
 ## Plugins
 
+[GitHub Copilot](https://plugins.jetbrains.com/plugin/17718-github-copilot)
+
 [Rainbow Brackets](https://plugins.jetbrains.com/plugin/10080-rainbow-brackets)
 
 [Key Promoter X](https://plugins.jetbrains.com/plugin/9792-key-promoter-x)
