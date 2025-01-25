@@ -33,6 +33,26 @@ tags:
 
 ![Kafka_Message_Delivery](Kafka_Message_Delivery.png)
 
+## Consumer Groups
+
+### Understanding Kafka Consumer Offsets
+
+1. **Topics Have Multiple Partitions**
+   
+   In Kafka, a **topic** is divided into several **partitions**. Each partition is an ordered, immutable sequence of messages that allows Kafka to scale horizontally by distributing data across multiple brokers. This partitioning enables parallel processing and improves the throughput of message consumption.
+
+2. **Topics Can Have Multiple Consumer Groups**
+   
+   A single **topic** can be consumed by multiple **consumer groups** simultaneously. Each consumer group operates independently, allowing different applications or services to process the same stream of data without affecting each other. This setup enhances flexibility and scalability in how data is consumed and utilized.
+
+3. **One Consumer per Partition per Consumer Group**
+   
+   Within a **consumer group**, each **partition** is assigned to only one **consumer**. This means that a single consumer is responsible for reading messages from a specific partition, ensuring that messages are processed in order and preventing duplicate consumption. If a consumer fails, Kafka can reassign the partition to another consumer in the group to maintain continuity.
+
+4. **Consumer Offset Managed at Partition Level per Consumer Group**
+   
+   A **consumer offset** tracks the last message a consumer has successfully processed in a partition. These offsets are managed individually for each partition within a consumer group. This granular management allows consumers to resume processing from the exact point they left off in case of restarts or failures, ensuring reliable and efficient message consumption without duplication.
+
 ## Commands
 
 ![Kafka_Commands](Kafka_Commands.png)
