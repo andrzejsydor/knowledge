@@ -9,6 +9,8 @@ tags:
 - [Tools](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#tools)
 
 - [Problems](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#problems)
+  - Poison Pill
+  - Consumer Group offset change
 
 - [Links](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#links-link)
 
@@ -35,6 +37,23 @@ Kafka GUI for Apache Kafka ® to manage topics, topics data, consumers group, sc
 [https://stephantromer.dev/blog/how-to-handle-poison-pills-in-kafka](https://stephantromer.dev/blog/how-to-handle-poison-pills-in-kafka)
 
 
+## How to Reset Kafka Consumer Group Offset
+
+[How to Reset Kafka Consumer Group Offset - GIST](https://gist.github.com/marwei/cd40657c481f94ebe273ecc16601674b)
+
+```
+kafka-consumer-groups --bootstrap-server <kafkahost:port> --group <group_id> --topic <topic_name> --reset-offsets --to-earliest --execute
+```
+
+Resetting options:
+```
+--shift-by <positive_or_negative_integer>
+--to-current
+--to-latest
+--to-offset <offset_integer>
+--to-datetime <datetime_string>
+--by-duration <duration_string>
+```
 
 # Links #Link 
 
