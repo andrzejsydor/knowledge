@@ -1,6 +1,7 @@
 ---
 tags:
   - Java
+  - Spring
 ---
 
 # #Java
@@ -10,6 +11,7 @@ tags:
 - [Spring](#Spring)
 - [Other](#Other)
 	- [Failsafe](##Failsafe)
+- [Links](#Link)
 ---
 
 
@@ -188,3 +190,9 @@ Failsafe.with(retryPolicy).run(() -> connect());
 // Get with retries 
 Connection connection = Failsafe.with(retryPolicy).get(() -> connect());`
 ```
+
+
+
+# Link
+
+[Spring Cloud Config Server](https://github.com/hyness/spring-cloud-config-server)
