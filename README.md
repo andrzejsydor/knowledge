@@ -269,6 +269,8 @@ sysctl -a | grep Processor
 
 # Courses
 
+[Developer to Architect](https://www.developertoarchitect.com/)
+
 [90DaysOfDevOps](https://github.com/MichaelCade/90DaysOfDevOps/blob/main/Days/day49.md)
 
 # Blogs #Link
