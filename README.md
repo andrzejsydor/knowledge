@@ -56,6 +56,8 @@
 
 [GitLens](https://gitlens.amod.io/)
 
+[Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
+
 ## Online
 
 [Structurizr](https://structurizr.com/)
