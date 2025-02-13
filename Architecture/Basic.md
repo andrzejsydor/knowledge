@@ -39,6 +39,27 @@ tags:
 - **Pure Fabrication** – Called a ‘service’ in [domain-driven design](https://www.boldare.com/blog/what-is-domain-driven-design/), this class does not represent anything from the problem domain but is created to ensure High Cohesion and Low Coupling are achieved.
 - **Protected Variations** – Designing objects, subsystems, and systems so that variations in these elements does not impact on other elements?
 
+# #Architectures
+
+- Monolithic
+  
+  • Layered architecture
+  
+  • Pipeline architecture
+  
+  • Microkernel architecture
+
+- Distributed
+  • Service-based architecture
+
+  • Event-driven architecture
+
+  • Space-based architecture
+
+  • Service-oriented architecture
+
+  • Microservices architecture
+
 
 # #Link 
 
