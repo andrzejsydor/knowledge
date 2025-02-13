@@ -20,6 +20,16 @@ log4j.logger.org.hibernate.stat=debug
 log4j.logger.org.hibernate.SQL_SLOW=info
 ```
 
+## get vs load
+
+| **Feature**                        | **get()**                                          | **load()**                                                    |
+| ---------------------------------- | -------------------------------------------------- | -------------------------------------------------------------- |
+| **Loading Strategy**               | Eager loading (immediate database query)           | Lazy loading (proxy object, data fetched on access)            |
+| **Return Value (if exists)**       | Actual object                                      | Proxy object                                                   |
+| **Database Query**                 | Executes immediately                               | Executes when a property is accessed                           |
+| **Return Value (if not exists)**   | null                                              | Results in an **ObjectNotFoundException** when accessing properties |
+| **Hibernate Cache**                | Retrieves from the cache if present               | Still returns proxy even if cached                             |
+
 ## HikariCP
 
 [https://github.com/openbouquet/HikariCP](https://github.com/openbouquet/HikariCP)
