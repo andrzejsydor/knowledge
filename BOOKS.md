@@ -1,5 +1,7 @@
 # Books
 
+## Portals
+
 - [Manning](https://www.manning.com/)
 
 - [O'REILLY](https://www.oreilly.com/)
@@ -12,3 +14,6 @@
 
 - [goodreads](https://www.goodreads.com/)
 
+## MY
+
+[goodreads](https://www.goodreads.com/user/show/68025900-andrzej)
