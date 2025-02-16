@@ -2,11 +2,13 @@
 
 ## Awesome lists about all kinds of interesting topics
 
-- https://github.com/veggiemonk/awesome-docker
-- https://github.com/PanXProject/awesome-certificates
-- https://github.com/sindresorhus/awesome
+[https://github.com/veggiemonk/awesome-docker](https://github.com/veggiemonk/awesome-docker)
 
-[Awesome Java](https://github.com/akullpp/awesome-java)
+[https://github.com/PanXProject/awesome-certificates](https://github.com/PanXProject/awesome-certificates)
+
+[https://github.com/sindresorhus/awesome](https://github.com/sindresorhus/awesome)
+
+[https://github.com/akullpp/awesome-java](https://github.com/akullpp/awesome-java)
 
 [Awesome Software Architecture](https://github.com/mehdihadeli/awesome-software-architecture)
 
