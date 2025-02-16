@@ -13,7 +13,7 @@ tags:
 
 [Warp - The intelligent terminal](https://www.warp.dev/)
 
-[Starship](https://starship.rs/guide/)
+[Starship - Cross-Shell prompt](https://starship.rs/guide/)
 
 ### #Link
 
