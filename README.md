@@ -18,6 +18,8 @@
 
 - [Blogs](https://github.com/andrzejsydor/knowledge#blogs)
 
+- [Awesome](https://github.com/andrzejsydor/knowledge/blob/main/AWESOME.md)
+
 - [Tags](https://github.com/andrzejsydor/knowledge#tags)
 
 ## pages
@@ -243,21 +245,6 @@ sysctl -a | grep Processor
 
 [The Twelve-Factor App](https://12factor.net/)
 
-## Awesome
-
-[Awesome Java](https://github.com/akullpp/awesome-java)
-
-[Awesome Software Architecture](https://github.com/mehdihadeli/awesome-software-architecture)
-
-[Awesome Design Pattern](https://github.com/DovAmir/awesome-design-patterns)
-
-[Awesome Interview Questions](https://github.com/DopplerHQ/awesome-interview-questions)
-
-[Awesome Microservices](https://github.com/mfornos/awesome-microservices)
-
-[Awesome REST](https://github.com/marmelab/awesome-rest)
-
-[Awesome Cheatsheets](https://github.com/LeCoupa/awesome-cheatsheets)
 
 ## Other
 
