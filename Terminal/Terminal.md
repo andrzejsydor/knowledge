@@ -7,3 +7,7 @@
 [Warp - The intelligent terminal](https://www.warp.dev/)
 
 [Starship](https://starship.rs/guide/)
+
+## 
+
+[ohmyz - Unleash your terminal like never before](https://ohmyz.sh/)
