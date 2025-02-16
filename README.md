@@ -97,9 +97,19 @@
 
 ## Microservices
 
-### Resilience
+### Resilience 
 
 [Resilience Patterns](https://github.com/resilience4j/resilience4j#4-resilience-patterns)
+
+| Name            | Mechanism                                  | Explanation                                                                                |
+|-----------------|--------------------------------------------|--------------------------------------------------------------------------------------------|
+| Retry           | Attempts a failed operation again          | Transient errors may resolve on their own after a short delay.                             |
+| Circuit Breaker | Temporarily stops triggering failing calls | Prevents exhausted resources by failing fast instead of waiting on an overwhelmed system.  |
+| Rate Limiter    | Restricts the number of incoming requests  | Controls incoming requests to avoid overloading the system.                                |
+| Time Limiter    | Caps how long an operation can run         | If it takes too long, the chance of success diminishes, so waiting further is impractical. |
+| Bulkhead        | Separates resources into independent pools | One service failure won’t spill over into other areas, improving overall resilience.       |
+| Cache           | Stores results of past successful calls    | Reuses outcomes for repeated or similar requests, reducing duplicate processing.           |
+| Fallback        | Provides an alternative response           | Even with failures, having a plan for a substitute solution helps maintain functionality.   |
 
 ## [README](Kafka/README.md)
 
