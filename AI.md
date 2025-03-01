@@ -13,6 +13,8 @@ tags:
 
 # Prompts
 
+## [https://prompts.chat/](https://prompts.chat/)
+
 ### Please explain in ${lang}: "${selection}"
 Please explain in English: "Kafka"
 
