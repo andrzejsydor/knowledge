@@ -2,6 +2,8 @@
 
 ## Awesome lists about all kinds of interesting topics
 
+[https://github.com/f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
+
 [https://github.com/veggiemonk/awesome-docker](https://github.com/veggiemonk/awesome-docker)
 
 [https://github.com/PanXProject/awesome-certificates](https://github.com/PanXProject/awesome-certificates)
