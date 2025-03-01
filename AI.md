@@ -15,6 +15,8 @@ tags:
 
 ## [https://prompts.chat/](https://prompts.chat/)
 
+## [https://github.com/f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
+
 ### Please explain in ${lang}: "${selection}"
 Please explain in English: "Kafka"
 
