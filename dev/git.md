@@ -20,6 +20,8 @@ git clone https://[TOKEN]@github.com/[REPO-OWNER]/[REPO-NAME]
 
 ## `–force-with-lease`
 
+### `git push --force-with-lease` is a safer variant of `git push --force`. Instead of blindly overwriting the remote branch, it checks if the remote branch has changed since you last pulled. If it detects new commits on the remote, the push will fail instead of overwriting them. This prevents accidentally discarding someone else’s work.
+
 [https://blog.developer.atlassian.com/force-with-lease/](https://blog.developer.atlassian.com/force-with-lease/)
 
 ## Change commit author
