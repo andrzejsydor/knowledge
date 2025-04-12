@@ -32,7 +32,7 @@ git clone https://[TOKEN]@github.com/[REPO-OWNER]/[REPO-NAME]
 
 ## Notes
 
-[https://git-scm.com/docs/git-notes](git-notes - Add or inspect object notes)
+[https://git-scm.com/docs/git-notes](git-notes) - Add or inspect object notes)
 
 ### drop & clean
 `git stash drop`
