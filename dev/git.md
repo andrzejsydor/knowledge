@@ -22,6 +22,13 @@ git clone https://[TOKEN]@github.com/[REPO-OWNER]/[REPO-NAME]
 
 [https://blog.developer.atlassian.com/force-with-lease/](https://blog.developer.atlassian.com/force-with-lease/)
 
+## Change commit author
+
+```
+git commit --amend --author="Author Name <new.email@example.com>" --no-edit
+```
+
+
 ## Stash
 
 [https://git-scm.com/docs/git-stash](https://git-scm.com/docs/git-stash)
