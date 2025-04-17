@@ -11,6 +11,7 @@ tags:
 - [Spring](#Spring)
 - [Other](#Other)
 	- [Failsafe](##Failsafe)
+ 	- [immutables](https://github.com/immutables/immutables)	
 - [Links](#Link)
 ---
 
