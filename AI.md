@@ -29,6 +29,12 @@ Explain the following codes and give me a clear, concise and readable explanatio
 return id==null ? -1 : id;
 """
 
+# Gists
+
+```
+As a Senior Developer, please create the Jira task description based on the following points.
+```
+
 # Tools
 
 ## 4 AI Tools To Boost Productivity
