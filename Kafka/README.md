@@ -55,7 +55,7 @@ Resetting options:
 --by-duration <duration_string>
 ```
 
-# Links #Link 
+# #Links
 
 [https://kafka.apache.org/quickstart](quickstart)
 
