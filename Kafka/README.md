@@ -3,7 +3,6 @@ tags:
   - Kafka
 ---
 
-
 # #Kafka
 
 - [Tools](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#tools)
@@ -13,16 +12,11 @@ tags:
   - Consumer Group offset change
 
 - [Links](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#links)
+  - [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
+  - [Kafka Deep Dive](https://lucid.app/lucidchart/5580e561-c75f-495d-b480-e303a74d84e1/view)
+  - [Zero Copy Basics](https://blog.2minutestreaming.com/p/apache-kafka-zero-copy-operating-system-optimization)
 
 - [Certification](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#certification)
-
-## [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
-
-## [Kafka Deep Dive](https://lucid.app/lucidchart/5580e561-c75f-495d-b480-e303a74d84e1/view)
-
-#Kafka
-
-[Zero Copy Basics](https://blog.2minutestreaming.com/p/apache-kafka-zero-copy-operating-system-optimization)
 
 
 # Tools
