@@ -1,3 +1,9 @@
+---
+tags:
+  - Kubernetes
+  - k8s
+---
+
 # Kubernetes
 
 ## tips
