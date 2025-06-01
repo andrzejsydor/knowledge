@@ -1,21 +1,30 @@
 ---
-
 tags:
-
  - Architecture
-
  - CQRS
-
-aliases:
-
  - CQS
-
+aliases:
+ - CQS
+ - CQRS
 ---
 
+# CQS vs CQRS
+
+## Comparison Table
+
+| Aspect | CQS | CQRS |
+| :-- | :-- | :-- |
+| **Level** | Method/Class (micro) | Architecture/System (macro) |
+| **Separation** | Methods: read or write, not both | Entire subsystems: separate read and write models |
+| **Data Store** | Single, unified | Can use separate stores for commands and queries |
+| **Consistency** | Immediate (strong) | Often eventual (in distributed systems) |
+| **Complexity** | Low | Higher (especially with event sourcing, multiple DBs) |
+| **Use Case** | Any size system, code clarity | Large, complex, scalable, high-performance systems |
+
+
+# #CQS
+
 # #CQRS 
-
-
-
 
 CQRS - Command Query Responsibility Segregation
 
