@@ -11,9 +11,8 @@
 ```
 brew install git bat lnav
 brew install --cask iterm2
-brew install --cask rectangle
+#brew install --cask rectangle
 brew install --cask visual-studio-code
-brew install --cask atom
 brew install --cask postman
 brew install --cask intellij-idea
 brew install --cask google-chrome
