@@ -8,7 +8,11 @@ aliases:
  - CQRS
 ---
 
-# CQS vs CQRS
+# CQS (Command Query Separation) vs CQRS (Command Query Responsibility Segregation)
+
+## CQS vs CQRS: Key Differences and Relationship
+
+Command Query Separation (CQS) and Command Query Responsibility Segregation (CQRS) are related software design concepts, but they operate at different levels of abstraction and have distinct goals.
 
 ## Comparison Table
 
@@ -21,6 +25,17 @@ aliases:
 | **Complexity** | Low | Higher (especially with event sourcing, multiple DBs) |
 | **Use Case** | Any size system, code clarity | Large, complex, scalable, high-performance systems |
 
+## Relationship
+
+### CQS is the foundation for CQRS: CQRS extends CQS from the method level to the architectural level, applying the same separation of concerns but across the entire system.
+
+### CQRS uses CQS principles: In CQRS, commands and queries are not just separated in code, but may be handled by different services, databases, or even teams.
+
+## When to Use Each
+
+### CQS: Use for clear, maintainable code in any application. It’s a best practice for method design.
+
+### CQRS: Use when your system needs to scale read and write operations independently, or when read and write workloads are very different. It’s especially useful in distributed, high-scale, or event-sourced systems, but comes with added complexity
 
 # #CQS
 
