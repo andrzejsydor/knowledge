@@ -2,6 +2,9 @@
 tags:
   - SOLID
   - CUPID
+  - MoSCoW
+  - WSJF
+  - Kano
 ---
 
 # #SOLID
@@ -59,6 +62,26 @@ tags:
   • Service-oriented architecture
 
   • Microservices architecture
+
+# Prioritization Frameworks or Prioritization Techniques
+
+## Moscow
+MoSCoW is an acronym for:
+- Must have
+- Should have
+- Could have
+- Won’t have (this time)
+
+## WSJF - Weighted Shortest Job First
+WSJF is a quantitative prioritization framework commonly used in agile and SAFe® (Scaled Agile Framework) environments. It helps teams decide what to build next by maximizing economic benefit:
+
+WSJF Score = Cost of Delay (CoD) / Job Size
+
+## Kano Model
+The Kano Model focuses on understanding customer satisfaction by classifying product features into three main categories:
+- Basic needs: Expected by customers; their absence leads to dissatisfaction, but their presence does not increase satisfaction.
+- Performance needs: The more of these features are present, the higher the customer satisfaction.
+- Delighters (Exciters): Unexpected features that, when present, greatly increase satisfaction, but their absence does not cause dissatisfaction.
 
 
 # #Link 
