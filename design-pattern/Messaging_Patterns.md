@@ -1,3 +1,24 @@
+---
+tags:
+  - Eventsourcing Patterns
+  - Messaging Patterns
+---
+
+## Table of Contents
+
+1. **Eventsourcing Patterns**
+   1.1. [Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)  
+   1.2. [Crypto-Shredding](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/)  
+   1.3. [Decision Tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/)  
+   1.4. [Migration Events in a Ghost Context](https://verraes.net/2019/06/eventsourcing-patterns-migration-events-ghost-context/)  
+   1.5. [Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/)  
+
+2. **Messaging Patterns**
+   2.1. [Ephemeral Events](https://verraes.net/2019/05/messaging-patterns-ephemeral-events/)  
+   2.2. [Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/)  
+   2.3. [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)  
+   2.4. [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)
+
 
 # Eventsourcing Patterns
 
@@ -21,10 +42,11 @@
 
 > Explicitly conform to the legacy component’s model in an eventsourcing migration.
 
-**Multi-temporal Events**
+**Multi-temporal Events**  
 [multi-temporal-events](https://verraes.net/2022/03/multi-temporal-events/)
 
 > Within a Domain Event, use separate timestamps to distinguish when the event occurred and when it was captured.
+
 
 # Messaging Patterns
 
