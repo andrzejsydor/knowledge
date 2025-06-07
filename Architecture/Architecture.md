@@ -62,6 +62,8 @@ ADR statuses:
 
 # #Tools
 
+[Mermaid](https://mermaid.live/)
+
 [PlantUML](https://plantuml.com/)
 
 [Structurizr](https://structurizr.com/)
