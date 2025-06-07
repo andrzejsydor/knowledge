@@ -54,7 +54,8 @@ tags:
 
 [.ignore](https://plugins.jetbrains.com/plugin/7495--ignore)
 
-[Save Actions](https://plugins.jetbrains.com/plugin/7642-save-actions)
+<!-- [Save Actions](https://plugins.jetbrains.com/plugin/7642-save-actions) -->
+
 
 [String Manipulation](https://plugins.jetbrains.com/plugin/2162-string-manipulation)
 
