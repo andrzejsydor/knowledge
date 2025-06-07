@@ -7,6 +7,7 @@ tags:
 ## Table of Contents
 
 1. **Eventsourcing Patterns**
+   
    1.1. [Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)  
    1.2. [Crypto-Shredding](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/)  
    1.3. [Decision Tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/)  
@@ -14,6 +15,7 @@ tags:
    1.5. [Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/)  
 
 2. **Messaging Patterns**
+   
    2.1. [Ephemeral Events](https://verraes.net/2019/05/messaging-patterns-ephemeral-events/)  
    2.2. [Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/)  
    2.3. [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)  
