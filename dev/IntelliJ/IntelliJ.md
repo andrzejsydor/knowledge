@@ -29,7 +29,7 @@
 
 [GitHub Copilot](https://plugins.jetbrains.com/plugin/17718-github-copilot)
 
-[Rainbow Brackets](https://plugins.jetbrains.com/plugin/10080-rainbow-brackets)
+[Spring Debugger](https://plugins.jetbrains.com/plugin/25302-spring-debugger)
 
 [Key Promoter X](https://plugins.jetbrains.com/plugin/9792-key-promoter-x)
 
@@ -38,6 +38,8 @@
 [PlantUML](https://plugins.jetbrains.com/plugin/7017-plantuml-integration)
 
 [Diargams.net](https://plugins.jetbrains.com/plugin/15635-diagrams-net-integration)
+
+[Rainbow Brackets](https://plugins.jetbrains.com/plugin/10080-rainbow-brackets)
 
 [VisualVM](https://plugins.jetbrains.com/plugin/7115-visualvm-launcher)
 
