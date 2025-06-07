@@ -18,9 +18,13 @@ tags:
 
 # Prompts
 
-## [https://prompts.chat/](https://prompts.chat/)
+[https://prompts.chat/](https://prompts.chat/)
 
-## [https://github.com/f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
+[https://github.com/f/awesome-chatgpt-prompts](https://github.com/f/awesome-chatgpt-prompts)
+
+[OpenAI Cookbook GPT-4.1 Prompting Guide](https://cookbook.openai.com/examples/gpt4-1_prompting_guide)
+
+[Prompt Engineering Guide](https://www.promptingguide.ai/)
 
 ### Please explain in ${lang}: "${selection}"
 Please explain in English: "Kafka"
@@ -48,7 +52,7 @@ As a Senior Developer, please create the Jira task description based on the foll
 [ChatGPT](https://chatgpt.com/)
 [Zapier](https://zapier.com/app/home)
 
-# AI links #Link
+# #Link AI 
 
 [OpenAI](https://openai.com/)
 
