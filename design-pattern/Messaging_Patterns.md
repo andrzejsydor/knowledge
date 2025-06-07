@@ -48,31 +48,20 @@ tags:
 
 # Eventsourcing Patterns
 
-**Forgettable Payloads**
-[forgettable-payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)
-
+[Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)
 > Store the sensitive payload of an event in a separate store to control access and removal.
 
-**Crypto-Shredding**
-[throw-away-the-key](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/)
-
+[Crypto-Shredding](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/)
 > Encrypt sensitive information in an event and delete the key.
 
-**Decision Tracking**
-[patterns-decision-tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/)
-
+[Decision Tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/)
 > Store the outcome of a decision to guard against rule changes.
 
-**Migration Events in a Ghost Context**
-[migration-events-ghost-context](https://verraes.net/2019/06/eventsourcing-patterns-migration-events-ghost-context/)
-
+[Migration Events in a Ghost Context](https://verraes.net/2019/06/eventsourcing-patterns-migration-events-ghost-context/)
 > Explicitly conform to the legacy component’s model in an eventsourcing migration.
 
-**Multi-temporal Events**  
-[multi-temporal-events](https://verraes.net/2022/03/multi-temporal-events/)
-
+Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/)
 > Within a Domain Event, use separate timestamps to distinguish when the event occurred and when it was captured.
-
 
 # Messaging Patterns
 
