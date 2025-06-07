@@ -4,6 +4,14 @@ tags:
   - Prompt
 ---
 
+# Table of Contents
+
+[AI](#ai)
+[Prompts](#prompts)
+[Gists](#gists)
+[Tools](#tools)
+[Link AI](#link-ai)
+
 # #AI 
 
 ## [ChatGPT](https://chat.openai.com/)
@@ -47,9 +55,13 @@ As a Senior Developer, please create the Jira task description based on the foll
 # Tools
 
 ## 4 AI Tools To Boost Productivity
+
 [Asana](https://asana.com/)
+
 [Grammarly](https://grammarly.com/)
+
 [ChatGPT](https://chatgpt.com/)
+
 [Zapier](https://zapier.com/app/home)
 
 # #Link AI 
