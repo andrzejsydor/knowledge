@@ -7,21 +7,30 @@ tags:
 
 ## Table of Contents
 
-1. **Eventsourcing Patterns**
-   
-   1.1. [Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)  
-   1.2. [Crypto-Shredding](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/)  
-   1.3. [Decision Tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/)  
-   1.4. [Migration Events in a Ghost Context](https://verraes.net/2019/06/eventsourcing-patterns-migration-events-ghost-context/)  
-   1.5. [Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/)  
+1. **Patterns for Decoupling in Distributed Systems**  
 
-2. **Messaging Patterns**
-   
-   2.1. [Ephemeral Events](https://verraes.net/2019/05/messaging-patterns-ephemeral-events/)  
-   2.2. [Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/)  
-   2.3. [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)  
-   2.4. [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)
+   1.1. [Domain Queries](https://verraes.net/2019/05/patterns-for-decoupling-distsys-domain-query/)  
+   1.2. [Summary Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-summary-event/)  
+   1.3. [Completeness Guarantee](https://verraes.net/2019/05/patterns-for-decoupling-distsys-completeness-guarantee/)  
+   1.4. [Passage of Time Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-passage-of-time-event/)  
+   1.5. [Fat Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-fat-event/)  
+   1.6. [Explicit Public Events](https://verraes.net/2019/05/patterns-for-decoupling-distsys-explicit-public-events/)  
+   1.7. [Segregated Event Layers](https://verraes.net/2019/05/patterns-for-decoupling-distsys-segregated-event-layers/)  
 
+2. **Eventsourcing Patterns**  
+
+   2.1. [Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)  
+   2.2. [Crypto-Shredding](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/)  
+   2.3. [Decision Tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/)  
+   2.4. [Migration Events in a Ghost Context](https://verraes.net/2019/06/eventsourcing-patterns-migration-events-ghost-context/)  
+   2.5. [Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/)  
+
+3. **Messaging Patterns**  
+
+   3.1. [Ephemeral Events](https://verraes.net/2019/05/messaging-patterns-ephemeral-events/)  
+   3.2. [Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/)  
+   3.3. [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)  
+   3.4. [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)  
 
 # Patterns for Decoupling in Distributed Systems
 
