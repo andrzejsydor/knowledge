@@ -1,5 +1,6 @@
 ---
 tags:
+  - Patterns for Decoupling in Distributed Systems
   - Eventsourcing Patterns
   - Messaging Patterns
 ---
@@ -21,6 +22,29 @@ tags:
    2.3. [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)  
    2.4. [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)
 
+
+# Patterns for Decoupling in Distributed Systems
+
+[Domain Queries](https://verraes.net/2019/05/patterns-for-decoupling-distsys-domain-query/)
+> Replace Free Queries with Domain Queries to decouple from knowledge of the server’s internals.
+
+[Summary Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-summary-event/)
+> Instead of emitting a stream of Domain Events, emit a single Summary.
+
+[Completeness Guarantee](https://verraes.net/2019/05/patterns-for-decoupling-distsys-completeness-guarantee/)
+> Design the set of Domain Events from a producer so that they can be used to rebuild the producer’s state.
+
+[Passage of Time Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-passage-of-time-event/)
+> Replace cron jobs and scheduled commands, with an agnostic event to indicate the passage of time.
+
+[Fat Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-fat-event/)
+> Add redundant information to a Domain Event to reduce complexity in the consumer.
+
+[Explicit Public Events](https://verraes.net/2019/05/patterns-for-decoupling-distsys-explicit-public-events/)
+> Mark a small subset of events as public, keep the rest private by default.
+
+[Segregated Event Layers](https://verraes.net/2019/05/patterns-for-decoupling-distsys-segregated-event-layers/)
+> Explicitly segregate a Bounded Context’s events in visibility layers, with their own language.
 
 # Eventsourcing Patterns
 
