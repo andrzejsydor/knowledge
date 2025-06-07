@@ -1,6 +1,14 @@
- # IntelliJ
+---
+tags:
+  - IntelliJ
+  - IDE
+  - Tips
+---
+
+# IntelliJ
 
 - [Tips](https://github.com/andrzejsydor/knowledge/blob/main/intellij.md#tips)
+
 - [Shortcuts in IntelliJ IDEA](IntelliJ_Shortcuts.md)
 
 - [Plugins](https://github.com/andrzejsydor/knowledge/blob/main/intellij.md#plugins)
@@ -22,7 +30,6 @@
 - Quick view of the source of classes, interfaces, enums, records, methods, variable declarations, etc.
 
 `Ctrl+Shift+I`
-
 
 
 ## Plugins
