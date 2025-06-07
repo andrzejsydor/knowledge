@@ -1,11 +1,16 @@
 ---
 tags:
   - AI
+  - Prompt
 ---
 
 # #AI 
 
 ## [ChatGPT](https://chat.openai.com/)
+
+## [Gemini](https://gemini.google.com/)
+
+## [NotebookLM](https://notebooklm.google/)
 
 ## [Sider](https://chromewebstore.google.com/detail/sider-pasek-chatgpt-+-vis/difoiogjjojoaoomphldepapgpbgkhkb)
 
