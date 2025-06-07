@@ -32,6 +32,7 @@ tags:
    3.3. [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)  
    3.4. [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)  
 
+---
 # Patterns for Decoupling in Distributed Systems
 
 [Domain Queries](https://verraes.net/2019/05/patterns-for-decoupling-distsys-domain-query/)
@@ -55,6 +56,7 @@ tags:
 [Segregated Event Layers](https://verraes.net/2019/05/patterns-for-decoupling-distsys-segregated-event-layers/)
 > Explicitly segregate a Bounded Context’s events in visibility layers, with their own language.
 
+---
 # Eventsourcing Patterns
 
 [Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)
@@ -72,22 +74,16 @@ tags:
 [Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/)
 > Within a Domain Event, use separate timestamps to distinguish when the event occurred and when it was captured.
 
+---
 # Messaging Patterns
 
 [Ephemeral Events](https://verraes.net/2019/05/messaging-patterns-ephemeral-events/)
 > Mark the events as being Ephemeral Events. The infrastructure knows that only the latest event matters. When a consumer can’t keep up with the event stream coming in, the infrastructure prefers to drop older events and skip to the most recent one.
 
----
-
 [Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/)
 > Only keep one event per time unit from a high frequency stream.
-
----
 
 [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)
 > Listen to a stream of events and produce a new event when a value changes.
 
----
-
-Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)
-
+[Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)
