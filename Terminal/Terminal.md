@@ -7,7 +7,7 @@ tags:
 
 ## Tools
 
-### #Link
+# #Link
 
 [iTerm2](https://iterm2.com/) [https://github.com/gnachman/iTerm2](https://github.com/gnachman/iTerm2)
 
@@ -15,10 +15,10 @@ tags:
 
 [Starship - Cross-Shell prompt](https://starship.rs/guide/)
 
-### #Link
+## Link
 
 [ohmyz - Unleash your terminal like never before](https://ohmyz.sh/)
 
-### #Link Non Free
+## Link Non Free
 
-[Cursor - The AI Code Editor. Built to make you extraordinarily productive, Cursor is the best way to code with AI.](https://www.cursor.com/)
+[Cursor - The AI Code Editor. Built to make you extraordinarily productive, Cursor is the best way to code with AI](https://www.cursor.com/)
