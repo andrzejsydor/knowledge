@@ -144,18 +144,6 @@
 
 # Tips & Problems
 
-### dependencyInsight
-
-Single module project:
-`gradle dependencyInsight --dependency log4j-core`
-
-Multi module project:
-
-```
-gradle :app:dependencyInsight --dependency log4j-core
-gradle :background:dependencyInsight --dependency log4j-core
-```
-
 ### Custom `findDependency` task
 
 In the `build.gradle` add:
