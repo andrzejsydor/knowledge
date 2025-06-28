@@ -144,25 +144,6 @@
 
 # Tips & Problems
 
-### Custom `findDependency` task
-
-In the `build.gradle` add:
-
-```
-task findDependency(type: DependencyInsightReportTask) {}
-```
-
-then
-`gradle findDependency --configuration compile --dependency log4j`
-
-For multi-module projects:
-
-```
-allprojects {
-    task findDependency(type: DependencyInsightReportTask) {}
-}
-```
-
 ## zip with encrypt
 
 ```sh
