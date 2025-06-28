@@ -14,6 +14,13 @@ tags:
 | Used to determine authorization| set using "allow" rules' there are no "deny" rules |
 | Can be external (LDAP) | attached to a user or group |
 
+## Tips & Problems
+
+### log4j & gradle find dependency
+
+[Log4Shell Remediation CheatSheet - Snyk](https://snyk.io/wp-content/uploads/cheat-sheet-log4shell-remediation-v6.pdf)
+
+
 ## Links
 
 [SecureFlag Knowledge Flag](https://knowledge-base.secureflag.com/)
