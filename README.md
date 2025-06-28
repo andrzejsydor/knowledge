@@ -280,6 +280,8 @@ sysctl -a | grep Processor
 
 [@ByteMonk](https://www.youtube.com/@ByteMonk)
 
+[Trainingportal Linuxfoundation](https://trainingportal.linuxfoundation.org/)
+
 # Blogs #Link
 
 [AWS Architecture Blog](https://aws.amazon.com/blogs/architecture/)
