@@ -144,10 +144,6 @@
 
 # Tips & Problems
 
-## log4j & gradle find dependency
-
-[Log4Shell Remediation CheatSheet - Snyk](https://snyk.io/wp-content/uploads/cheat-sheet-log4shell-remediation-v6.pdf)
-
 ### dependencyInsight
 
 Single module project:
