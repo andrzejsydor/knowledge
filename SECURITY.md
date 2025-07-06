@@ -3,6 +3,11 @@ tags:
   - security
 ---
 
+## Table of Contents
+1. Authentication vs Authorization
+2. Zero Trust Architecture
+3. Tips & Problems
+
 # Authentication vs Authorization
 
 ## 
@@ -13,13 +18,6 @@ tags:
 | Typically established during login| Users authentication |
 | Used to determine authorization| set using "allow" rules' there are no "deny" rules |
 | Can be external (LDAP) | attached to a user or group |
-
-## Tips & Problems
-
-### log4j & gradle find dependency
-
-[Log4Shell Remediation CheatSheet - Snyk](https://snyk.io/wp-content/uploads/cheat-sheet-log4shell-remediation-v6.pdf)
-
 
 # Zero Trust Architecture
 
@@ -39,6 +37,14 @@ tags:
 • Design as if an attacker is already inside.
 • Segment networks and workloads, encrypt data in transit and at rest, and collect detailed audit logs.
 • Monitor continuously for abnormal behaviour and be ready to contain or revoke access quickly.
+
+
+## Tips & Problems
+
+### log4j & gradle find dependency
+
+[Log4Shell Remediation CheatSheet - Snyk](https://snyk.io/wp-content/uploads/cheat-sheet-log4shell-remediation-v6.pdf)
+
 
 
 # Links #Link
