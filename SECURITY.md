@@ -21,7 +21,27 @@ tags:
 [Log4Shell Remediation CheatSheet - Snyk](https://snyk.io/wp-content/uploads/cheat-sheet-log4shell-remediation-v6.pdf)
 
 
-## Links
+# Zero Trust Architecture
+
+## Three mutually reinforcing principles:
+
+### Never trust, always verify
+• Every single request—by a user, a device, or a workload—must prove its identity and legitimacy before it touches a resource.
+• Verification is continuous and context-aware: time of day, geolocation, device health, behavioral patterns, etc.
+• Multi-factor authentication (MFA) and mutual TLS (mTLS) for service-to-service calls are typical enablers.
+
+### Least-privilege access
+• Grant only the minimum rights needed, for the shortest time needed.
+• Prefer role-based or attribute-based access control over direct user permissions, and issue short-lived, scoped credentials.
+• Regularly review and remove privileges that are no longer justified.
+
+### Assume breach
+• Design as if an attacker is already inside.
+• Segment networks and workloads, encrypt data in transit and at rest, and collect detailed audit logs.
+• Monitor continuously for abnormal behaviour and be ready to contain or revoke access quickly.
+
+
+# Links #Link
 
 [SecureFlag Knowledge Flag](https://knowledge-base.secureflag.com/)
 
