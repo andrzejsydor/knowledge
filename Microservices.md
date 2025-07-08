@@ -3,7 +3,9 @@ tags:
   - Microservices
   - Service Mesh
   - Scaling
-  - Distributed_Tracing
+  - Logs
+  - Metrics
+  - Traces
   - b3-propagation
 ---
 
