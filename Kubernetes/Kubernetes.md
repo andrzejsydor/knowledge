@@ -3,6 +3,7 @@ tags:
   - Kubernetes
   - k8s
   - Helm
+  - Service Mesh
   - Istio
 ---
 
@@ -67,3 +68,5 @@ https://stackoverflow.com/questions/58955409/how-to-use-session-affinity-on-requ
 [Storage Class](https://kubernetes.io/docs/concepts/storage/storage-classes/)
 
 [Helm - The package manager for Kubernetes](https://helm.sh/)
+
+[IstioOperator](https://istio.io/latest/docs/reference/config/istio.operator.v1alpha1/)
