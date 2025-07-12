@@ -28,7 +28,9 @@ Problem: How do you migrate a legacy monolithic application to a microservice ar
 
 
 
-#Link [https://microservices.io/patterns/refactoring/strangler-application.html](https://microservices.io/patterns/refactoring/strangler-application.html)
+# #Link 
+
+[https://microservices.io/patterns/refactoring/strangler-application.html](https://microservices.io/patterns/refactoring/strangler-application.html)
 
 
 
