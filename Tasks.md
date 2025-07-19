@@ -1,14 +1,11 @@
 ---
-tags:
-  - Task
+tags: [Task, ToDo]
 ---
-# Tasks #Task 
+# Tasks #Task #ToDo 
 
 ## List of tasks
 ```tasks
 ```
-
-
 
 ### Example task
 
