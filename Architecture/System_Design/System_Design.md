@@ -33,7 +33,10 @@ mindmap
 
 ## API Security
 
+### [The Phantom Token Approach](https://curity.io/resources/learn/phantom-token-pattern/)
 
+
+- [ ] #ToDo 🔼 [API Security](https://curity.io/resources/api-security/)
 
 # #Link 
 
