@@ -33,6 +33,8 @@ mindmap
 
 ## API Security
 
+### [Implementing Zero Trust APIs](https://curity.io/resources/learn/implementing-zero-trust-apis/)
+
 ### [The Phantom Token Approach](https://curity.io/resources/learn/phantom-token-pattern/)
 
 
