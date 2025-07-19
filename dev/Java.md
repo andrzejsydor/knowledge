@@ -52,6 +52,10 @@ public Optional<@PastLocalDate> getDateOfBirth() {
 
 ## Spring MVC test - page response
 
+<details>
+
+<summary>Tips for collapsed sections</summary>
+
 ```java
 package com.example.demo;
 
@@ -183,6 +187,8 @@ public class RestPageImpl<T> extends PageImpl<T> {
     }
 }
 ```
+
+</details>
 
 # Other
 
