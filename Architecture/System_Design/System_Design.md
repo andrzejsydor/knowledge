@@ -2,6 +2,7 @@
 tags:
   - System_Design
   - API_Gateway
+  - API_Security
 ---
 
 # #System_Design
@@ -20,20 +21,18 @@ tags:
 - Request/response transformation for adapting formats
 
 ```mermaid
-flowchart TD
-    A["API Gateway"]:::center
-    subgraph " "
-        direction TB
-        A --> B["Routing requests to right backend service"]
-        A --> C["Rate limiting & brute-force protection"]
-        A --> D["Caching to reduce backend load"]
-        A --> E["TLS termination & protocol translation"]
-        A --> F["Logging & observability"]
-        A --> G["Request / response transformation"]
-    end
-
-    classDef center fill:#f0f4ff,stroke:#4a6fea,stroke-width:2px,font-weight:bold;
+mindmap
+  root((API Gateway))
+    Routing requests to the right backend service
+    Rate limiting and brute force protection
+    Caching to reduce backend load
+    TLS termination and protocol translation
+    Logging and observability for monitoring traffic
+    Request/response transformation for adapting formats
 ```
+
+## API Security
+
 
 
 # #Link 
