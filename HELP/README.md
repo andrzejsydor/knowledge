@@ -5,7 +5,6 @@ aliases: [Help]
 
 # Table of Contents
 
-
 # Collapse section
 [Creating a collapsed section](https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/organizing-information-with-collapsed-sections)
 
@@ -26,6 +25,10 @@ You can add an image or a code block, too.
 </details>
 
 
+# Image URL
+```
+[![Alt text](image-url)](target-url)
+```
 
 # This is a regular paragraph. HTML
 
