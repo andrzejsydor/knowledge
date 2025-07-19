@@ -18,6 +18,8 @@ tags:
 
 ## [Gemini](https://gemini.google.com/)
 
+## [AI Studio](https://aistudio.google.com/)
+
 ## [NotebookLM](https://notebooklm.google/)
 
 ## [Sider](https://chromewebstore.google.com/detail/sider-pasek-chatgpt-+-vis/difoiogjjojoaoomphldepapgpbgkhkb)
