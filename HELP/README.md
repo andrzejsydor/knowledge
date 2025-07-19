@@ -1,4 +1,9 @@
-This is a regular paragraph.
+---
+tags: [Help]
+aliases: [Help]
+---
+
+This is a regular paragraph. HTML
 
 <table>
     <tr>
