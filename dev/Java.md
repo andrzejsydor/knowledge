@@ -53,8 +53,7 @@ public Optional<@PastLocalDate> getDateOfBirth() {
 ## Spring MVC test - page response
 
 <details>
-
-<summary>Tips for collapsed sections</summary>
+<summary>Spring MVC test - page response</summary>
 
 ```java
 package com.example.demo;
@@ -95,7 +94,6 @@ class Product {
     String name;
 }
 ```
-
 
 ```java
 package com.example.demo;
