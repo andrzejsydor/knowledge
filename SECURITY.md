@@ -53,6 +53,8 @@ tags:
 
 [OWASP Top 10](https://owasp.org/Top10/)
 
+[OWASP API Security Project](https://owasp.org/www-project-api-security/)
+
 [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 
 [PortSwigger](https://portswigger.net/web-security/all-topics)
