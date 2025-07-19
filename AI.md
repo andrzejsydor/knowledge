@@ -1,7 +1,5 @@
 ---
-tags:
-  - AI
-  - Prompt
+tags: [AI, Prompt]
 ---
 
 # Table of Contents
