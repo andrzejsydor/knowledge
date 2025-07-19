@@ -4,7 +4,7 @@
 [Interaction](https://mermaid.js.org/syntax/flowchart.html#interaction)
 
 
-```
+```mermaid
 flowchart LR
     A-->B
     B-->C
