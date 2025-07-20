@@ -5,6 +5,14 @@ tags:
 
 # Hibernate
 
+## Table of Contents
+- [Hibernate](#hibernate)
+  - [Dirty Checking](#dirty-checking)
+    - [Spring&nbsp;JPA&nbsp;— generate statistics](#spring-jpa---generate-statistics)
+    - [Don’t use `show_sql` to log SQL queries](#dont-use-show_sql-to-log-sql-queries)
+    - [get vs load](#get-vs-load)
+- [Link](#link)
+- [Tips](#tips)
 
 ## Dirty Checking
 
@@ -85,8 +93,7 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 [Hibernate Types](https://github.com/vladmihalcea/hibernate-types)
 
 
-
-# #Hibernate #Link 
+# #Link 
 
 [Thorben Janssen YT](https://www.youtube.com/channel/UCYeDPubBiFCZXIOgGYoyADw)
 
@@ -116,7 +123,7 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [Hibernate Dirty Checking Explained: How Entity State Changes Are Detected](https://www.javacodegeeks.com/2025/07/hibernate-dirty-checking-explained-how-entity-state-changes-are-detected.html)
 
-# Tips 
+# #Tips 
 
 [The Spring Data findAll Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
 
