@@ -6,6 +6,16 @@ tags:
 # Hibernate
 
 
+## Dirty Checking
+
+- Dirty checking lets Hibernate detect and synchronize entity changes without explicit SQL UPDATE commands.
+- Hibernate stores an original snapshot of each managed entity in the persistence context (first-level cache).
+- A flush—triggered automatically before commit, manually via `session.flush()`, or by certain queries—initiates the comparison between current state and snapshot.
+- Change detection relies on bytecode enhancement, field interceptors, or reflection, enabling Hibernate to flag only altered fields as “dirty.”
+- Performance issues can arise from unnecessary updates, deeply nested object graphs, or modifications on detached entities not reattached with `merge()` or `update()`.
+- Best practices include keeping transactions short, avoiding redundant field assignments, enabling bytecode enhancement, and annotating entities with `@DynamicUpdate` to update only changed columns.
+- Developers should monitor generated SQL via `hibernate.show_sql` or Hibernate Statistics to verify and optimize dirty checking behavior.
+
 <details>
 <summary>Spring JPA - generate statistics</summary>
 
@@ -103,6 +113,8 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 [A beginner’s guide to database locking and the lost update phenomena](https://vladmihalcea.com/a-beginners-guide-to-database-locking-and-the-lost-update-phenomena/)
 
 [Spring Transaction and Connection Management](https://vladmihalcea.com/spring-transaction-connection-management/)
+
+[Hibernate Dirty Checking Explained: How Entity State Changes Are Detected](https://www.javacodegeeks.com/2025/07/hibernate-dirty-checking-explained-how-entity-state-changes-are-detected.html)
 
 # Tips 
 
