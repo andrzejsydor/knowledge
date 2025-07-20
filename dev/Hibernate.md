@@ -8,11 +8,11 @@ tags:
 ## Table of Contents
 - [Hibernate](#hibernate)
   - [Dirty Checking](#dirty-checking)
-    - [Spring&nbsp;JPA&nbsp;— generate statistics](#spring-jpa---generate-statistics)
-    - [Don’t use `show_sql` to log SQL queries](#dont-use-show_sql-to-log-sql-queries)
-    - [get vs load](#get-vs-load)
+  - [get vs load](#get-vs-load)
 - [Link](#link)
 - [Tips](#tips)
+  - [Don’t use `show_sql` to log SQL queries](#dont-use-show_sql-to-log-sql-queries)
+  - [get vs load](#get-vs-load)
 
 ## Dirty Checking
 
@@ -26,26 +26,6 @@ tags:
 
 <details>
 <summary>Spring JPA - generate statistics</summary>
-
-## Spring JPA - generate statistics
-```
-spring.jpa.properties.hibernate.generate_statistics=true
-```
-</details>
-
-### Don’t use show_sql to log SQL queries
-Better way
-```
-org.hibernate.SQL=DEBUG
-org.hibernate.type.descriptor.sql:DEBUG
-
-# SQL statements and parameters
-log4j.logger.org.hibernate.SQL=debug
-log4j.logger.org.hibernate.orm.jdbc.bind=trace
-# Statistics and slow queries
-log4j.logger.org.hibernate.stat=debug
-log4j.logger.org.hibernate.SQL_SLOW=info
-```
 
 
 <details>
@@ -123,7 +103,27 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 
 [Hibernate Dirty Checking Explained: How Entity State Changes Are Detected](https://www.javacodegeeks.com/2025/07/hibernate-dirty-checking-explained-how-entity-state-changes-are-detected.html)
 
-# #Tips 
+# #Tips
+
+## Spring JPA - generate statistics
+```
+spring.jpa.properties.hibernate.generate_statistics=true
+```
+</details>
+
+## Don’t use show_sql to log SQL queries
+Better way
+```
+org.hibernate.SQL=DEBUG
+org.hibernate.type.descriptor.sql:DEBUG
+
+# SQL statements and parameters
+log4j.logger.org.hibernate.SQL=debug
+log4j.logger.org.hibernate.orm.jdbc.bind=trace
+# Statistics and slow queries
+log4j.logger.org.hibernate.stat=debug
+log4j.logger.org.hibernate.SQL_SLOW=info
+```
 
 [The Spring Data findAll Anti-Pattern](https://vladmihalcea.com/spring-data-findall-anti-pattern/)
 
