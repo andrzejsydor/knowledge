@@ -1,10 +1,19 @@
+---
+tags:
+  - Hibernate
+---
+
 # Hibernate
 
-## Spring JPA - generate statistics
 
+<details>
+<summary>Spring JPA - generate statistics</summary>
+
+## Spring JPA - generate statistics
 ```
 spring.jpa.properties.hibernate.generate_statistics=true
 ```
+</details>
 
 ### Don’t use show_sql to log SQL queries
 Better way
@@ -20,6 +29,10 @@ log4j.logger.org.hibernate.stat=debug
 log4j.logger.org.hibernate.SQL_SLOW=info
 ```
 
+
+<details>
+<summary>get vs load</summary>
+
 ## get vs load
 
 | **Feature**                        | **get()**                                          | **load()**                                                    |
@@ -29,6 +42,8 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 | **Database Query**                 | Executes immediately                               | Executes when a property is accessed                           |
 | **Return Value (if not exists)**   | null                                              | Results in an **ObjectNotFoundException** when accessing properties |
 | **Hibernate Cache**                | Retrieves from the cache if present               | Still returns proxy even if cached                             |
+
+</details>
 
 ## HikariCP
 
@@ -58,6 +73,8 @@ log4j.logger.org.hibernate.SQL_SLOW=info
 ## Hibernate Types
 
 [Hibernate Types](https://github.com/vladmihalcea/hibernate-types)
+
+
 
 # #Hibernate #Link 
 
