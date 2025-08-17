@@ -138,3 +138,59 @@ Note: Both can emulate the other pattern with extra setup, but it’s less scala
 ## Super-condensed recap
 - Kafka: stream, fan-out, replay, producer-chosen partitions, offsets, very high throughput, consistent small events.
 - RabbitMQ: queue, one-to-one tasks, exchange routing, acknowledgements/redelivery, handles long/variable tasks and bursts.
+
+## Mermaid
+
+```mermaid
+sequenceDiagram
+    participant Prod as Producer
+    participant Kafka as Kafka Broker
+    participant Cons as Consumer (Group)
+    Prod->>Kafka: Send record (acks=all)
+    Kafka-->>Prod: Ack after ISR replication
+    Cons->>Kafka: Fetch from partition (offset=N)
+    Kafka-->>Cons: Batch of records
+    Cons->>Kafka: Commit offset (at-least-once)
+
+    Note over Kafka: Scaling via partitions across brokers
+
+    participant Pub as Publisher
+    participant RMQ as RabbitMQ
+    participant Worker as Consumer
+    Pub->>RMQ: Publish to exchange (routing key)
+    RMQ-->>Queue: Route to bound queue(s)
+    Queue-->>Worker: Push message (prefetch=Q)
+    Worker-->>RMQ: Ack upon processing
+
+    Note over RMQ: Scaling via multiple queues and consumers
+```
+
+```mermaid
+flowchart LR
+  subgraph Kafka
+    direction LR
+    KProd[Producers]
+    KTopic[Topic Partitions]
+    KCG1[Consumer Group 1]
+    KCG2[Consumer Group 2]
+    KProd --> KTopic
+    KTopic --> KCG1
+    KTopic --> KCG2
+  end
+
+  subgraph RabbitMQ
+    direction LR
+    RPub[Publishers]
+    REx[Exchange]
+    RQ1[Queue 1]
+    RQ2[Queue 2]
+    RCons1[Consumer 1]
+    RCons2[Consumer 2]
+    RPub --> REx
+    REx --> RQ1
+    REx --> RQ2
+    RQ1 --> RCons1
+    RQ2 --> RCons2
+  end
+```
+
