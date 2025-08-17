@@ -160,6 +160,8 @@ Note: Both can emulate the other pattern with extra setup, but it’s less scala
 
 ## Mermaid
 
+### Sequence diagram
+
 ```mermaid
 sequenceDiagram
     participant Prod as Producer
@@ -183,6 +185,8 @@ sequenceDiagram
 
     Note over RMQ: Scaling via multiple queues and consumers
 ```
+
+### Flowchart
 
 ```mermaid
 flowchart LR
