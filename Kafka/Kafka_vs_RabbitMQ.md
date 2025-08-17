@@ -4,6 +4,25 @@ tags:
 - RabbitMQ
 ---
 
+- [Big picture](#big-picture)
+- [Design differences (cheat sheet)](#design-differences-cheat-sheet)
+- [Consumer patterns](#consumer-patterns)
+- [Message routing](#message-routing)
+- [When to use which](#when-to-use-which)
+  - [Use Kafka when:](#use-kafka-when)
+  - [Use RabbitMQ when:](#use-rabbitmq-when)
+- [Delivery guarantees and recovery](#delivery-guarantees-and-recovery)
+- [Quick decision flow](#quick-decision-flow)
+- [Mnemonics](#mnemonics)
+- [Interview-ready lines](#interview-ready-lines)
+- [Examples to visualize](#examples-to-visualize)
+- [Glossary](#glossary)
+- [Super-condensed recap](#super-condensed-recap)
+- [Mermaid](#mermaid)
+  - [Sequence diagram](#sequence-diagram)
+  - [Flowchart](#flowchart)
+
+
 ## Essence in one sentence
 - Kafka = stream processing for high-throughput events and fan-out;
 - RabbitMQ = traditional message queue for task processing, complex routing, and one-to-one delivery.
