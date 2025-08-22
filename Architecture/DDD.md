@@ -36,6 +36,8 @@ DDD components:
 
 [DDD Beyond the Basics: Mastering Aggregate Design](https://medium.com/ssense-tech/ddd-beyond-the-basics-mastering-aggregate-design-26591e218c8c)
 
+[The Two Faces of DDD: Strategy vs. Tactics](https://letstalkaboutjava.blogspot.com/2025/08/the-two-faces-of-ddd-strategy-vs-tactics.html)
+
 
 [Clean DDD lessons: project structure and naming conventions](https://medium.com/unil-ci-software-engineering/clean-ddd-lessons-project-structure-and-naming-conventions-00d0b9c57610)
 
