@@ -1,3 +1,11 @@
+---
+tags: 
+- Kafka
+- Redis
+---
+
+
+
 # Using Redis Streams Instead of Kafka
 
 - Redis Streams provide stream processing with very low latency via in-memory append-only logs, optional persistence, consumer groups, and range queries.
