@@ -4,7 +4,13 @@ tags:
 - Redis
 ---
 
+## Contents
 
+- [Using Redis Streams Instead of Kafka](#using-redis-streams-instead-of-kafka)
+- [Core Ideas](#core-ideas)
+- [Comparison](#comparison)
+- [When to Choose Which](#when-to-choose-which)
+- [Glossary](#glossary)
 
 # Using Redis Streams Instead of Kafka
 
@@ -41,7 +47,7 @@ tags:
 | Read scaling | Group reads must hit master | Consumers scale across brokers/partitions |  
 | Best for | Low-latency queues, simple stream apps | High-throughput, durable event logs |  
 
-# 7) When to Choose Which
+# When to Choose Which
 - Prefer Redis Streams if:
   - Sub-ms to low-ms latency is critical
   - Workload resembles message queues with moderate throughput
