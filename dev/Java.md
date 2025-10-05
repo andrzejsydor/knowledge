@@ -6,6 +6,7 @@ tags: [Java,JDK, Spring,Proxy]
 # #Java
 
 ---
+- [Java versions](#Java-versions)
 - [Constraing Composition](#Constraining-Composition)
 - [Spring](#Spring)
 - [Other](#Other)
@@ -13,6 +14,17 @@ tags: [Java,JDK, Spring,Proxy]
  	- [immutables](https://github.com/immutables/immutables)	
 - [Links](#Link)
 ---
+
+## Java - versions
+
+### Java 11
+
+- JFR 
+-- Java Flight Recorder
+- HTTP client
+- "var"
+- improvements: 
+-- String, Collection, File
 
 
 ## [Constraing Composition](https://www.baeldung.com/java-bean-validation-constraint-composition)
