@@ -17,14 +17,20 @@ tags: [Java,JDK, Spring,Proxy]
 
 ## Java - versions
 
-### Java 11
+### Java 21
 
-- JFR 
--- Java Flight Recorder
-- HTTP client
-- "var"
-- improvements: 
--- String, Collection, File
+- Record Patterns (JEP 440)
+- Pattern Matching for switch (JEP 441)
+- String Literal (JEP 430)
+- Virtual Threads (JEP 444)
+- Sequenced Collections (JEP 431)
+- Key Encapsulation Mechanism API (JEP 452)
+
+- Virtual Threads
+- Sequence Collection
+- Record Pattern for
+-- switch
+-- instanceof
 
 ### Java 17
 
@@ -36,6 +42,15 @@ tags: [Java,JDK, Spring,Proxy]
 - Text blocks
 - NPE helpful
 - Compact Number Format
+
+### Java 11
+
+- JFR 
+-- Java Flight Recorder
+- HTTP client
+- "var"
+- improvements: 
+-- String, Collection, File
 
 ## [Constraing Composition](https://www.baeldung.com/java-bean-validation-constraint-composition)
 
