@@ -26,6 +26,16 @@ tags: [Java,JDK, Spring,Proxy]
 - improvements: 
 -- String, Collection, File
 
+### Java 17
+
+- Record
+- Sealed Class
+- Pattern Matching
+- Switch
+- Teeing collector
+- Text blocks
+- NPE helpful
+- Compact Number Format
 
 ## [Constraing Composition](https://www.baeldung.com/java-bean-validation-constraint-composition)
 
