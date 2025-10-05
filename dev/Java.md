@@ -17,6 +17,12 @@ tags: [Java,JDK, Spring,Proxy]
 
 ## Java - versions
 
+### Java 25
+
+- Compact Source Files (JEP 512) and Instance Main Methods
+- Flexible Constructor Bodies (JEP 513 – Final)
+- 
+
 ### Java 21
 
 - Record Patterns (JEP 440)
