@@ -38,6 +38,9 @@
 
 [Postman](https://www.postman.com/)
 
+[requestly](https://requestly.com/)
+
+
 [httpie](https://httpie.io/)
 
 [SoapUI](https://www.soapui.org/downloads/soapui/)
