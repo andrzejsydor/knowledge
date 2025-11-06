@@ -70,6 +70,8 @@ ADR statuses:
 
 [Archi](https://www.archimatetool.com/)
 
+[C4 DSL Model Extension for Visual Studio Code](https://github.com/tech-beeline/varp)
+
 [arc42](https://arc42.org/)
 [arc42 - software architecture](https://github.com/arc42)
 
