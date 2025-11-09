@@ -70,4 +70,6 @@ As a Senior Developer, please create the Jira task description based on the foll
 
 [OpenAI Usage](https://platform.openai.com/account/usage)
 
+[AGENTS.md](https://agents.md/)
+
 [GOD MODE](https://godmode.space/)
