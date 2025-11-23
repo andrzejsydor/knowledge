@@ -13,6 +13,11 @@ tags:
 - **Use of Digital Tools**: Leverage note-taking applications that allow for easy editing, searching, and sharing of notes when appropriate.
 - **Highlighting and Annotation**: Emphasize important concepts and add personal annotations to deepen comprehension and recall.
 - **Minimal Distractions**: Create a focused environment by minimizing interruptions and organizing note-taking materials effectively.
+- **Summarize in Your Own Words**: Paraphrasing information forces your brain to process and understand the material deeper than verbatim copying.
+- **Spaced Repetition**: Review your notes at increasing intervals (e.g., 1 day, 1 week, 1 month) to combat the forgetting curve.
+- **Strategic Tagging**: Use a consistent tagging system to link related concepts across different notes, facilitating future retrieval.
+- **Capture Questions**: Write down questions that arise during note-taking to guide future study and clarify misunderstandings.
+- **Audio Backup**: Record lectures or meetings (with permission) to fill in gaps in your written notes later.
 
 # Apps
 
