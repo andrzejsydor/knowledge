@@ -24,3 +24,15 @@ tags:
 [Notion](http://notion.com/)
 
 [RemNote](https://www.remnote.com/)
+
+[Obsidian](https://obsidian.md/)
+
+# Methodologies
+
+- **The Cornell Method**: A systematic format for condensing and organizing notes. It divides the page into three sections: cues, notes, and summary. This method encourages active recall and synthesis of information.
+
+- **Zettelkasten**: A knowledge management method for generating connections between ideas. It involves creating "atomic" notes that are linked together, forming a web of knowledge rather than a linear hierarchy.
+
+- **PARA Method**: A system for organizing digital life based on four categories: Projects (current goals), Areas (ongoing responsibilities), Resources (topics of interest), and Archives (inactive items). It promotes actionability.
+
+- **Mind Mapping**: A visual way to organize information. It starts with a central concept and branches out into related ideas, making it excellent for brainstorming and seeing relationships between topics.
