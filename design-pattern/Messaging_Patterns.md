@@ -3,6 +3,7 @@ tags:
   - Patterns for Decoupling in Distributed Systems
   - Eventsourcing Patterns
   - Messaging Patterns
+  - Canonical Data Model
 ---
 
 ## Table of Contents
@@ -31,6 +32,10 @@ tags:
    3.2. [Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/)  
    3.3. [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)  
    3.4. [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)  
+
+4. **Others**
+
+   4.1. [Canonical Data Model](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html)
 
 ---
 # Patterns for Decoupling in Distributed Systems
@@ -87,3 +92,9 @@ tags:
 > Listen to a stream of events and produce a new event when a value changes.
 
 [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)
+
+---
+# Others
+
+[Canonical Data Model](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html)
+> A Canonical Data Model (CDM) is a standardized, common data format that different systems in an organization use to exchange information. A Canonical Data Model that is independent from any specific application.
