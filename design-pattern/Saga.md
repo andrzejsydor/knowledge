@@ -12,16 +12,16 @@ tags:
 3. Links
 
    
-# Saga
+# #Saga
 
-## Choreography - each local transaction publishes domain events that trigger local transactions in other services
+## #Choreography - each local transaction publishes domain events that trigger local transactions in other services
 
-## Orchestration - an orchestrator (object) tells the participants what local transactions to execute
+## #Orchestration - an orchestrator (object) tells the participants what local transactions to execute
 
 # Others
 
-## [Saba vs Process Manager](https://stackoverflow.com/questions/15528015/what-is-the-difference-between-a-saga-a-process-manager-and-a-document-based-ap)
+## [Saga vs Process Manager](https://stackoverflow.com/questions/15528015/what-is-the-difference-between-a-saga-a-process-manager-and-a-document-based-ap)
 
 
-# Links
+# #Links
 [https://microservices.io/patterns/data/saga.html](https://microservices.io/patterns/data/saga.html)
