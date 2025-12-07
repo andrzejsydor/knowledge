@@ -1,14 +1,16 @@
 ---
 tags:
   - security
+  - Authentication
+  - Authorization
   - oauth
 ---
 
 ## Table of Contents
-1. Authentication vs Authorization
-2. Zero Trust Architecture
-3. OAuth 2.0
-4. Tips & Problems
+1. [Authentication vs Authorization](#authentication-vs-authorization)
+2. [Zero Trust Architecture](#zero-trust-architecture)
+3. [OAuth 2.0](#oauth-20)
+4. [Tips & Problems](#tips--problems)
 
 # Authentication vs Authorization
 
@@ -41,7 +43,7 @@ tags:
 • Monitor continuously for abnormal behaviour and be ready to contain or revoke access quickly.
 
 
-# OAuth 2.0
+# #OAuth 2.0
 
 ## Roles
 - **Resource Owner**: User who authorizes an application to access their account.
