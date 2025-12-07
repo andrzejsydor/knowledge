@@ -45,6 +45,8 @@ tags:
 
 # #OAuth 2.0
 
+[OAuth 2.0 Simplified](https://www.oauth.com/) [OAuth 2.0](https://oauth.net/2/) 
+
 ## Roles
 - **Resource Owner**: User who authorizes an application to access their account.
 - **Client**: Application that wants to access the user's account.
