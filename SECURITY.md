@@ -45,7 +45,8 @@ tags:
 
 # #OAuth 2.0
 
-[OAuth 2.0 Simplified](https://www.oauth.com/) [OAuth 2.0](https://oauth.net/2/) 
+- [OAuth 2.0 Simplified](https://www.oauth.com/)
+- [OAuth 2.0](https://oauth.net/2/) 
 
 ## Roles
 - **Resource Owner**: User who authorizes an application to access their account.
@@ -58,14 +59,14 @@ tags:
 - **PKCE**: Extension for mobile/SPA apps to prevent code interception.
 - **Client Credentials**: For machine-to-machine communication.
 
-##  Tokens and Headers
-- Access Token: Short-lived credential used to call the RS.
-- Refresh Token: Longer-lived credential used by the client to obtain new access tokens.
-  - Authorization header (Bearer):
-    - Authorization: Bearer <access_token>
-- Token formats:
-  - JWT: Self-contained, signed token with claims; verifiable by RS without a network call.
-  - Opaque: Non-self-describing; RS must introspect/validate with the AS.
+## Tokens and Headers
+- **Access Token**: Short-lived credential used to call the Resource Server (RS).
+- **Refresh Token**: Longer-lived credential used by the client to obtain new access tokens.
+- **Authorization Header**:
+  - Format: `Authorization: Bearer <access_token>`
+- **Token Formats**:
+  - **JWT**: Self-contained, signed token with claims; verifiable by RS without a network call.
+  - **Opaque**: Non-self-describing; RS must introspect/validate with the Authorization Server (AS).
 
 
 ## Tips & Problems
@@ -76,7 +77,7 @@ tags:
 
 
 
-# Links #Link
+# #Links
 
 [SecureFlag Knowledge Flag](https://knowledge-base.secureflag.com/)
 
