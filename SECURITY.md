@@ -1,12 +1,14 @@
 ---
 tags:
   - security
+  - oauth
 ---
 
 ## Table of Contents
 1. Authentication vs Authorization
 2. Zero Trust Architecture
-3. Tips & Problems
+3. OAuth 2.0
+4. Tips & Problems
 
 # Authentication vs Authorization
 
@@ -37,6 +39,20 @@ tags:
 • Design as if an attacker is already inside.
 • Segment networks and workloads, encrypt data in transit and at rest, and collect detailed audit logs.
 • Monitor continuously for abnormal behaviour and be ready to contain or revoke access quickly.
+
+
+# OAuth 2.0
+
+## Roles
+- **Resource Owner**: User who authorizes an application to access their account.
+- **Client**: Application that wants to access the user's account.
+- **Authorization Server**: Validates the user's identity and issues access tokens.
+- **Resource Server**: The API or service accepting access tokens.
+
+## Common Grant Types
+- **Authorization Code**: For server-side apps; most secure.
+- **PKCE**: Extension for mobile/SPA apps to prevent code interception.
+- **Client Credentials**: For machine-to-machine communication.
 
 
 ## Tips & Problems
