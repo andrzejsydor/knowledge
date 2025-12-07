@@ -56,6 +56,15 @@ tags:
 - **PKCE**: Extension for mobile/SPA apps to prevent code interception.
 - **Client Credentials**: For machine-to-machine communication.
 
+##  Tokens and Headers
+- Access Token: Short-lived credential used to call the RS.
+- Refresh Token: Longer-lived credential used by the client to obtain new access tokens.
+  - Authorization header (Bearer):
+    - Authorization: Bearer <access_token>
+- Token formats:
+  - JWT: Self-contained, signed token with claims; verifiable by RS without a network call.
+  - Opaque: Non-self-describing; RS must introspect/validate with the AS.
+
 
 ## Tips & Problems
 
