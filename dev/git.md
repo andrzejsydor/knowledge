@@ -2,55 +2,41 @@
 
 ## Config
 
-Show Config list: `git config -l`
+| Command | Description |
+|---------|-------------|
+| `git config -l` | Show config list |
+| `git config --global user.name` | Global user |
+| `git config user.name` | Local user |
 
-Global user: `git config --global user.name`
+## Cloning with Token
 
-Local user: `git config user.name`
-
-Local user email: `git config --local user.email "name@mail.com`
-
-
-## Cloning a new repository with Token
-
-```
+```bash
 git clone https://[TOKEN]@github.com/[REPO-OWNER]/[REPO-NAME]
 ```
 
+## Force with Lease
 
-## `–force-with-lease`
-
-###### `git push --force-with-lease` is a safer variant of `git push --force`. Instead of blindly overwriting the remote branch, it checks if the remote branch has changed since you last pulled. If it detects new commits on the remote, the push will fail instead of overwriting them. This prevents accidentally discarding someone else’s work.
-
-[https://blog.developer.atlassian.com/force-with-lease/](https://blog.developer.atlassian.com/force-with-lease/)
-
-## Change commit author
-
-```
-git commit --amend --author="Author Name <new.email@example.com>" --no-edit
-```
-
+- [Atlassian: Force with Lease](https://blog.developer.atlassian.com/force-with-lease/)
 
 ## Stash
 
-[https://git-scm.com/docs/git-stash](https://git-scm.com/docs/git-stash)
+### Resources
 
-[https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning](https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning)
+- [Git Docs: git-stash](https://git-scm.com/docs/git-stash)
+- [Git Book: Stashing and Cleaning](https://git-scm.com/book/en/v2/Git-Tools-Stashing-and-Cleaning)
+- [Atlassian: git stash](https://www.atlassian.com/git/tutorials/saving-changes/git-stash)
 
-[https://www.atlassian.com/git/tutorials/saving-changes/git-stash](https://www.atlassian.com/git/tutorials/saving-changes/git-stash)
+### Commands
 
-## Notes
+| Command | Description |
+|---------|-------------|
+| `git stash drop` | Drop a stash |
+| `git stash clear` | Clear all stashes |
+| `git stash branch <BRANCH_NAME> <STASH_ID>` | Create branch from stash |
 
-[https://git-scm.com/docs/git-notes](git-notes) - Add or inspect object notes)
+**Example:**
 
-### drop & clean
-`git stash drop`
-
-`git stash clear`
-
-### New branch from stash
-`git stash branch <BRANCH_NAME> <STASH_ID>`
-
-`git stash branch branch_1 stash@{1}`
-
+```bash
+git stash branch branch_1 stash@{1}
+```
 
