@@ -1,27 +1,39 @@
 ---
 tags:
+  - Design Patterns
   - Saga
   - Choreography
   - Orchestration
+summary: Saga coordination options for long-running, distributed transactions.
 ---
 
+# Saga Pattern
+
 ## Table of Contents
+- [Overview](#overview)
+- [Patterns](#patterns)
+  - [Saga Approaches](#saga-approaches)
+  - [Notes and Comparisons](#notes-and-comparisons)
+- [Links](#links)
 
-1. Saga
-2. Others
-3. Links
+## Overview
+- Sagas split a long-running transaction into ordered local transactions with compensating actions.
+- Coordination can be decentralized via events or centralized via a dedicated orchestrator.
+- Choose based on coupling tolerance, visibility requirements, and governance needs.
 
-   
-# #Saga
+## Patterns
 
-## #Choreography - each local transaction publishes domain events that trigger local transactions in other services
+### Saga Approaches
+#### Choreography
+- Each local transaction publishes domain events that trigger subsequent steps in other services.
+- Pros: simple and decentralized; Cons: reactive sprawl and harder global policy enforcement.
 
-## #Orchestration - an orchestrator (object) tells the participants what local transactions to execute
+#### Orchestration
+- A coordinator issues commands telling participants which local transaction to execute.
+- Pros: clear control/visibility; Cons: coordinator can become a bottleneck or single point of failure.
 
-# Others
+### Notes and Comparisons
+- [Saga vs Process Manager](https://stackoverflow.com/questions/15528015/what-is-the-difference-between-a-saga-a-process-manager-and-a-document-based-ap) — Process managers focus on message routing/state while sagas emphasize transactional guarantees and compensation.
 
-## [Saga vs Process Manager](https://stackoverflow.com/questions/15528015/what-is-the-difference-between-a-saga-a-process-manager-and-a-document-based-ap)
-
-
-# #Links
-[https://microservices.io/patterns/data/saga.html](https://microservices.io/patterns/data/saga.html)
+## Links
+- [Saga Pattern (microservices.io)](https://microservices.io/patterns/data/saga.html)

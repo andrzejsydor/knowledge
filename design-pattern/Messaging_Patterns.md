@@ -1,100 +1,56 @@
 ---
 tags:
-  - Patterns for Decoupling in Distributed Systems
-  - Eventsourcing Patterns
+  - Design Patterns
   - Messaging Patterns
+  - Event-Driven Architecture
+  - Eventsourcing Patterns
   - Canonical Data Model
+summary: Curated messaging and eventsourcing patterns for distributed systems.
 ---
 
-## Table of Contents
-
-1. **Patterns for Decoupling in Distributed Systems**  
-
-   1.1. [Domain Queries](https://verraes.net/2019/05/patterns-for-decoupling-distsys-domain-query/)  
-   1.2. [Summary Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-summary-event/)  
-   1.3. [Completeness Guarantee](https://verraes.net/2019/05/patterns-for-decoupling-distsys-completeness-guarantee/)  
-   1.4. [Passage of Time Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-passage-of-time-event/)  
-   1.5. [Fat Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-fat-event/)  
-   1.6. [Explicit Public Events](https://verraes.net/2019/05/patterns-for-decoupling-distsys-explicit-public-events/)  
-   1.7. [Segregated Event Layers](https://verraes.net/2019/05/patterns-for-decoupling-distsys-segregated-event-layers/)  
-
-2. **Eventsourcing Patterns**  
-
-   2.1. [Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)  
-   2.2. [Crypto-Shredding](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/)  
-   2.3. [Decision Tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/)  
-   2.4. [Migration Events in a Ghost Context](https://verraes.net/2019/06/eventsourcing-patterns-migration-events-ghost-context/)  
-   2.5. [Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/)  
-
-3. **Messaging Patterns**  
-
-   3.1. [Ephemeral Events](https://verraes.net/2019/05/messaging-patterns-ephemeral-events/)  
-   3.2. [Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/)  
-   3.3. [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)  
-   3.4. [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)  
-
-4. **Others**
-
-   4.1. [Canonical Data Model](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html)
-
----
-# Patterns for Decoupling in Distributed Systems
-
-[Domain Queries](https://verraes.net/2019/05/patterns-for-decoupling-distsys-domain-query/)
-> Replace Free Queries with Domain Queries to decouple from knowledge of the server’s internals.
-
-[Summary Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-summary-event/)
-> Instead of emitting a stream of Domain Events, emit a single Summary.
-
-[Completeness Guarantee](https://verraes.net/2019/05/patterns-for-decoupling-distsys-completeness-guarantee/)
-> Design the set of Domain Events from a producer so that they can be used to rebuild the producer’s state.
-
-[Passage of Time Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-passage-of-time-event/)
-> Replace cron jobs and scheduled commands, with an agnostic event to indicate the passage of time.
-
-[Fat Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-fat-event/)
-> Add redundant information to a Domain Event to reduce complexity in the consumer.
-
-[Explicit Public Events](https://verraes.net/2019/05/patterns-for-decoupling-distsys-explicit-public-events/)
-> Mark a small subset of events as public, keep the rest private by default.
-
-[Segregated Event Layers](https://verraes.net/2019/05/patterns-for-decoupling-distsys-segregated-event-layers/)
-> Explicitly segregate a Bounded Context’s events in visibility layers, with their own language.
-
----
-# Eventsourcing Patterns
-
-[Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/)
-> Store the sensitive payload of an event in a separate store to control access and removal.
-
-[Crypto-Shredding](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/)
-> Encrypt sensitive information in an event and delete the key.
-
-[Decision Tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/)
-> Store the outcome of a decision to guard against rule changes.
-
-[Migration Events in a Ghost Context](https://verraes.net/2019/06/eventsourcing-patterns-migration-events-ghost-context/)
-> Explicitly conform to the legacy component’s model in an eventsourcing migration.
-
-[Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/)
-> Within a Domain Event, use separate timestamps to distinguish when the event occurred and when it was captured.
-
----
 # Messaging Patterns
 
-[Ephemeral Events](https://verraes.net/2019/05/messaging-patterns-ephemeral-events/)
-> Mark the events as being Ephemeral Events. The infrastructure knows that only the latest event matters. When a consumer can’t keep up with the event stream coming in, the infrastructure prefers to drop older events and skip to the most recent one.
+## Table of Contents
+- [Overview](#overview)
+- [Patterns](#patterns)
+  - [Patterns for Decoupling in Distributed Systems](#patterns-for-decoupling-in-distributed-systems)
+  - [Eventsourcing Patterns](#eventsourcing-patterns)
+  - [Messaging Patterns](#messaging-patterns)
+  - [Other Messaging Concepts](#other-messaging-concepts)
+- [Links](#links)
 
-[Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/)
-> Only keep one event per time unit from a high frequency stream.
+## Overview
+- Decouple producers and consumers while keeping contracts explicit.
+- Manage sensitive data, migrations, and timelines when events are the source of truth.
+- Tune messaging flows for throughput, ordering, and clarity.
 
-[Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/)
-> Listen to a stream of events and produce a new event when a value changes.
+## Patterns
 
-[Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/)
+### Patterns for Decoupling in Distributed Systems
+- [Domain Queries](https://verraes.net/2019/05/patterns-for-decoupling-distsys-domain-query/) — Replace Free Queries with Domain Queries to decouple from knowledge of the server’s internals.
+- [Summary Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-summary-event/) — Emit a single summary instead of a stream of domain events.
+- [Completeness Guarantee](https://verraes.net/2019/05/patterns-for-decoupling-distsys-completeness-guarantee/) — Design producer events so consumers can rebuild producer state.
+- [Passage of Time Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-passage-of-time-event/) — Use an agnostic event to signal time rather than cron jobs.
+- [Fat Event](https://verraes.net/2019/05/patterns-for-decoupling-distsys-fat-event/) — Add redundant information to reduce consumer complexity.
+- [Explicit Public Events](https://verraes.net/2019/05/patterns-for-decoupling-distsys-explicit-public-events/) — Mark a small subset of events as public; keep the rest private by default.
+- [Segregated Event Layers](https://verraes.net/2019/05/patterns-for-decoupling-distsys-segregated-event-layers/) — Separate a bounded context’s events into visibility layers with their own language.
 
----
-# Others
+### Eventsourcing Patterns
+- [Forgettable Payloads](https://verraes.net/2019/05/eventsourcing-patterns-forgettable-payloads/) — Store sensitive payloads separately to control access and removal.
+- [Crypto-Shredding](https://verraes.net/2019/05/eventsourcing-patterns-throw-away-the-key/) — Encrypt sensitive information in an event and delete the key.
+- [Decision Tracking](https://verraes.net/2019/05/eventsourcing-patterns-decision-tracking/) — Store the outcome of a decision to guard against rule changes.
+- [Migration Events in a Ghost Context](https://verraes.net/2019/06/eventsourcing-patterns-migration-events-ghost-context/) — Conform explicitly to a legacy model during eventsourcing migrations.
+- [Multi-temporal Events](https://verraes.net/2022/03/multi-temporal-events/) — Separate timestamps for when an event occurred vs when it was captured.
 
-[Canonical Data Model](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html)
-> A Canonical Data Model (CDM) is a standardized, common data format that different systems in an organization use to exchange information. A Canonical Data Model that is independent from any specific application.
+### Messaging Patterns
+- [Ephemeral Events](https://verraes.net/2019/05/messaging-patterns-ephemeral-events/) — Only the latest event matters; infrastructure can drop older ones if consumers lag.
+- [Throttling](https://verraes.net/2019/05/messaging-patterns-throttling/) — Keep one event per time unit from a high-frequency stream.
+- [Change Detection Events](https://verraes.net/2019/05/messaging-patterns-change-detection-events/) — Produce a new event when a value changes across a stream.
+- [Natural Language Message Names](https://verraes.net/2019/06/messaging-patterns-natural-language-message-names/) — Name messages in plain language to clarify intent.
+
+### Other Messaging Concepts
+- [Canonical Data Model](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html) — Standardized common data format for interop across systems.
+
+## Links
+- [Patterns for Decoupling in Distributed Systems (series)](https://verraes.net/2019/05/patterns-for-decoupling-distsys-domain-query/)
+- [Enterprise Integration Patterns: Canonical Data Model](https://www.enterpriseintegrationpatterns.com/patterns/messaging/CanonicalDataModel.html)
