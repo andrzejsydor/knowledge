@@ -1,6 +1,9 @@
 ---
 tags:
   - Tools
+  - Terminal
+  - CLI
+summary: A comprehensive guide to terminal usage, covering essential commands, advanced techniques, and best practices for working with Unix-like shells (bash, zsh). This reference includes file operations, process management, text processing, system information, shell scripting basics, and macOS-specific commands. Perfect for developers, system administrators, and anyone looking to improve their command-line productivity.
 ---
 
 # Terminal
