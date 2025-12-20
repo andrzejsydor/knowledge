@@ -1,4 +1,15 @@
+---
+tags:
+  - Databases
+  - SQL
+  - NoSQL
+---
+
 # Databases
+
+## Summary
+
+This document provides an overview of different database types and their use cases. Each database type is optimized for specific data patterns, access patterns, and scalability requirements. Understanding these categories helps in selecting the right database technology for your application's needs.
 
 ## Relational
 Traditional row-and-column databases, great for structured data and transactions.

@@ -1,4 +1,10 @@
-# #Awesome repos
+---
+tags:
+  - Awesome
+  - Resources
+---
+
+# Awesome Repositories
 
 ## Awesome lists about all kinds of interesting topics
 
