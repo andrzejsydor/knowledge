@@ -9,6 +9,9 @@ tags:
   - Session
   - Spring Session
   - Spring Security
+  - OKTA
+  - Identity Provider
+  - SSO
 ---
 
 ## Table of Contents
@@ -18,8 +21,9 @@ tags:
 4. [JWT (JSON Web Tokens)](#jwt-json-web-tokens)
 5. [OAuth 2.0 with JWT](#oauth-20-with-jwt)
 6. [Spring Security OAuth2](#spring-security-oauth2)
-7. [Session-Based Authentication](#session-based-authentication)
-8. [Tips & Problems](#tips--problems)
+7. [OKTA](#okta)
+8. [Session-Based Authentication](#session-based-authentication)
+9. [Tips & Problems](#tips--problems)
 
 # Authentication vs Authorization
 
@@ -629,6 +633,278 @@ graph TB
 
 For implementation details and code examples, see [Spring Security OAuth2 & JWT Implementation](./dev/Spring_Security_OAuth2_JWT.md).
 
+# OKTA
+
+OKTA is a cloud-based identity and access management (IAM) service that provides Single Sign-On (SSO), Multi-Factor Authentication (MFA), and user lifecycle management. It acts as an Identity Provider (IdP) that can integrate with applications using standard protocols like OAuth 2.0, OpenID Connect (OIDC), and SAML.
+
+## Core Concepts
+
+### Identity Provider (IdP)
+
+OKTA serves as a centralized identity provider that manages user authentication and authorization. It eliminates the need for applications to manage user credentials directly.
+
+### Single Sign-On (SSO)
+
+SSO allows users to authenticate once and gain access to multiple applications without re-entering credentials. OKTA provides seamless SSO across all integrated applications.
+
+### User Lifecycle Management
+
+OKTA manages the complete user lifecycle including:
+- User provisioning and deprovisioning
+- Password management and reset
+- Account activation and deactivation
+- Profile management
+
+## Key Features
+
+### Authentication Methods
+
+- **Username/Password**: Traditional credential-based authentication
+- **Multi-Factor Authentication (MFA)**: Additional security layers (SMS, email, authenticator apps, hardware tokens)
+- **Social Login**: Integration with Google, Facebook, Microsoft, etc.
+- **Biometric Authentication**: Fingerprint, face recognition
+- **Passwordless**: Magic links, push notifications
+
+### Protocols Supported
+
+- **OAuth 2.0**: Authorization framework for delegated access
+- **OpenID Connect (OIDC)**: Authentication layer on top of OAuth 2.0
+- **SAML 2.0**: XML-based authentication protocol for enterprise SSO
+- **LDAP/Active Directory**: Integration with existing directory services
+
+### Application Integration
+
+- **Web Applications**: OAuth 2.0/OIDC integration
+- **Mobile Applications**: Native SDK support
+- **API Services**: Token-based authentication
+- **Legacy Applications**: SAML-based SSO
+
+## OKTA Architecture
+
+<details>
+<summary><strong>OKTA Architecture Diagram</strong></summary>
+
+```mermaid
+graph TB
+    subgraph "Users"
+        A[End Users]
+    end
+    
+    subgraph "OKTA Identity Cloud"
+        B[OKTA Identity Provider]
+        C[User Directory]
+        D[Policy Engine]
+        E[Multi-Factor Auth]
+        F[Application Catalog]
+    end
+    
+    subgraph "Applications"
+        G[Web App 1]
+        H[Web App 2]
+        I[Mobile App]
+        J[API Service]
+    end
+    
+    A -->|1. Login Request| B
+    B -->|2. Authenticate| C
+    B -->|3. Check Policies| D
+    B -->|4. MFA Challenge| E
+    E -->|5. MFA Response| B
+    B -->|6. Issue Tokens| A
+    A -->|7. Access with Token| G
+    A -->|8. Access with Token| H
+    A -->|9. Access with Token| I
+    A -->|10. Access with Token| J
+    
+    B -.->|Manage| F
+    
+    style B fill:#e1f5ff
+    style C fill:#fff4e1
+    style D fill:#e8f5e9
+    style E fill:#fce4ec
+```
+
+</details>
+
+## OKTA Integration Patterns
+
+### Pattern 1: OAuth 2.0 / OpenID Connect Integration
+
+Applications use OKTA as the authorization server, implementing OAuth 2.0 flows to obtain access tokens and ID tokens for user authentication.
+
+<details>
+<summary><strong>OAuth 2.0 / OIDC Flow with OKTA</strong></summary>
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant App as Application
+    participant OKTA as OKTA IdP
+    participant API as Protected API
+
+    User->>App: 1. Access application
+    App->>OKTA: 2. Redirect to OKTA login
+    OKTA->>User: 3. Present login form
+    User->>OKTA: 4. Enter credentials
+    OKTA->>OKTA: 5. Validate credentials
+    OKTA->>OKTA: 6. Check MFA if required
+    OKTA->>User: 7. MFA challenge (if needed)
+    User->>OKTA: 8. MFA response
+    OKTA->>App: 9. Redirect with authorization code
+    App->>OKTA: 10. Exchange code for tokens
+    OKTA->>App: 11. Return access token + ID token
+    App->>API: 12. Request with access token
+    API->>OKTA: 13. Validate token (introspect/JWK)
+    OKTA-->>API: 14. Token valid
+    API-->>App: 15. Return resource
+```
+
+</details>
+
+### Pattern 2: SAML 2.0 SSO Integration
+
+Enterprise applications use SAML for SSO, with OKTA acting as the Identity Provider.
+
+<details>
+<summary><strong>SAML 2.0 SSO Flow with OKTA</strong></summary>
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant App as Service Provider
+    participant OKTA as OKTA IdP
+
+    User->>App: 1. Access application
+    App->>App: 2. Generate SAML AuthnRequest
+    App->>OKTA: 3. Redirect with SAML request
+    OKTA->>User: 4. Present login (if not authenticated)
+    User->>OKTA: 5. Provide credentials
+    OKTA->>OKTA: 6. Authenticate user
+    OKTA->>OKTA: 7. Generate SAML assertion
+    OKTA->>App: 8. POST SAML response
+    App->>App: 9. Validate SAML assertion
+    App->>User: 10. Grant access
+```
+
+</details>
+
+### Pattern 3: API Access Token
+
+Applications use OKTA-issued access tokens to authenticate API requests.
+
+<details>
+<summary><strong>API Access Token Flow</strong></summary>
+
+```mermaid
+graph LR
+    A[Client Application] -->|1. Request Token| B[OKTA]
+    B -->|2. Validate Credentials| C[User Directory]
+    C -->|3. User Valid| B
+    B -->|4. Issue Access Token| A
+    A -->|5. API Request with Token| D[API Server]
+    D -->|6. Validate Token| B
+    B -->|7. Token Valid| D
+    D -->|8. Return Resource| A
+    
+    style B fill:#e1f5ff
+    style D fill:#fff4e1
+```
+
+</details>
+
+## OKTA Components
+
+### Applications
+
+Applications registered in OKTA represent the services that users can access. Each application has:
+- **Application Type**: Web, Native, API, Browser plugin
+- **Sign-on Method**: OAuth 2.0, SAML, SWA (Secure Web Authentication)
+- **Credentials**: Client ID, Client Secret, Redirect URIs
+- **Assignment**: Users and groups assigned to the application
+
+### Users and Groups
+
+- **Users**: Individual user accounts with profiles, credentials, and attributes
+- **Groups**: Collections of users for easier management and assignment
+- **Directory Integration**: Sync with Active Directory, LDAP, or other directories
+
+### Policies
+
+- **Authentication Policies**: Define authentication requirements (MFA, password complexity)
+- **Sign-On Policies**: Control how users access applications
+- **Password Policies**: Password requirements and expiration rules
+- **MFA Policies**: Multi-factor authentication requirements
+
+### Factors
+
+- **SMS**: Text message-based verification
+- **Email**: Email-based verification
+- **OKTA Verify**: Push notification authenticator app
+- **Google Authenticator**: TOTP-based authenticator
+- **Hardware Tokens**: Physical security keys (YubiKey, etc.)
+
+## Best Practices
+
+### Application Configuration
+
+- Use appropriate grant types (Authorization Code for web apps, PKCE for mobile/SPA)
+- Configure secure redirect URIs (exact match, HTTPS)
+- Set appropriate token lifetimes based on security requirements
+- Use scopes to limit application permissions
+
+### Security Configuration
+
+- Enable MFA for sensitive applications
+- Implement session management policies
+- Use strong password policies
+- Enable threat detection and anomaly detection
+- Configure IP restrictions when possible
+
+### Token Management
+
+- Use short-lived access tokens (15-60 minutes)
+- Implement refresh token rotation
+- Store tokens securely (httpOnly cookies, secure storage)
+- Validate tokens on every request
+- Implement proper token revocation
+
+### User Management
+
+- Automate user provisioning and deprovisioning
+- Implement just-in-time (JIT) user provisioning
+- Sync user attributes from source systems
+- Implement role-based access control (RBAC)
+- Regular access reviews and certifications
+
+## Common Use Cases
+
+### Use Case 1: Enterprise SSO
+
+Organizations use OKTA to provide single sign-on across multiple enterprise applications, reducing password fatigue and improving security.
+
+### Use Case 2: Customer Identity (CIAM)
+
+Businesses use OKTA Customer Identity to manage customer authentication, registration, and profile management for customer-facing applications.
+
+### Use Case 3: Developer Authentication
+
+APIs and developer portals use OKTA to authenticate developers and manage API access tokens.
+
+### Use Case 4: Workforce Identity
+
+Organizations manage employee access to internal applications, cloud services, and resources through OKTA Workforce Identity.
+
+## Security Considerations
+
+- **Token Security**: Protect access tokens and refresh tokens from theft
+- **MFA Enforcement**: Require MFA for sensitive applications and high-risk scenarios
+- **Session Management**: Implement proper session timeout and concurrent session limits
+- **Audit Logging**: Monitor authentication events and access patterns
+- **Threat Detection**: Leverage OKTA's threat detection capabilities
+- **Compliance**: Ensure compliance with regulations (GDPR, HIPAA, SOC 2)
+
+For implementation details and code examples, see [OKTA Implementation](./dev/OKTA.md).
+
 # Session-Based Authentication
 
 Session-based authentication is a stateful authentication mechanism where the server maintains session state and identifies users through session identifiers (typically stored in cookies).
@@ -870,4 +1146,16 @@ For implementation details and code examples, see [Spring Session Implementation
 [Spring Security OAuth2 Authorization Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/authorization-server/index.html)
 
 [Spring Security OAuth2 & JWT Implementation](./dev/Spring_Security_OAuth2_JWT.md) - Code examples and implementation details
+
+## OKTA
+
+[OKTA Developer Documentation](https://developer.okta.com/docs/)
+
+[OKTA Spring Boot Integration](https://developer.okta.com/docs/guides/implement-oauth-for-okta/springboot/main/)
+
+[OKTA API Reference](https://developer.okta.com/docs/reference/api/)
+
+[OKTA Java SDK](https://github.com/okta/okta-sdk-java)
+
+[OKTA Implementation](./dev/OKTA.md) - Code examples and implementation details
 
