@@ -3,17 +3,23 @@ tags:
   - Security
   - Authentication
   - Authorization
-  - oauth
+  - OAuth
+  - OAuth2
+  - JWT
   - Session
   - Spring Session
+  - Spring Security
 ---
 
 ## Table of Contents
 1. [Authentication vs Authorization](#authentication-vs-authorization)
 2. [Zero Trust Architecture](#zero-trust-architecture)
 3. [OAuth 2.0](#oauth-20)
-4. [Session-Based Authentication](#session-based-authentication)
-5. [Tips & Problems](#tips--problems)
+4. [JWT (JSON Web Tokens)](#jwt-json-web-tokens)
+5. [OAuth 2.0 with JWT](#oauth-20-with-jwt)
+6. [Spring Security OAuth2](#spring-security-oauth2)
+7. [Session-Based Authentication](#session-based-authentication)
+8. [Tips & Problems](#tips--problems)
 
 # Authentication vs Authorization
 
@@ -46,28 +52,334 @@ tags:
 
 # OAuth 2.0
 
-- [OAuth 2.0 Simplified](https://www.oauth.com/)
-- [OAuth 2.0](https://oauth.net/2/) 
+OAuth 2.0 is an authorization framework that enables applications to obtain limited access to user accounts on an HTTP service. It delegates user authentication to the service that hosts the user account and authorizes third-party applications to access the user account.
 
-## Roles
-- **Resource Owner**: User who authorizes an application to access their account.
-- **Client**: Application that wants to access the user's account.
-- **Authorization Server**: Validates the user's identity and issues access tokens.
-- **Resource Server**: The API or service accepting access tokens.
+## Core Concepts
 
-## Common Grant Types
-- **Authorization Code**: For server-side apps; most secure.
-- **PKCE**: Extension for mobile/SPA apps to prevent code interception.
-- **Client Credentials**: For machine-to-machine communication.
+### Roles
 
-## Tokens and Headers
-- **Access Token**: Short-lived credential used to call the Resource Server (RS).
-- **Refresh Token**: Longer-lived credential used by the client to obtain new access tokens.
-- **Authorization Header**:
-  - Format: `Authorization: Bearer <access_token>`
-- **Token Formats**:
-  - **JWT**: Self-contained, signed token with claims; verifiable by RS without a network call.
-  - **Opaque**: Non-self-describing; RS must introspect/validate with the Authorization Server (AS).
+- **Resource Owner**: The user who authorizes an application to access their account. The application's access to the user's account is limited to the "scope" of the authorization granted.
+- **Client**: The application requesting access to a protected resource. Can be a web application, mobile app, or any application that needs to access user resources.
+- **Authorization Server**: The server that issues access tokens to the client after successfully authenticating the resource owner and obtaining authorization. Validates the user's identity and issues access tokens.
+- **Resource Server**: The server hosting the protected resources, capable of accepting and responding to protected resource requests using access tokens. The API or service accepting access tokens.
+
+### Authorization Flow
+
+1. **Client Request**: Client requests authorization from the resource owner
+2. **User Authorization**: Resource owner grants authorization
+3. **Authorization Grant**: Client receives authorization grant (code, token, etc.)
+4. **Token Request**: Client requests access token from authorization server
+5. **Token Issuance**: Authorization server issues access token
+6. **Resource Access**: Client uses access token to access protected resources
+
+## Grant Types
+
+### Authorization Code
+
+- **Use Case**: Server-side web applications
+- **Security**: Most secure grant type
+- **Flow**: Client redirects user to authorization server → User authorizes → Server returns authorization code → Client exchanges code for access token
+- **Benefits**: Code is short-lived, exchanged server-to-server, not exposed to user agent
+
+### Authorization Code with PKCE (Proof Key for Code Exchange)
+
+- **Use Case**: Mobile apps and Single Page Applications (SPAs)
+- **Security**: Prevents authorization code interception attacks
+- **Flow**: Similar to Authorization Code, but adds code verifier and challenge
+- **Benefits**: Protects against code interception in public clients
+
+### Client Credentials
+
+- **Use Case**: Machine-to-machine communication, service accounts
+- **Security**: No user interaction required
+- **Flow**: Client authenticates with credentials → Receives access token directly
+- **Benefits**: Simple for backend services, no user context needed
+
+### Resource Owner Password Credentials
+
+- **Use Case**: Legacy applications, trusted first-party clients
+- **Security**: Less secure, credentials passed directly
+- **Flow**: Client sends username/password → Receives access token
+- **Note**: Not recommended for third-party applications
+
+### Implicit Grant
+
+- **Use Case**: Legacy SPAs (deprecated)
+- **Security**: Access token returned directly in redirect (less secure)
+- **Note**: Deprecated in favor of Authorization Code with PKCE
+
+## Tokens
+
+### Access Token
+
+- **Purpose**: Credential used to access protected resources
+- **Lifetime**: Short-lived (typically 15 minutes to 1 hour)
+- **Scope**: Limited to permissions granted during authorization
+- **Storage**: Should be stored securely on client side
+- **Transmission**: Sent in `Authorization: Bearer <token>` header
+
+### Refresh Token
+
+- **Purpose**: Used to obtain new access tokens without re-authentication
+- **Lifetime**: Longer-lived (days, weeks, or months)
+- **Security**: More sensitive, must be stored securely
+- **Revocation**: Can be revoked by authorization server
+- **Rotation**: Best practice to rotate refresh tokens on each use
+
+### Token Formats
+
+- **JWT (JSON Web Token)**: Self-contained, signed token with claims; verifiable by Resource Server without network call to Authorization Server
+- **Opaque Token**: Non-self-describing string; Resource Server must introspect/validate with Authorization Server
+
+## Scopes
+
+Scopes define the specific permissions the client is requesting. Common scopes include:
+- `read`: Read-only access
+- `write`: Write access
+- `admin`: Administrative access
+- Custom scopes specific to the application
+
+# JWT (JSON Web Tokens)
+
+JWT is a compact, URL-safe token format used to securely transmit information between parties as a JSON object. This information can be verified and trusted because it is digitally signed.
+
+## JWT Structure
+
+A JWT consists of three parts separated by dots (`.`):
+
+1. **Header**: Contains token type and signing algorithm
+2. **Payload**: Contains claims (statements about an entity and additional data)
+3. **Signature**: Used to verify the token hasn't been altered
+
+## JWT Claims
+
+### Registered Claims
+
+- `iss` (Issuer): Who issued the token
+- `sub` (Subject): Who the token refers to (usually user ID)
+- `aud` (Audience): Intended recipient of the token
+- `exp` (Expiration Time): When the token expires
+- `iat` (Issued At): When the token was issued
+- `nbf` (Not Before): Token not valid before this time
+- `jti` (JWT ID): Unique identifier for the token
+
+### Public Claims
+
+- Defined in IANA JWT Registry or as URI
+- Should be collision-resistant
+
+### Private Claims
+
+- Custom claims agreed upon between parties
+- Should avoid collisions with registered/public claims
+
+## JWT Signing Algorithms
+
+### Symmetric (HMAC)
+
+- **Algorithm**: HS256, HS384, HS512
+- **Key**: Shared secret between issuer and verifier
+- **Use Case**: Single-party systems, internal services
+- **Security**: Key must be kept secret by all parties
+
+### Asymmetric (RSA/ECDSA)
+
+- **Algorithm**: RS256, RS384, RS512, ES256, ES384, ES512
+- **Key**: Public/private key pair
+- **Use Case**: Multi-party systems, distributed services
+- **Security**: Private key kept secret, public key shared
+
+## JWT Advantages
+
+- **Stateless**: No server-side session storage required
+- **Self-contained**: All necessary information in the token
+- **Scalable**: Works well in distributed systems
+- **Portable**: Can be used across different domains
+- **Verifiable**: Signature ensures integrity
+
+## JWT Disadvantages
+
+- **Size**: Larger than session IDs (can impact performance)
+- **Revocation**: Difficult to revoke before expiration
+- **Security**: If compromised, valid until expiration
+- **Storage**: Sensitive data exposure if not encrypted
+
+## JWT Best Practices
+
+### Token Lifetime
+
+- Keep access tokens short-lived (15-60 minutes)
+- Use refresh tokens for longer sessions
+- Implement token rotation for enhanced security
+
+### Token Storage
+
+- **Web Applications**: Use httpOnly cookies (most secure) or memory storage
+- **Mobile Apps**: Use secure storage (Keychain/Keystore)
+- **Never**: Store in localStorage (vulnerable to XSS)
+
+### Token Validation
+
+- Always verify signature
+- Check expiration time
+- Validate issuer and audience
+- Verify token hasn't been tampered with
+
+### Security Considerations
+
+- Use HTTPS for token transmission
+- Implement token rotation
+- Monitor for token theft/compromise
+- Use appropriate signing algorithms (RS256 recommended)
+- Consider encryption for sensitive claims (JWE)
+
+# OAuth 2.0 with JWT
+
+Combining OAuth 2.0 with JWT provides a powerful, scalable authentication and authorization solution.
+
+## OAuth 2.0 + JWT Flow
+
+1. **Authorization Request**: Client redirects user to authorization server
+2. **User Authentication**: User authenticates with authorization server
+3. **Authorization Grant**: Server returns authorization code
+4. **Token Exchange**: Client exchanges code for JWT access token
+5. **Token Validation**: Resource server validates JWT signature and claims
+6. **Resource Access**: Client accesses protected resources with JWT
+
+## Benefits of OAuth 2.0 + JWT
+
+- **Stateless Authentication**: No server-side session storage
+- **Distributed Systems**: Works across microservices
+- **Self-Contained**: Token contains all necessary information
+- **Scalability**: No shared session store required
+- **Performance**: No database lookup for token validation
+
+## Token Types in OAuth 2.0 + JWT
+
+### Access Token (JWT)
+
+- Contains user identity and permissions
+- Short-lived (15-60 minutes)
+- Signed by authorization server
+- Validated by resource server
+
+### Refresh Token
+
+- Typically opaque (not JWT) for security
+- Used to obtain new access tokens
+- Longer-lived
+- Stored securely on client
+
+### ID Token (OpenID Connect)
+
+- JWT containing user identity information
+- Used for authentication (not authorization)
+- Part of OpenID Connect specification
+- Contains user profile claims
+
+## Common Patterns
+
+### Pattern 1: Resource Server Validates JWT
+
+Resource server validates JWT signature using public key from authorization server. No network call needed for validation.
+
+### Pattern 2: Token Introspection
+
+For opaque tokens or additional validation, resource server calls authorization server's introspection endpoint.
+
+### Pattern 3: Token Refresh
+
+Client uses refresh token to obtain new access token when current token expires, without re-authentication.
+
+# Spring Security OAuth2
+
+Spring Security provides comprehensive support for OAuth 2.0 and JWT through Spring Security OAuth2 Resource Server and Authorization Server.
+
+## Spring Security OAuth2 Components
+
+### Resource Server
+
+- Validates OAuth 2.0 access tokens
+- Protects REST APIs
+- Supports JWT and opaque tokens
+- Integrates with Spring Security filter chain
+
+### Authorization Server
+
+- Issues OAuth 2.0 tokens
+- Manages client registrations
+- Handles user authentication
+- Supports multiple grant types
+- Can issue JWT or opaque tokens
+
+## Key Features
+
+### JWT Support
+
+- Automatic JWT validation
+- Public key resolution (JWK Set endpoint)
+- Claim extraction and mapping
+- Custom claim validation
+
+### Token Validation
+
+- Signature verification
+- Expiration checking
+- Issuer and audience validation
+- Custom validators
+
+### Security Integration
+
+- Seamless integration with Spring Security
+- Method-level security
+- Role-based access control
+- Security context population
+
+## Common Use Cases
+
+### Use Case 1: Resource Server Only
+
+Application acts as resource server, validating tokens issued by external authorization server (e.g., Keycloak, Auth0).
+
+### Use Case 2: Authorization Server
+
+Application acts as authorization server, issuing tokens for other applications to use.
+
+### Use Case 3: Combined Server
+
+Application acts as both authorization server and resource server, issuing and validating its own tokens.
+
+## Best Practices
+
+### Resource Server Configuration
+
+- Configure JWT decoder with issuer URI
+- Set up proper security filter chain
+- Map JWT claims to Spring Security authorities
+- Implement proper error handling
+
+### Token Validation
+
+- Always validate token signature
+- Check token expiration
+- Verify issuer and audience
+- Validate custom claims
+
+### Security Configuration
+
+- Use method security for fine-grained control
+- Implement proper CORS configuration
+- Configure token extraction from headers
+- Set up proper exception handling
+
+### Performance Considerations
+
+- Cache public keys (JWK Set)
+- Use appropriate token expiration times
+- Consider token caching strategies
+- Monitor token validation performance
+
+For implementation details and code examples, see [Spring Security OAuth2 & JWT Implementation](./dev/Spring_Security_OAuth2_JWT.md).
 
 # Session-Based Authentication
 
@@ -183,4 +495,18 @@ For implementation details and code examples, see [Spring Session Implementation
 [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 
 [PortSwigger](https://portswigger.net/web-security/all-topics)
+
+## OAuth 2.0 & JWT
+
+[OAuth 2.0 Simplified](https://www.oauth.com/)
+
+[OAuth 2.0 Specification](https://oauth.net/2/)
+
+[JWT.io](https://jwt.io/) - JWT debugger and information
+
+[Spring Security OAuth2 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html)
+
+[Spring Security OAuth2 Authorization Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/authorization-server/index.html)
+
+[Spring Security OAuth2 & JWT Implementation](./dev/Spring_Security_OAuth2_JWT.md) - Code examples and implementation details
 
