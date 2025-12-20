@@ -1,6 +1,7 @@
 ---
 tags:
-  
+  - Note-Taking
+  - Learning
 ---
 
 # Note Taking Tips
@@ -19,7 +20,7 @@ tags:
 - **Capture Questions**: Write down questions that arise during note-taking to guide future study and clarify misunderstandings.
 - **Audio Backup**: Record lectures or meetings (with permission) to fill in gaps in your written notes later.
 
-# Apps
+## Apps
 
 [Notion](http://notion.com/)
 
@@ -27,7 +28,7 @@ tags:
 
 [Obsidian](https://obsidian.md/)
 
-# Methodologies
+## Methodologies
 
 - **The Cornell Method**: A systematic format for condensing and organizing notes. It divides the page into three sections: cues, notes, and summary. This method encourages active recall and synthesis of information.
 

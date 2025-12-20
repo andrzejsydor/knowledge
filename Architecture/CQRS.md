@@ -1,25 +1,29 @@
 ---
 tags:
- - Architecture
- - CQRS
- - CQS
+  - Architecture
+  - CQRS
+  - CQS
 aliases:
- - CQS
- - CQRS
+  - CQS
+  - CQRS
 ---
+
+# CQRS
 
 ## Table of Contents
 
-- [CQS (Command Query Separation) vs CQRS (Command Query Responsibility Segregation)](#cqs-command-query-separation-vs-cqrs-command-query-responsibility-segregation)
+- [CQS vs CQRS](#cqs-vs-cqrs)
   - [CQS vs CQRS: Key Differences and Relationship](#cqs-vs-cqrs-key-differences-and-relationship)
   - [Comparison Table](#comparison-table)
-- [#CQS](#cqs)
-- [#CQRS](#cqrs)
-- [#Link](#link)
-  - [#Stackoverflow](#stackoverflow)
-  - [#PDF](#pdf)
+- [CQS](#cqs)
+- [CQRS](#cqrs)
+- [Links](#links)
+  - [Stackoverflow](#stackoverflow)
+  - [PDF](#pdf)
 
-# CQS (Command Query Separation) vs CQRS (Command Query Responsibility Segregation)
+## CQS vs CQRS
+
+Command Query Separation (CQS) vs Command Query Responsibility Segregation (CQRS)
 
 ## CQS vs CQRS: Key Differences and Relationship
 
@@ -44,108 +48,56 @@ Command Query Separation (CQS) and Command Query Responsibility Segregation (CQR
 
 ## When to Use Each
 
-### CQS: Use for clear, maintainable code in any application. It’s a best practice for method design.
+### CQS: Use for clear, maintainable code in any application. It's a best practice for method design.
 
-### CQRS: Use when your system needs to scale read and write operations independently, or when read and write workloads are very different. It’s especially useful in distributed, high-scale, or event-sourced systems, but comes with added complexity
+### CQRS: Use when your system needs to scale read and write operations independently, or when read and write workloads are very different. It's especially useful in distributed, high-scale, or event-sourced systems, but comes with added complexity
 
-# #CQS
+## CQS
 
-# #CQRS 
+## CQRS
 
 CQRS - Command Query Responsibility Segregation
 
 - Command, Command Handler, Query, Query Handler
 
+### Benefits
 
+- Clear boundaries between the system behaviour
+- Closer to business logic
+- Loose coupling
+- Reduced cognitive load
+- Easier scaling, optimisations and architectural changes
+- Predictability
 
+### Pros
 
-Benefits:
+- Scalability
+- Flexibility
+- Improved Maintainability
+- Enhanced Security
 
- - Clear boundaries between the system behaviour
+### Cons
 
- - Closer to business logic
+- Increased Complexity
+- Learning Curve
+- Eventual Consistency
 
- - Loose coupling
-
- - Reduced cognitive load
-
- - Easier scaling, optimisations and architectural changes
-
- - Predictability
-
-PROS:
-
- - Scalability
-
- - Flexibility
-
- - Improved Maintability
-
- - Enhanced Security
-
-CONS:
-
- - Increased Complexity
-
- - Learning Curve
-
- - Eventual Consistency
-
-
-
-
-
-
-# #Link 
-
-
-
+# Links
 
 [https://deviq.com/design-patterns/cqrs-pattern](https://deviq.com/design-patterns/cqrs-pattern)
 
-
-
-
 [https://martinfowler.com/bliki/CQRS.html](https://martinfowler.com/bliki/CQRS.html)
-
-
-
 
 [https://martinfowler.com/bliki/CommandQuerySeparation.html](https://martinfowler.com/bliki/CommandQuerySeparation.html)
 
-
-
-
-
-
 [https://lab.scub.net/command-query-responsibility-segregation-cqrs-93e35d1929ec](https://lab.scub.net/command-query-responsibility-segregation-cqrs-93e35d1929ec)
-
-
-
 
 [https://www.eventstore.com/cqrs-pattern](https://www.eventstore.com/cqrs-pattern)
 
-
-
-
-
-
-## #Stackoverflow
-
-
-
+### Stackoverflow
 
 [https://stackoverflow.com/questions/34255490/difference-between-cqrs-and-cqs](https://stackoverflow.com/questions/34255490/difference-between-cqrs-and-cqs)
 
-
-
-
-
-
-## #PDF
-
-
-
+### PDF
 
 [https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf](https://cqrs.wordpress.com/wp-content/uploads/2010/11/cqrs_documents.pdf)
-

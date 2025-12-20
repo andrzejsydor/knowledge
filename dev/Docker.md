@@ -1,9 +1,12 @@
+---
+tags:
+  - Docker
+  - Container
+---
 
-# Docker #docker
+# Docker
 
--- Understanding how uid and gid work in Docker containers
-
-## Docker
+## Docker Basics
 
 ### Docker data-root
 
@@ -86,7 +89,7 @@ docker run centos:latest sh -c "whoami && date"
 ENTRYPOINT ["sh", "-c", "whoami && date"]
 ```
 
-## Docker Security #security
+## Docker Security
 
 [https://github.com/andrzejsydor/devops/tree/master/_security](https://github.com/andrzejsydor/devops/tree/master/_security)
 
@@ -107,7 +110,7 @@ ENTRYPOINT ["sh", "-c", "whoami && date"]
 [https://docs.anchore.com/current/](https://docs.anchore.com/current/)
 
 
-### Understanding how uid and gid work in Docker containers
+### Understanding UID and GID in Docker Containers
 
 ```
 docker run -d ubuntu:latest sleep infinity
@@ -150,7 +153,7 @@ docker cp /host/local/path/file <containerId>:/file/path/in/container/file
 
 By default docker runs everything as root but you can use USER in Dockerfiles. There's no user namespacing in docker so the container sees the users on the host but only uids hence you need the add the users in the container.
 
-## Dockefile caching
+## Dockerfile Caching
 
 Use caching properly for your Dockerfiles: docker containers are built very quickly as long as you make use of the caching capability. A quick set of gotchas and advices:
 - ADD & VOLUMES are cache invalidators.
