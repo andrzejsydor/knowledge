@@ -72,6 +72,31 @@ OAuth 2.0 is an authorization framework that enables applications to obtain limi
 5. **Token Issuance**: Authorization server issues access token
 6. **Resource Access**: Client uses access token to access protected resources
 
+<details>
+<summary><strong>OAuth 2.0 Authorization Code Flow</strong></summary>
+
+```mermaid
+sequenceDiagram
+    participant User as Resource Owner
+    participant Client as Client App
+    participant AuthServer as Authorization Server
+    participant ResourceServer as Resource Server
+
+    User->>Client: 1. Access protected resource
+    Client->>AuthServer: 2. Redirect to authorization endpoint
+    AuthServer->>User: 3. Request authentication
+    User->>AuthServer: 4. Provide credentials
+    AuthServer->>User: 5. Request authorization
+    User->>AuthServer: 6. Grant authorization
+    AuthServer->>Client: 7. Redirect with authorization code
+    Client->>AuthServer: 8. Exchange code for access token
+    AuthServer->>Client: 9. Return access token + refresh token
+    Client->>ResourceServer: 10. Request resource with access token
+    ResourceServer->>Client: 11. Return protected resource
+```
+
+</details>
+
 ## Grant Types
 
 ### Authorization Code
@@ -150,6 +175,53 @@ A JWT consists of three parts separated by dots (`.`):
 1. **Header**: Contains token type and signing algorithm
 2. **Payload**: Contains claims (statements about an entity and additional data)
 3. **Signature**: Used to verify the token hasn't been altered
+
+<details>
+<summary><strong>JWT Structure Diagram</strong></summary>
+
+```mermaid
+graph LR
+    A[JWT Token] --> B[Header]
+    A --> C[Payload]
+    A --> D[Signature]
+    
+    B --> B1["alg: RS256<br/>typ: JWT"]
+    C --> C1["iss: issuer<br/>sub: subject<br/>exp: expiration<br/>roles: [USER, ADMIN]"]
+    D --> D1["HMAC<br/>SHA256<br/>base64Url<br/>encoded"]
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#e8f5e9
+    style D fill:#fce4ec
+```
+
+</details>
+
+<details>
+<summary><strong>JWT Token Flow</strong></summary>
+
+```mermaid
+graph TD
+    A[User Login] --> B[Authorization Server]
+    B --> C[Generate JWT]
+    C --> D[Sign with Private Key]
+    D --> E[Return JWT to Client]
+    E --> F[Client Stores JWT]
+    F --> G[Client Sends JWT in Request]
+    G --> H[Resource Server]
+    H --> I[Validate Signature with Public Key]
+    I --> J{Valid?}
+    J -->|Yes| K[Extract Claims]
+    J -->|No| L[Reject Request]
+    K --> M[Authorize Request]
+    M --> N[Return Resource]
+    
+    style B fill:#e1f5ff
+    style H fill:#fff4e1
+    style J fill:#fce4ec
+```
+
+</details>
 
 ## JWT Claims
 
@@ -246,6 +318,32 @@ Combining OAuth 2.0 with JWT provides a powerful, scalable authentication and au
 5. **Token Validation**: Resource server validates JWT signature and claims
 6. **Resource Access**: Client accesses protected resources with JWT
 
+<details>
+<summary><strong>OAuth 2.0 with JWT Flow Diagram</strong></summary>
+
+```mermaid
+sequenceDiagram
+    participant User as Resource Owner
+    participant Client as Client App
+    participant AuthServer as Authorization Server
+    participant ResourceServer as Resource Server
+
+    User->>Client: 1. Request access
+    Client->>AuthServer: 2. Redirect to auth endpoint
+    AuthServer->>User: 3. Authenticate user
+    User->>AuthServer: 4. Provide credentials
+    AuthServer->>Client: 5. Return authorization code
+    Client->>AuthServer: 6. Exchange code for tokens
+    AuthServer->>AuthServer: 7. Generate JWT (sign with private key)
+    AuthServer->>Client: 8. Return JWT access token + refresh token
+    Client->>ResourceServer: 9. Request resource with JWT
+    ResourceServer->>ResourceServer: 10. Validate JWT (verify with public key)
+    ResourceServer->>ResourceServer: 11. Extract claims & check permissions
+    ResourceServer->>Client: 12. Return protected resource
+```
+
+</details>
+
 ## Benefits of OAuth 2.0 + JWT
 
 - **Stateless Authentication**: No server-side session storage
@@ -283,13 +381,71 @@ Combining OAuth 2.0 with JWT provides a powerful, scalable authentication and au
 
 Resource server validates JWT signature using public key from authorization server. No network call needed for validation.
 
+<details>
+<summary><strong>Diagram: Resource Server JWT Validation</strong></summary>
+
+```mermaid
+graph LR
+    A[Client] -->|JWT Token| B[Resource Server]
+    B --> C{Validate Signature<br/>with Public Key}
+    C -->|Valid| D[Extract Claims]
+    C -->|Invalid| E[Reject]
+    D --> F[Authorize Request]
+    
+    G[Authorization Server] -.->|Public Key| B
+    
+    style B fill:#fff4e1
+    style C fill:#fce4ec
+    style G fill:#e1f5ff
+```
+
+</details>
+
 ### Pattern 2: Token Introspection
 
 For opaque tokens or additional validation, resource server calls authorization server's introspection endpoint.
 
+<details>
+<summary><strong>Diagram: Token Introspection Flow</strong></summary>
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant ResourceServer as Resource Server
+    participant AuthServer as Authorization Server
+
+    Client->>ResourceServer: Request with Opaque Token
+    ResourceServer->>AuthServer: Introspect token
+    AuthServer->>AuthServer: Validate token
+    AuthServer-->>ResourceServer: Token metadata (active, scope, etc.)
+    ResourceServer->>ResourceServer: Check permissions
+    ResourceServer-->>Client: Return resource or 403
+```
+
+</details>
+
 ### Pattern 3: Token Refresh
 
 Client uses refresh token to obtain new access token when current token expires, without re-authentication.
+
+<details>
+<summary><strong>Diagram: Token Refresh Flow</strong></summary>
+
+```mermaid
+sequenceDiagram
+    participant Client
+    participant ResourceServer as Resource Server
+    participant AuthServer as Authorization Server
+
+    Client->>ResourceServer: Request with expired JWT
+    ResourceServer-->>Client: 401 Unauthorized
+    Client->>AuthServer: POST /token (refresh_token)
+    AuthServer->>AuthServer: Validate refresh token
+    AuthServer->>AuthServer: Generate new JWT
+    AuthServer-->>Client: New access token + refresh token
+    Client->>ResourceServer: Retry with new JWT
+    ResourceServer-->>Client: Return resource
+```
 
 # Spring Security OAuth2
 
@@ -311,6 +467,51 @@ Spring Security provides comprehensive support for OAuth 2.0 and JWT through Spr
 - Handles user authentication
 - Supports multiple grant types
 - Can issue JWT or opaque tokens
+
+<details>
+<summary><strong>Spring Security OAuth2 Architecture</strong></summary>
+
+```mermaid
+graph TB
+    subgraph "Client Application"
+        A[Web/Mobile App]
+    end
+    
+    subgraph "Authorization Server"
+        B[OAuth2 Authorization Server]
+        C[User Authentication]
+        D[Token Generation]
+        E[JWT Signing]
+        F[Client Registry]
+    end
+    
+    subgraph "Resource Server"
+        G[Protected APIs]
+        H[JWT Validation]
+        I[Claims Extraction]
+        J[Authorization Check]
+    end
+    
+    A -->|1. Authorization Request| B
+    B -->|2. User Login| C
+    C -->|3. Generate Token| D
+    D -->|4. Sign JWT| E
+    E -->|5. Return JWT| A
+    A -->|6. API Request with JWT| G
+    G -->|7. Validate JWT| H
+    H -->|8. Extract Claims| I
+    I -->|9. Check Permissions| J
+    J -->|10. Return Resource| A
+    
+    B -.->|Public Key| H
+    
+    style B fill:#e1f5ff
+    style G fill:#fff4e1
+    style E fill:#e8f5e9
+    style H fill:#fce4ec
+```
+
+</details>
 
 ## Key Features
 
@@ -341,13 +542,60 @@ Spring Security provides comprehensive support for OAuth 2.0 and JWT through Spr
 
 Application acts as resource server, validating tokens issued by external authorization server (e.g., Keycloak, Auth0).
 
+<details>
+<summary><strong>Diagram: Resource Server Only</strong></summary>
+
+```mermaid
+graph LR
+    A[External Auth Server<br/>Keycloak/Auth0] -->|Issues JWT| B[Your Application<br/>Resource Server]
+    C[Client] -->|JWT Token| B
+    B -->|Validates JWT| A
+    
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+```
+
+</details>
+
 ### Use Case 2: Authorization Server
 
 Application acts as authorization server, issuing tokens for other applications to use.
 
+<details>
+<summary><strong>Diagram: Authorization Server</strong></summary>
+
+```mermaid
+graph TB
+    A[Your Application<br/>Authorization Server] -->|Issues JWT| B[Client App 1]
+    A -->|Issues JWT| C[Client App 2]
+    A -->|Issues JWT| D[Client App 3]
+    
+    B -->|JWT| E[Resource Server 1]
+    C -->|JWT| F[Resource Server 2]
+    D -->|JWT| G[Resource Server 3]
+    
+    style A fill:#e1f5ff
+```
+
+</details>
+
 ### Use Case 3: Combined Server
 
 Application acts as both authorization server and resource server, issuing and validating its own tokens.
+
+<details>
+<summary><strong>Diagram: Combined Server</strong></summary>
+
+```mermaid
+graph TB
+    A[Your Application<br/>Auth + Resource Server] -->|Issues JWT| B[Client]
+    B -->|JWT Token| A
+    A -->|Validates JWT| A
+    
+    style A fill:#e8f5e9
+```
+
+</details>
 
 ## Best Practices
 
@@ -385,11 +633,69 @@ For implementation details and code examples, see [Spring Security OAuth2 & JWT 
 
 Session-based authentication is a stateful authentication mechanism where the server maintains session state and identifies users through session identifiers (typically stored in cookies).
 
+<details>
+<summary><strong>Session vs Token Authentication</strong></summary>
+
+```mermaid
+graph TB
+    subgraph "Session-Based Authentication"
+        A1[User Login] --> B1[Server Creates Session]
+        B1 --> C1[Session ID in Cookie]
+        C1 --> D1[Server Validates Session]
+        D1 --> E1[Session Store Lookup]
+        E1 --> F1[Grant Access]
+    end
+    
+    subgraph "Token-Based Authentication (JWT)"
+        A2[User Login] --> B2[Server Issues JWT]
+        B2 --> C2[JWT Token]
+        C2 --> D2[Server Validates JWT]
+        D2 --> E2[Verify Signature]
+        E2 --> F2[Extract Claims]
+        F2 --> G2[Grant Access]
+    end
+    
+    style B1 fill:#fff4e1
+    style E1 fill:#e1f5ff
+    style B2 fill:#e8f5e9
+    style E2 fill:#fce4ec
+```
+
+</details>
+
 ## How Session Authentication Works
 
 1. **Login**: User provides credentials → Server validates → Creates session → Stores session data → Returns session ID (cookie)
 2. **Subsequent Requests**: Client sends session ID (cookie) → Server validates session → Grants access
 3. **Logout**: Server invalidates session → Client removes cookie
+
+<details>
+<summary><strong>Session Authentication Flow</strong></summary>
+
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Client as Client Browser
+    participant Server as Application Server
+    participant SessionStore as Session Store<br/>(Redis/JDBC)
+
+    User->>Client: 1. Enter credentials
+    Client->>Server: 2. POST /login (credentials)
+    Server->>Server: 3. Validate credentials
+    Server->>SessionStore: 4. Create session
+    SessionStore-->>Server: 5. Session ID
+    Server->>Client: 6. Set-Cookie: JSESSIONID
+    Client->>Server: 7. Request with Cookie
+    Server->>SessionStore: 8. Validate session
+    SessionStore-->>Server: 9. Session valid
+    Server->>Client: 10. Return resource
+    User->>Client: 11. Logout
+    Client->>Server: 12. POST /logout
+    Server->>SessionStore: 13. Invalidate session
+    Server->>Client: 14. Clear cookie
+```
+
+</details>
 
 ## Spring Session Framework
 
@@ -457,13 +763,71 @@ Spring Session provides an API and implementations for managing user session inf
 
 Use external session store (Redis/JDBC) to share sessions across multiple application instances. Essential for horizontal scaling and high availability.
 
+<details>
+<summary><strong>Diagram: Distributed Session Clustering</strong></summary>
+
+```mermaid
+graph TB
+    A[Load Balancer] --> B[App Instance 1]
+    A --> C[App Instance 2]
+    A --> D[App Instance 3]
+    
+    B --> E[Redis/JDBC<br/>Session Store]
+    C --> E
+    D --> E
+    
+    F[User] -->|Session Cookie| A
+    
+    style E fill:#e1f5ff
+    style A fill:#fff4e1
+```
+
+</details>
+
 #### Pattern 2: Remember Me Functionality
 
 Extend session lifetime for trusted devices using persistent tokens. Separate from main session timeout for better security.
 
+<details>
+<summary><strong>Diagram: Remember Me Functionality</strong></summary>
+
+```mermaid
+graph LR
+    A[User Login] --> B{Remember Me?}
+    B -->|Yes| C[Create Persistent Token]
+    B -->|No| D[Regular Session]
+    C --> E[Store in Database]
+    E --> F[Long-lived Cookie]
+    D --> G[Session Cookie]
+    
+    style C fill:#e8f5e9
+    style D fill:#fff4e1
+```
+
+</details>
+
 #### Pattern 3: Session Management API
 
 Provide REST endpoints for session introspection and management. Useful for admin interfaces and security monitoring.
+
+<details>
+<summary><strong>Diagram: Session Management API</strong></summary>
+
+```mermaid
+graph TB
+    A[Admin Interface] -->|GET /api/sessions| B[Session Management API]
+    B --> C[Session Store]
+    C -->|Session Data| B
+    B -->|Active Sessions| A
+    
+    D[User] -->|Session Cookie| E[Application]
+    E --> C
+    
+    style B fill:#e1f5ff
+    style C fill:#fff4e1
+```
+
+</details>
 
 ### Security Considerations
 
@@ -474,9 +838,6 @@ Provide REST endpoints for session introspection and management. Useful for admi
 - **Session Storage**: Encrypt sensitive session data, especially in distributed stores
 
 For implementation details and code examples, see [Spring Session Implementation](./dev/Spring_Session.md).
-
-
-## Tips & Problems
 
 ### log4j & gradle find dependency
 
