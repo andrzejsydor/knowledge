@@ -22,6 +22,8 @@ tags: [AI, Prompt]
 
 ## [Sider](https://chromewebstore.google.com/detail/sider-pasek-chatgpt-+-vis/difoiogjjojoaoomphldepapgpbgkhkb)
 
+## [ABACUS.AI](https://abacus.ai/chat_llm-ent)
+
 ## [There's An AI](https://theresanai.com/)
 
 # Prompts
