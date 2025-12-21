@@ -24,7 +24,6 @@ tags: [AI, Prompt]
 
 ## [ABACUS.AI](https://abacus.ai/chat_llm-ent)
 
-## [There's An AI](https://theresanai.com/)
 
 # Prompts
 
