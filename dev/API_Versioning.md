@@ -17,6 +17,17 @@ This document outlines common strategies for versioning APIs, discussing their p
 
 ---
 
+## Comparison
+
+| Strategy | Example | Pros | Cons |
+| :--- | :--- | :--- | :--- |
+| **URI Path Versioning** | `/api/v1/resource` | Easy to implement, explicit, cache-friendly | URI changes, potentially breaking bookmarks |
+| **Query Parameter Versioning** | `/api/resource?version=1` | Easy to implement, explicit | Harder to cache, less readable |
+| **Header Versioning (Custom)** | `X-API-Version: 1` | URLs stay clean | Requires client headers, harder to test in browser |
+| **Media Type Versioning** | `Accept: application/vnd.myapi.v1+json` | Semantically correct, clean URLs | Complex to implement/test |
+
+---
+
 ## URI Path Versioning
 
 - **Description**: The version number is included in the URL path (e.g., `/api/v1/resource`).
