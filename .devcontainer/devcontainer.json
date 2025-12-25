@@ -1,0 +1,13 @@
+{
+  "name": "knowledge-devcontainer",
+  "image": "alpine:3.20",
+  "postCreateCommand": "apk add --no-cache git",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "eamodio.gitlens"
+      ]
+    }
+  }
+}
+
