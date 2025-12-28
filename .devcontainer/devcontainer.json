@@ -1,7 +1,7 @@
 {
   "name": "knowledge-devcontainer",
   "image": "alpine:3.20",
-  "postCreateCommand": "apk add --no-cache git",
+  "postCreateCommand": "apk add --no-cache git openssh && mkdir -p ~/.ssh && chmod 700 ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts",
   "customizations": {
     "vscode": {
       "extensions": [
