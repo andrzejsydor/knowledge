@@ -42,6 +42,8 @@ aliases:
 
 [Logseq](https://logseq.com/)
 
+[Capacities](capacities.io)
+
 [recall](https://www.getrecall.ai/pricing)
 
 ## Methodologies
