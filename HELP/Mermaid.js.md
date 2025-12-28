@@ -1,3 +1,9 @@
+---
+tags:
+  - Help
+aliases:
+  - Help
+---
 
 # Mermaid
 
