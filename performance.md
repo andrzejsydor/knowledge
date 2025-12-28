@@ -5,7 +5,7 @@ tags:
 
 # Performance
 
-# Tools
+## Tools
 
 ## [k6](https://k6.io/) [GitHub/k6](https://github.com/grafana/k6)
 
