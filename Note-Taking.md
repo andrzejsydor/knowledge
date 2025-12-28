@@ -40,6 +40,8 @@ aliases:
 
 [Obsidian](https://obsidian.md/)
 
+[Logseq](https://logseq.com/)
+
 [recall](https://www.getrecall.ai/pricing)
 
 ## Methodologies
