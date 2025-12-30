@@ -46,6 +46,8 @@ aliases:
 
 [recall](https://www.getrecall.ai/pricing)
 
+[Kortex](https://kortex.co/)
+
 ## Methodologies
 
 - **The Cornell Method**: A systematic format for condensing and organizing notes. It divides the page into three sections: cues, notes, and summary. This method encourages active recall and synthesis of information.
