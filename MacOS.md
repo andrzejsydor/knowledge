@@ -1,94 +1,99 @@
 ---
-description: "Always-apply markdown structure rules (migrated from .cursorrules)"
-alwaysApply: true
----
-
-# Cursor Rules for Knowledge Base
-
-## Markdown File Structure
-
-Every Markdown page should follow this structure:
-
-1. **YAML Frontmatter** (required)
-   - Must include `tags` array with relevant topics
-   ```yaml
-   ---
-   tags:
-     - Topic1
-     - Topic2
-   ---
-   ```
-
-2. **Main Heading** (required)
-   - Single `# Title` at the top after frontmatter
-
-3. **Table of Contents** (required)
-   - Must be included after the main heading
-   - Use markdown links to section anchors
-   - Format:
-   ```markdown
-   ---
-   - [Section 1](#section-1)
-   - [Section 2](#section-2)
-     - [Subsection](#subsection)
-   - [Links](#links)
-   ---
-   ```
-
-4. **Summary Section** (recommended)
-   - Brief overview of the document content
-   - Placed after the table of contents
-
-5. **Content Sections**
-   - Use `##` for main sections
-   - Use `###` for subsections
-   - Keep hierarchy consistent
-
-## Formatting Guidelines
-
-- Use tables for comparisons and structured data
-- Use code blocks with language specification for code snippets
-- Use `<details>` tags for collapsible long code examples
-- Include links to external resources where relevant
-- Use horizontal rules `---` to separate major sections
-
-## Example Template
-
-```markdown
----
 tags:
-  - Tag1
-  - Tag2
+  - MacOS
 ---
 
-# Page Title
+# MacOS
 
 ---
-- [Section 1](#section-1)
-- [Section 2](#section-2)
-- [Links](#links)
+- [Summary](#summary)
+- [Install](#install)
+  - [Homebrew](#homebrew)
+  - [Initial Apps](#initial-apps)
+- [Tips](#tips)
+  - [Showing Hidden Files via Mac Finder](#showing-hidden-files-via-mac-finder)
+- [Apps](#apps)
+  - [Commander](#commander)
+  - [Window Management](#window-management)
+  - [System Stats](#system-stats)
+- [Problems](#problems)
+  - [Problem 5000 / 7000 blocked](#problem-5000--7000-blocked)
+  - [Port mappings](#port-mappings)
 ---
 
 ## Summary
 
-Brief description of what this document covers.
+Notes for setting up MacOS: install Homebrew, core CLI tools, common desktop apps, a quick Finder tip, and references for troubleshooting port conflicts.
 
-## Section 1
+## Install
 
-Content here...
+### Homebrew
 
-## Section 2
+[https://brew.sh](https://brew.sh)  
+Install Homebrew first, then use it for CLI tools and casks.
 
-Content here...
+#### CLI tools
 
-## Links
-
-- [Resource Name](url)
+```bash
+brew install git bat lnav
 ```
 
-## When Creating or Editing Pages
+Resources:
+- [BAT - a cat clone with wings](https://github.com/sharkdp/bat)
+- [The Logfile Navigator](https://lnav.org/)
 
-- Always check if table of contents exists; add if missing
-- Keep table of contents synchronized with actual sections
-- Use kebab-case for anchor links (e.g., `#section-name`)
-- Maintain consistent indentation in nested lists
+#### Initial Apps
+
+```bash
+brew install --cask iterm2
+brew install --cask visual-studio-code
+brew install --cask postman
+brew install --cask intellij-idea
+brew install --cask google-chrome
+brew install --cask drawio
+# Optional:
+# brew install --cask rectangle
+# brew install plantuml
+```
+
+## Tips
+
+### Showing hidden files via Mac Finder
+
+Command + Shift + . (period)
+
+## Apps
+
+### Commander
+
+[Commander One](https://mac.eltima.com/commander-one-purchase.html)
+
+promo code: **CMNDRMT-30**
+
+### Window Management
+
+[Rectangle](https://rectangleapp.com/)
+
+[Magnet](https://apps.apple.com/us/app/magnet/id441258766?mt=12)
+
+### System Stats
+
+```bash
+brew install --cask stats
+```
+
+## Problems
+
+### Problem 5000 / 7000 blocked
+
+Why is Control Center on Monterey listening to port 5000 and port 7000?
+
+https://developer.apple.com/forums/thread/682332
+
+### Port mappings
+
+```bash
+lsof -nP | grep LISTEN
+```
+
+https://forums.docker.com/t/port-mappings-are-not-released/10565/33
