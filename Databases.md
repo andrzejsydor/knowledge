@@ -60,26 +60,51 @@ Supports multiple data models (e.g., document, graph, relational) within a singl
 
 ## Transaction Isolation Levels
 
-Transaction isolation levels define how concurrent transactions interact with each other, controlling the trade-off between data consistency and performance. They are part of the **ACID** properties (Atomicity, Consistency, **Isolation**, Durability).
+Isolation determines how transaction integrity is maintained and how changes made by one transaction are visible to others.
 
-### Isolation Levels Overview
+| Isolation Level | Dirty Read | Non-Repeatable Read | Phantom Read |
+| --- | --- | --- | --- |
+| **Read Uncommitted** | ✅ Allowed | ✅ Allowed | ✅ Allowed |
+| **Read Committed** | ❌ Prevented | ✅ Allowed | ✅ Allowed |
+| **Repeatable Read** | ❌ Prevented | ❌ Prevented | ✅ Allowed |
+| **Serializable** | ❌ Prevented | ❌ Prevented | ❌ Prevented |
 
-| Level | Dirty Read | Non-Repeatable Read | Phantom Read | Performance |
-|-------|:----------:|:-------------------:|:------------:|:-----------:|
-| Read Uncommitted | ✓ Possible | ✓ Possible | ✓ Possible | Fastest |
-| Read Committed | ✗ Prevented | ✓ Possible | ✓ Possible | Fast |
-| Repeatable Read | ✗ Prevented | ✗ Prevented | ✓ Possible | Moderate |
-| Serializable | ✗ Prevented | ✗ Prevented | ✗ Prevented | Slowest |
+**Definitions:**
 
-### Anomalies Explained
+* **Dirty Read:** Reading uncommitted data.
+* **Non-Repeatable Read:** Reading the same row twice gets different values (because someone updated it).
+* **Phantom Read:** Running the same query twice gets a different set of rows (because someone inserted/deleted rows).
 
-- **Dirty Read**: Reading uncommitted changes from another transaction that may be rolled back.
-- **Non-Repeatable Read**: Reading the same row twice yields different values because another transaction modified it.
-- **Phantom Read**: Re-executing a query returns new rows that were inserted by another committed transaction.
+---
 
-### When to Use Each Level
+### 1. Read Uncommitted
 
-- **Read Uncommitted**: Rarely used; only for approximate analytics where dirty reads are acceptable.
-- **Read Committed**: General-purpose default; good balance for most OLTP workloads.
-- **Repeatable Read**: When you need consistent reads within a transaction (e.g., financial reports).
-- **Serializable**: Critical transactions requiring full isolation (e.g., bank transfers, inventory updates).
+This is the lowest level of isolation. Transactions are allowed to read data that has been modified by other transactions but not yet committed.
+
+* **Key Characteristic:** "Dirty Reads" are allowed.
+* **Pros:** Fastest performance; no locking overhead.
+* **Cons:** Extremely risky. You might read data that is essentially "rolled back" or never actually existed in a final state.
+
+### 2. Read Committed
+
+This restricts a transaction to reading only data that has been permanently committed. It guarantees that you never read temporary or aborted changes.
+
+* **Key Characteristic:** Prevents Dirty Reads.
+* **Note:** This is the **default** setting for many popular databases (e.g., PostgreSQL, SQL Server).
+* **Cons:** Does not guarantee that if you read a row twice in the same transaction, you will get the same result (Non-Repeatable Reads).
+
+### 3. Repeatable Read
+
+This level guarantees that if a transaction reads a row, subsequent reads of that same row within the same transaction will yield the same data, even if other transactions change it in the meantime.
+
+* **Key Characteristic:** Prevents Dirty Reads and Non-Repeatable Reads.
+* **Cons:** "Phantom Reads" are still possible (where new rows matching a search criteria are added by another user appearing as "phantoms" in subsequent queries).
+* **Note:** This is the default in MySQL (InnoDB).
+
+### 4. Serializable
+
+The highest and strictest level. It emulates serial transaction execution, as if transactions were run one after another rather than concurrently.
+
+* **Key Characteristic:** Prevents **all** anomalies: Dirty Reads, Non-Repeatable Reads, and Phantom Reads.
+* **Pros:** Perfect data consistency.
+* **Cons:** Lowest concurrency and performance. High probability of transaction timeouts or deadlocks.
