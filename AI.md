@@ -68,6 +68,8 @@ As a Senior Developer, please create the Jira task description based on the foll
 
 [Zapier](https://zapier.com/app/home)
 
+[Gemini CLI](https://geminicli.com/)
+
 # #Link AI 
 
 [OpenAI](https://openai.com/)
