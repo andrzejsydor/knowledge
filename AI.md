@@ -39,7 +39,7 @@ tags: [AI, Prompt, GEMs]
 [Prompt Engineering Guide](https://www.promptingguide.ai/)
 
 ### English teacher
-Act as a professional English teacher. I want to practice Conditionals (Zero, 1st, 2nd, 3rd, and Mixed).
+Act as a professional English teacher. I want to practice Conditionals (Zero, 1st, 2nd, 3rd, and Mixed, Passive Voice, Reported Speech).
 Please give me one sentence in Polish containing a conditional structure. I will translate it into English.
 
 After I answer:
