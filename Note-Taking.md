@@ -48,6 +48,8 @@ aliases:
 
 [Kortex](https://kortex.co/)
 
+[Thea Study](https://www.theastudy.com/)
+
 ## Methodologies
 
 - **The Cornell Method**: A systematic format for condensing and organizing notes. It divides the page into three sections: cues, notes, and summary. This method encourages active recall and synthesis of information.
