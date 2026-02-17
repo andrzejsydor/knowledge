@@ -16,32 +16,32 @@ This decoupling allows each layer to scale independently -- you can add brokers 
 ```mermaid
 graph TB
     subgraph Clients
-        P1[Producer 1]
-        P2[Producer 2]
-        C1[Consumer 1]
-        C2[Consumer 2]
-        C3[Consumer 3]
+        P1["Producer 1"]
+        P2["Producer 2"]
+        C1["Consumer 1"]
+        C2["Consumer 2"]
+        C3["Consumer 3"]
     end
 
-    subgraph "Compute Layer (Stateless)"
-        B1[Broker 1]
-        B2[Broker 2]
-        B3[Broker 3]
+    subgraph Compute_Layer["Compute Layer - Stateless"]
+        B1["Broker 1"]
+        B2["Broker 2"]
+        B3["Broker 3"]
     end
 
-    subgraph "Storage Layer (Stateful)"
-        BK1[BookKeeper 1]
-        BK2[BookKeeper 2]
-        BK3[BookKeeper 3]
-        BK4[BookKeeper 4]
+    subgraph Storage_Layer["Storage Layer - Stateful"]
+        BK1["BookKeeper 1"]
+        BK2["BookKeeper 2"]
+        BK3["BookKeeper 3"]
+        BK4["BookKeeper 4"]
     end
 
-    subgraph "Tiered Storage (Cold Data)"
-        S3[AWS S3 / GCS / Azure Blob]
+    subgraph Tiered_Storage["Tiered Storage - Cold Data"]
+        OBJ["AWS S3 / GCS / Azure Blob"]
     end
 
-    subgraph "Metadata & Discovery"
-        ZK[ZooKeeper / Metadata Store]
+    subgraph Metadata["Metadata and Discovery"]
+        ZK["ZooKeeper / Metadata Store"]
     end
 
     P1 --> B1
@@ -57,14 +57,14 @@ graph TB
     B3 --> BK3
     B3 --> BK4
 
-    BK1 -.->|offload| S3
-    BK2 -.->|offload| S3
+    BK1 -.->|offload| OBJ
+    BK2 -.->|offload| OBJ
 
     B1 --- ZK
     B2 --- ZK
     B3 --- ZK
 
-    style S3 fill:#f9f,stroke:#333,stroke-width:1px
+    style OBJ fill:#f9f,stroke:#333,stroke-width:1px
     style ZK fill:#ffd,stroke:#333,stroke-width:1px
 ```
 
@@ -85,25 +85,25 @@ graph TB
 
 ```mermaid
 graph LR
-    subgraph "Exclusive"
-        T1[Topic] --> C1_1[Consumer A]
-        T1 -.-x C1_2[Consumer B]
+    subgraph Exclusive
+        T1["Topic"] --> C1_1["Consumer A"]
+        T1 -..-> C1_2["Consumer B ✗"]
     end
 
-    subgraph "Shared (Round Robin)"
-        T2[Topic] --> C2_1[Consumer A]
-        T2 --> C2_2[Consumer B]
-        T2 --> C2_3[Consumer C]
+    subgraph Shared["Shared - Round Robin"]
+        T2["Topic"] --> C2_1["Consumer A"]
+        T2 --> C2_2["Consumer B"]
+        T2 --> C2_3["Consumer C"]
     end
 
-    subgraph "Failover"
-        T3[Topic] --> C3_1["Consumer A (active)"]
-        T3 -.-x C3_2["Consumer B (standby)"]
+    subgraph Failover
+        T3["Topic"] --> C3_1["Consumer A - active"]
+        T3 -..-> C3_2["Consumer B - standby"]
     end
 
-    subgraph "Key_Shared"
-        T4[Topic] -->|key=1,3| C4_1[Consumer A]
-        T4 -->|key=2,4| C4_2[Consumer B]
+    subgraph Key_Shared
+        T4["Topic"] -->|"key 1+3"| C4_1["Consumer A"]
+        T4 -->|"key 2+4"| C4_2["Consumer B"]
     end
 
     style C1_2 fill:#ddd,stroke:#999
@@ -116,19 +116,19 @@ Pulsar uses a **segment-oriented architecture** where topics are backed by order
 
 ```mermaid
 graph LR
-    subgraph "Topic Segments (Time →)"
-        S1[Segment 1<br/>Sealed] --> S2[Segment 2<br/>Sealed] --> S3[Segment 3<br/>Sealed] --> S4["Segment 4<br/>(Active)"]
+    subgraph Segments["Topic Segments over Time"]
+        SEG1["Segment 1 - Sealed"] --> SEG2["Segment 2 - Sealed"] --> SEG3["Segment 3 - Sealed"] --> SEG4["Segment 4 - Active"]
     end
 
-    S1 -->|offloaded| TS[Tiered Storage<br/>S3 / GCS / Azure]
-    S2 -->|offloaded| TS
+    SEG1 -->|offloaded| TS["Tiered Storage<br>S3 / GCS / Azure"]
+    SEG2 -->|offloaded| TS
 
-    S3 --> BK[BookKeeper<br/>Hot Storage]
-    S4 --> BK
+    SEG3 --> BK["BookKeeper<br>Hot Storage"]
+    SEG4 --> BK
 
-    style S1 fill:#e8e8e8,stroke:#999
-    style S2 fill:#e8e8e8,stroke:#999
-    style S4 fill:#90EE90,stroke:#333
+    style SEG1 fill:#e8e8e8,stroke:#999
+    style SEG2 fill:#e8e8e8,stroke:#999
+    style SEG4 fill:#90EE90,stroke:#333
     style TS fill:#f9f,stroke:#333
     style BK fill:#87CEEB,stroke:#333
 ```
@@ -159,28 +159,28 @@ The most widely adopted distributed event streaming platform. Uses a **distribut
 ```mermaid
 graph TB
     subgraph Producers
-        P1[Producer]
-        P2[Producer]
+        P1["Producer 1"]
+        P2["Producer 2"]
     end
 
-    subgraph "Kafka Cluster"
-        subgraph "Broker 1"
-            TP1[Topic-A Partition 0<br/>Leader]
-            TP2[Topic-B Partition 1<br/>Replica]
+    subgraph Kafka_Cluster["Kafka Cluster"]
+        subgraph Broker_1["Broker 1"]
+            TP1["TopicA-P0 Leader"]
+            TP2["TopicB-P1 Replica"]
         end
-        subgraph "Broker 2"
-            TP3[Topic-A Partition 1<br/>Leader]
-            TP4[Topic-B Partition 0<br/>Replica]
+        subgraph Broker_2["Broker 2"]
+            TP3["TopicA-P1 Leader"]
+            TP4["TopicB-P0 Replica"]
         end
-        subgraph "Broker 3"
-            TP5[Topic-A Partition 0<br/>Replica]
-            TP6[Topic-B Partition 0<br/>Leader]
+        subgraph Broker_3["Broker 3"]
+            TP5["TopicA-P0 Replica"]
+            TP6["TopicB-P0 Leader"]
         end
     end
 
-    subgraph "Consumer Group"
-        CG1[Consumer 1<br/>← Partition 0]
-        CG2[Consumer 2<br/>← Partition 1]
+    subgraph Consumer_Group["Consumer Group"]
+        CG1["Consumer 1<br>reads Partition 0"]
+        CG2["Consumer 2<br>reads Partition 1"]
     end
 
     P1 --> TP1
@@ -210,15 +210,15 @@ Traditional **message-oriented middleware** implementing the AMQP protocol stand
 
 ```mermaid
 graph LR
-    P[Producer] --> E[Exchange]
+    P["Producer"] --> E["Exchange"]
 
-    E -->|routing key: order.*| Q1[Queue: Orders]
-    E -->|routing key: payment.*| Q2[Queue: Payments]
-    E -->|routing key: #| Q3[Queue: Audit Log]
+    E -->|"routing: order"| Q1["Queue: Orders"]
+    E -->|"routing: payment"| Q2["Queue: Payments"]
+    E -->|"routing: all"| Q3["Queue: Audit Log"]
 
-    Q1 --> C1[Consumer 1]
-    Q2 --> C2[Consumer 2]
-    Q3 --> C3[Consumer 3]
+    Q1 --> C1["Consumer 1"]
+    Q2 --> C2["Consumer 2"]
+    Q3 --> C3["Consumer 3"]
 
     style E fill:#FFD700,stroke:#333
     style Q1 fill:#87CEEB,stroke:#333
@@ -291,29 +291,25 @@ Microsoft Azure's managed messaging and event streaming services.
 
 ```mermaid
 graph TB
-    subgraph "Pulsar: Decoupled"
-        direction TB
-        PB[Brokers<br/>Stateless] --> PBS[BookKeeper<br/>Storage]
-        PBS --> PTS[Tiered Storage]
-        PM[Metadata Store] --- PB
+    subgraph Pulsar_Decoupled["Pulsar - Decoupled"]
+        PB["Brokers<br>Stateless"] --> PBS["BookKeeper<br>Storage"]
+        PBS --> PTS["Tiered Storage"]
+        PM["Metadata Store"] --- PB
     end
 
-    subgraph "Kafka: Coupled"
-        direction TB
-        KB["Broker 1<br/>+ Storage"] --- KB2["Broker 2<br/>+ Storage"] --- KB3["Broker 3<br/>+ Storage"]
-        KZ[ZK / KRaft] --- KB
+    subgraph Kafka_Coupled["Kafka - Coupled"]
+        KB["Broker 1 + Storage"] --- KB2["Broker 2 + Storage"] --- KB3["Broker 3 + Storage"]
+        KZ["ZK / KRaft"] --- KB
     end
 
-    subgraph "RabbitMQ: Broker-Centric"
-        direction TB
-        RB[Broker<br/>Exchanges + Queues] --> RQ1[Queue 1]
-        RB --> RQ2[Queue 2]
-        RB --> RQ3[Queue 3]
+    subgraph RabbitMQ_Broker["RabbitMQ - Broker Centric"]
+        RB["Broker<br>Exchanges + Queues"] --> RQ1["Queue 1"]
+        RB --> RQ2["Queue 2"]
+        RB --> RQ3["Queue 3"]
     end
 
-    subgraph "NATS: Embedded"
-        direction TB
-        NB[NATS Server<br/>Core] --> NJS[JetStream<br/>Embedded Storage]
+    subgraph NATS_Embedded["NATS - Embedded"]
+        NB["NATS Server<br>Core"] --> NJS["JetStream<br>Embedded Storage"]
     end
 
     style PB fill:#87CEEB,stroke:#333
@@ -380,26 +376,26 @@ Use this flowchart to help choose the right platform:
 
 ```mermaid
 graph TD
-    START[Need a messaging platform?] --> Q1{Need managed<br/>service?}
+    START["Need a messaging platform?"] --> Q1{"Need managed service?"}
 
-    Q1 -->|Yes| Q_CLOUD{Which cloud?}
-    Q_CLOUD -->|AWS| AWS[AWS SQS / SNS / Kinesis]
-    Q_CLOUD -->|Azure| AZURE[Azure Service Bus / Event Hubs]
-    Q_CLOUD -->|GCP| GCP[Google Pub/Sub]
+    Q1 -->|Yes| Q_CLOUD{"Which cloud?"}
+    Q_CLOUD -->|AWS| AWS["AWS SQS / SNS / Kinesis"]
+    Q_CLOUD -->|Azure| AZURE["Azure Service Bus / Event Hubs"]
+    Q_CLOUD -->|GCP| GCP["Google Pub/Sub"]
 
-    Q1 -->|No, self-hosted| Q2{Primary use case?}
+    Q1 -->|"No - self-hosted"| Q2{"Primary use case?"}
 
-    Q2 -->|High-throughput<br/>event streaming| Q3{Need independent<br/>scaling of compute<br/>& storage?}
-    Q3 -->|Yes| PULSAR[Apache Pulsar]
-    Q3 -->|No, mature<br/>ecosystem matters| KAFKA[Apache Kafka]
+    Q2 -->|"High-throughput streaming"| Q3{"Need independent scaling?"}
+    Q3 -->|Yes| PULSAR["Apache Pulsar"]
+    Q3 -->|"No - ecosystem matters"| KAFKA["Apache Kafka"]
 
-    Q2 -->|Task queues &<br/>request/reply| RABBIT[RabbitMQ]
+    Q2 -->|"Task queues"| RABBIT["RabbitMQ"]
 
-    Q2 -->|IoT / Edge /<br/>Lightweight| NATS[NATS]
+    Q2 -->|"IoT / Edge"| NATS["NATS"]
 
-    Q2 -->|E-commerce<br/>transactions| ROCKET[RocketMQ]
+    Q2 -->|"E-commerce txns"| ROCKET["RocketMQ"]
 
-    Q2 -->|Multi-tenant<br/>platform| PULSAR
+    Q2 -->|"Multi-tenant platform"| PULSAR
 
     style PULSAR fill:#87CEEB,stroke:#333
     style KAFKA fill:#FFD700,stroke:#333
