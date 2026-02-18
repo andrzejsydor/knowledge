@@ -450,6 +450,18 @@ This gives you the best of both worlds: rapid development for simple operations 
 
 ---
 
+## Added Article Summary: "The Great Debate" (Medium)
+
+Source: [The Great Debate: When to Choose JPA/Hibernate vs. jOOQ in Your Spring Boot App](https://medium.com/@mesfandiari77/the-great-debate-when-to-choose-jpa-hibernate-vs-jooq-in-your-spring-boot-app-6e5f549fd5dd)
+
+- The article frames the decision as **context-dependent**, not a one-size-fits-all winner.
+- **JPA/Hibernate** is strongest for rapid CRUD development and early delivery speed.
+- **jOOQ** is strongest for complex SQL, explicit query control, compile-time safety, and predictable performance.
+- The key trade-off is **productivity vs control**: JPA is faster to start, jOOQ is safer and clearer for advanced query workloads.
+- Practical recommendation: choose **JPA for CRUD-heavy flows**, **jOOQ for SQL-heavy flows**, and use a **hybrid approach** when both are present in the same service.
+
+---
+
 ## Further Reading
 
 | Topic | Link |
@@ -462,4 +474,4 @@ This gives you the best of both worlds: rapid development for simple operations 
 | When to choose JPA vs jOOQ | [Medium: The Great Debate](https://medium.com/@mesfandiari77/the-great-debate-when-to-choose-jpa-hibernate-vs-jooq-in-your-spring-boot-app-6e5f549fd5dd) |
 | jOOQ vs JDBC official comparison | [jOOQ Docs: Comparison with JDBC](https://www.jooq.org/doc/latest/manual/sql-execution/comparison-with-jdbc/) |
 | jOOQ Licensing details | [jOOQ Licensing](https://www.jooq.org/legal/licensing) |
-| QueryDSL vs jOOQ and others | [StackOverflow: Comparing Query DSLs](https://stackoverflow.com/questions/7242388/comparing-querydsl-jooq-jequel-activejdbc-iciql-and-other-query-dsls) |
+| QueryDSL vs jOOQ and others | [StackOverflow: Comparing Query DSLs](https://stackoverflow.com/questions/7242388/comparing-querydsl-jooq-jequel-activejdbc-iciql-and-other-query-dsls) |**
