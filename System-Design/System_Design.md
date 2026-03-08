@@ -24,6 +24,13 @@ A comprehensive guide to preparing for and passing system design interviews at t
     - [Solution 4: Design a Key-Value Store](#solution-4-design-a-key-value-store)
     - [Solution 5: Design a Notification System](#solution-5-design-a-notification-system)
     - [Solution 6: Design a Paste Service (Pastebin)](#solution-6-design-a-paste-service-pastebin)
+    - [Solution 7: Design a Distributed Message Queue (Kafka)](#solution-7-design-a-distributed-message-queue-kafka)
+    - [Solution 8: Design a Distributed Task Scheduler](#solution-8-design-a-distributed-task-scheduler)
+    - [Solution 9: Design a Global-Scale Payment System](#solution-9-design-a-global-scale-payment-system)
+    - [Solution 10: Design a Multi-Tenant SaaS Platform](#solution-10-design-a-multi-tenant-saas-platform)
+    - [Solution 11: Design a Real-Time Collaborative Editor (Google Docs)](#solution-11-design-a-real-time-collaborative-editor-google-docs)
+    - [Solution 12: Design a Distributed Cache (Redis Cluster)](#solution-12-design-a-distributed-cache-redis-cluster)
+    - [Solution 13: Design a Search Engine (Google-scale)](#solution-13-design-a-search-engine-google-scale)
 
 ---
 
@@ -2458,6 +2465,2180 @@ GET /api/v1/users/{id}/pastes?page=1&limit=20  (list user's pastes)
 | "How would you add collaborative editing?" | Operational Transformation or CRDTs (like Google Docs). This fundamentally changes the architecture — the paste becomes a real-time document. Significantly more complex. |
 | "How would you add search across all public pastes?" | Index public paste content in Elasticsearch. Provide full-text search with language and date filters. Rebuild the index from S3 if needed. |
 | "How do you prevent sensitive data leaks?" | Scan pastes for patterns (API keys, passwords, credit card numbers) using regex + ML. Flag or auto-expire matches. Offer client-side encryption for private pastes. |
+
+---
+
+### Solution 7: Design a Distributed Message Queue (Kafka)
+
+> **Difficulty:** Staff Level
+> **Time allocation:** 45-60 minutes
+> **Real-world references:** Apache Kafka, Amazon Kinesis, Apache Pulsar, RabbitMQ, Google Pub/Sub
+
+---
+
+#### Opening Statement
+
+> "A distributed message queue is a foundational piece of infrastructure — it decouples producers and consumers, absorbs traffic spikes, and enables event-driven architectures. The design space ranges from a simple task queue (like SQS) to a full distributed commit log (like Kafka). Let me clarify which end of the spectrum we're targeting."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Topics** | Producers publish messages to named topics |
+| FR2 | **Publish** | Producers append messages to a topic; messages are ordered within a partition |
+| FR3 | **Subscribe** | Consumer groups subscribe to topics; each message is delivered to exactly one consumer per group |
+| FR4 | **Replay** | Consumers can seek to any offset and re-read messages (unlike traditional queues that delete on ack) |
+| FR5 | **Retention** | Messages are retained for a configurable duration (e.g., 7 days) regardless of consumption |
+| FR6 | **Ordering** | Messages are strictly ordered within a partition |
+| FR7 | **At-least-once delivery** | Every message is delivered at least once; exactly-once as an optional higher guarantee |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Throughput** | 1 million messages/sec (write), 2 million messages/sec (read) |
+| NFR2 | **Latency** | < 10ms end-to-end (producer publish to consumer receive) for p99 |
+| NFR3 | **Durability** | Zero message loss for acknowledged writes |
+| NFR4 | **Availability** | 99.99% for the write path |
+| NFR5 | **Scalability** | Horizontally scalable to thousands of topics and petabytes of data |
+| NFR6 | **Message size** | Up to 1 MB per message (configurable) |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Messages/sec (write) | 1,000,000 |
+| Average message size | 1 KB |
+| Write throughput | 1 GB/sec |
+| Replication factor | 3 → 3 GB/sec total disk write |
+| Retention | 7 days |
+| Storage for 7 days | 1 GB/sec * 86,400 * 7 = ~600 TB (before compression) |
+| With compression (4x) | ~150 TB |
+| Brokers (10 TB usable each) | ~15 brokers minimum |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────────────┐     ┌──────────────────┐
+│   Producer A     │     │   Producer B     │
+└────────┬─────────┘     └────────┬─────────┘
+         │                        │
+         │    messages partitioned by key
+         │    (or round-robin if no key)
+         │                        │
+         ▼                        ▼
+┌────────────────────────────────────────────────────┐
+│                   Broker Cluster                    │
+│                                                    │
+│  ┌────────────┐  ┌────────────┐  ┌────────────┐   │
+│  │  Broker 0  │  │  Broker 1  │  │  Broker 2  │   │
+│  │            │  │            │  │            │   │
+│  │ Topic-A    │  │ Topic-A    │  │ Topic-A    │   │
+│  │  Part 0   │  │  Part 1   │  │  Part 2   │   │
+│  │  (leader)  │  │  (leader)  │  │  (leader)  │   │
+│  │            │  │            │  │            │   │
+│  │ Topic-A    │  │ Topic-A    │  │ Topic-A    │   │
+│  │  Part 1   │  │  Part 0   │  │  Part 0   │   │
+│  │  (replica) │  │  (replica) │  │  (replica) │   │
+│  └────────────┘  └────────────┘  └────────────┘   │
+│                                                    │
+└───────────────────────┬────────────────────────────┘
+                        │
+          ┌─────────────┼─────────────┐
+          │             │             │
+          ▼             ▼             ▼
+   ┌────────────┐┌────────────┐┌────────────┐
+   │ Consumer   ││ Consumer   ││ Consumer   │
+   │ Group A    ││ Group A    ││ Group B    │
+   │ Instance 1 ││ Instance 2 ││ Instance 1 │
+   └────────────┘└────────────┘└────────────┘
+
+┌─────────────────────────────────────────────┐
+│  Coordination Service (ZooKeeper / KRaft)   │
+│  - Broker membership                        │
+│  - Partition leader election                │
+│  - Consumer group coordination              │
+└─────────────────────────────────────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: The Commit Log — Core Storage Abstraction
+
+A topic is divided into **partitions**. Each partition is an **ordered, immutable, append-only commit log** stored on disk.
+
+```
+Partition 0:
+┌──────┬──────┬──────┬──────┬──────┬──────┬──────┬─────┐
+│ Off 0│ Off 1│ Off 2│ Off 3│ Off 4│ Off 5│ Off 6│ ... │
+│ msg  │ msg  │ msg  │ msg  │ msg  │ msg  │ msg  │     │
+└──────┴──────┴──────┴──────┴──────┴──────┴──────┴─────┘
+                        ▲                    ▲
+                        │                    │
+                  Consumer A            Consumer B
+                  (offset=3)            (offset=6)
+```
+
+**On-disk structure per partition:**
+
+```
+/data/topic-A/partition-0/
+    00000000000000000000.log        ← segment file (contains messages)
+    00000000000000000000.index      ← sparse offset-to-position index
+    00000000000000000000.timeindex  ← timestamp-to-offset index
+    00000000000005242880.log        ← next segment (after the first fills up)
+    00000000000005242880.index
+    ...
+```
+
+**Why sequential disk I/O is fast enough:**
+
+- Messages are appended sequentially — no random seeks on writes
+- The OS page cache handles read caching transparently
+- Segment files are read sequentially by consumers
+- Sequential disk throughput on modern SSDs: 500 MB/sec+; on HDDs: 100+ MB/sec
+- This means disk is not the bottleneck — network usually is
+
+**Zero-copy transfer (sendfile):**
+
+When a consumer reads messages, the broker uses the `sendfile()` system call to transfer data directly from the page cache to the network socket, bypassing user-space memory entirely. This reduces CPU usage and memory copies dramatically.
+
+```
+Traditional:  disk → page cache → application buffer → socket buffer → NIC
+Zero-copy:    disk → page cache → ────────────────────→ NIC
+```
+
+##### Deep Dive B: Partitioning and Ordering
+
+**Partition assignment:**
+
+```
+Producer decides the partition:
+  1. Key specified:   partition = hash(key) % num_partitions
+  2. No key:          round-robin across partitions (or sticky partitioning)
+```
+
+**Ordering guarantee:**
+
+- Messages with the same key always go to the same partition → **strictly ordered**
+- Messages across partitions have **no ordering guarantee**
+- This is a fundamental trade-off: more partitions = more parallelism, but ordering only within a partition
+
+**Example: Order events**
+
+```
+Key = order_id = "ORD-123"
+  → hash("ORD-123") % 6 = partition 2
+  → All events for ORD-123 (created, paid, shipped, delivered) land in partition 2
+  → Consumer processes them in order
+```
+
+**How many partitions?**
+
+| Factor | Guidance |
+|--------|----------|
+| Target throughput | If one partition sustains 10 MB/sec and you need 100 MB/sec → at least 10 partitions |
+| Consumer parallelism | Number of partitions = max consumers in a group (one partition per consumer) |
+| Over-partitioning cost | More partitions = more open file handles, more memory, slower leader elections |
+| Rule of thumb | Start with `max(throughput_need / per_partition_throughput, expected_consumer_count)` |
+
+##### Deep Dive C: Replication and Durability
+
+```
+Topic-A, Partition 0, Replication Factor = 3:
+
+  Broker 0 (Leader):   [msg0, msg1, msg2, msg3, msg4, msg5]
+  Broker 1 (Follower): [msg0, msg1, msg2, msg3, msg4]        ← slightly behind
+  Broker 2 (Follower): [msg0, msg1, msg2, msg3, msg4, msg5]  ← caught up
+
+  ISR (In-Sync Replicas) = {Broker 0, Broker 2}
+  Broker 1 is lagging → temporarily out of ISR
+```
+
+**Key concepts:**
+
+| Concept | Description |
+|---------|-------------|
+| **Leader** | One broker is the leader for each partition; all reads and writes go through the leader |
+| **Followers** | Replicas that continuously fetch from the leader to stay in sync |
+| **ISR (In-Sync Replicas)** | The set of replicas that are "caught up" within a configurable lag threshold |
+| **High Watermark** | The offset up to which all ISR members have replicated — only messages below this offset are visible to consumers |
+
+**Producer acknowledgment modes:**
+
+| `acks` setting | Behavior | Durability | Latency |
+|----------------|----------|------------|---------|
+| `acks=0` | Fire and forget; don't wait for any ack | Lowest (may lose data) | Fastest |
+| `acks=1` | Wait for leader to write to its local log | Moderate (leader crash before replication = loss) | Low |
+| `acks=all` | Wait for all ISR members to acknowledge | Highest (survives any single broker failure) | Highest |
+
+**Leader election on failure:**
+
+```
+1. Leader (Broker 0) crashes
+2. Controller detects failure (via ZooKeeper session timeout or KRaft heartbeat)
+3. Controller selects a new leader from the ISR (e.g., Broker 2)
+4. Broker 2 becomes the new leader
+5. Producers and consumers are redirected (via metadata refresh)
+6. If ISR is empty (all replicas down), either:
+   a. Wait for an ISR member to come back (higher availability gap)
+   b. Elect any replica, even out-of-sync (risk of data loss) — configurable
+```
+
+##### Deep Dive D: Consumer Groups and Offset Management
+
+```
+Topic-A has 4 partitions: P0, P1, P2, P3
+
+Consumer Group "order-service" (3 instances):
+  Consumer 1 → P0, P1
+  Consumer 2 → P2
+  Consumer 3 → P3
+
+Consumer Group "analytics" (2 instances):
+  Consumer 4 → P0, P1
+  Consumer 5 → P2, P3
+```
+
+Each consumer group independently tracks its position (offset) per partition. Adding/removing consumers triggers a **rebalance** that reassigns partitions.
+
+**Offset storage:**
+
+Consumers periodically commit their current offset to a special internal topic (`__consumer_offsets`). On restart, the consumer resumes from its last committed offset.
+
+```
+Commit strategies:
+  - Auto-commit: every N seconds (simple, but may re-process messages after crash)
+  - Manual commit after processing: at-least-once (re-process on crash)
+  - Manual commit before processing: at-most-once (may lose messages on crash)
+```
+
+**Exactly-once semantics (transactional):**
+
+For exactly-once processing (e.g., consume from topic A, process, produce to topic B):
+
+```
+1. Producer sends messages in a transaction (idempotent producer + transaction ID)
+2. Broker deduplicates using (producer_id, sequence_number)
+3. Consumer reads only committed messages (isolation.level=read_committed)
+4. Offset commit and output message are part of the same atomic transaction
+```
+
+##### Deep Dive E: Eliminating ZooKeeper (KRaft)
+
+Traditional Kafka depends on ZooKeeper for metadata, leader election, and cluster coordination. KRaft replaces ZooKeeper with a Raft-based consensus protocol built into the brokers themselves.
+
+| Aspect | ZooKeeper | KRaft |
+|--------|-----------|-------|
+| Dependency | External system to operate | Self-contained |
+| Metadata storage | ZooKeeper znodes | Internal `__cluster_metadata` topic |
+| Max partitions | ~200K (ZooKeeper bottleneck) | Millions |
+| Operational complexity | Two systems to manage | One system |
+| Leader election speed | Seconds | Sub-second |
+
+---
+
+#### Step 5 — Scaling, Reliability, and Operations
+
+| Concern | Solution |
+|---------|----------|
+| **Throughput scaling** | Add partitions to a topic (consumers scale linearly). Add brokers and rebalance partition leaders. |
+| **Storage scaling** | Add brokers with more disk. Tiered storage: hot data on local SSD, cold data offloaded to S3. |
+| **Broker failure** | ISR-based replication; leader election from ISR. No data loss if `acks=all` and `min.insync.replicas >= 2`. |
+| **Consumer lag** | Monitor consumer lag (offset delta between latest and committed). Alert if lag grows. Scale consumer instances. |
+| **Backpressure** | Producers back off on broker overload (retry with backoff). Consumers process at their own pace (messages are retained). |
+| **Multi-datacenter** | MirrorMaker 2 / Cluster Linking to replicate topics across datacenters. Active-passive or active-active. |
+| **Monitoring** | Track under-replicated partitions, ISR shrinks, consumer lag, request latency, disk usage. |
+| **Data retention** | Time-based (7 days) or size-based (100 GB per partition). Compacted topics for changelog use cases. |
+
+**Log compaction (for changelog/state topics):**
+
+```
+Before compaction:
+  key=A, val=1  |  key=B, val=2  |  key=A, val=3  |  key=B, val=4  |  key=A, val=5
+
+After compaction:
+  key=B, val=4  |  key=A, val=5
+  (only the latest value per key is retained)
+```
+
+Used for: consumer offset storage, database CDC (change data capture), materialized view state.
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How is this different from RabbitMQ/SQS?" | Traditional queues delete messages on acknowledgment and don't support replay. Kafka retains messages and allows consumers to seek freely. Kafka is an event log; RabbitMQ is a task queue. |
+| "How would you implement dead letter queues?" | After N failed processing attempts, publish the message to a DLQ topic. A separate consumer or manual process inspects and reprocesses DLQ messages. |
+| "How would you handle message schema evolution?" | Use a Schema Registry (Avro, Protobuf, JSON Schema). Producers register schemas; consumers validate compatibility. Supports backward/forward compatibility. |
+| "How would you build event sourcing on top of this?" | Each aggregate's events go to a compacted topic keyed by aggregate ID. Replay the topic to rebuild state. Use Kafka Streams or a consumer to maintain materialized views. |
+
+---
+
+### Solution 8: Design a Distributed Task Scheduler
+
+> **Difficulty:** Staff Level
+> **Time allocation:** 45-60 minutes
+> **Real-world references:** Airflow, Celery Beat, Kubernetes CronJob, AWS Step Functions, Temporal, Quartz
+
+---
+
+#### Opening Statement
+
+> "A distributed task scheduler orchestrates the execution of tasks — both one-time and recurring — across a fleet of workers. The key challenges are reliable execution guarantees, exactly-once scheduling of cron jobs, distributed locking, and graceful failure handling. Let me nail down the scope."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **One-time tasks** | Schedule a task to execute at a specific future time |
+| FR2 | **Recurring tasks** | Schedule tasks using cron expressions (e.g., "every 5 minutes", "daily at 3 AM UTC") |
+| FR3 | **Task priorities** | High-priority tasks are executed before low-priority ones |
+| FR4 | **Retry with backoff** | Failed tasks are retried with configurable strategy |
+| FR5 | **Task dependencies** | A task can depend on the completion of other tasks (DAG execution) |
+| FR6 | **Execution history** | Full log of task executions: status, duration, output, errors |
+| FR7 | **Distributed execution** | Tasks are distributed across a pool of workers |
+| FR8 | **Cancellation** | Running or scheduled tasks can be cancelled |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **At-least-once execution** | Every scheduled task runs at least once (never silently dropped) |
+| NFR2 | **No duplicate cron execution** | A cron job scheduled for 3 AM runs exactly once, even with multiple scheduler instances |
+| NFR3 | **Scalability** | Support 100K+ scheduled tasks and 10K concurrent executions |
+| NFR4 | **Execution accuracy** | Tasks fire within 1 second of their scheduled time |
+| NFR5 | **Availability** | 99.99% — scheduler failures must not permanently lose scheduled tasks |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Scheduled tasks (stored) | 100,000 |
+| Tasks triggered per minute (peak) | 10,000 |
+| Average task execution time | 30 seconds |
+| Concurrent running tasks | 5,000 |
+| Workers | 200 (25 tasks each concurrently) |
+| Task record size | ~1 KB |
+| Execution history/day | 10K/min * 60 * 24 = ~14.4M records/day |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Clients (API / UI / CLI)                                    │
+│  - Create, update, delete, cancel tasks                      │
+│  - View execution history and status                         │
+└───────────────────────────┬──────────────────────────────────┘
+                            │
+                            ▼
+┌──────────────────────────────────────────────────────────────┐
+│  API Service (Stateless)                                     │
+│  - CRUD for task definitions                                 │
+│  - Validates cron expressions and task configs                │
+└───────────────────────────┬──────────────────────────────────┘
+                            │
+              ┌─────────────┼──────────────┐
+              │             │              │
+              ▼             ▼              ▼
+┌──────────────────┐ ┌────────────┐ ┌────────────────────────────┐
+│  Task Store      │ │  Lock      │ │  Scheduler Instances       │
+│  (PostgreSQL)    │ │  Service   │ │  (N replicas, HA)          │
+│                  │ │  (Redis /  │ │                            │
+│  - definitions   │ │  etcd)     │ │  ┌──────────────────────┐  │
+│  - schedules     │ │            │ │  │  Tick Engine         │  │
+│  - exec history  │ └────────────┘ │  │  (polls every 1 sec) │  │
+└──────────────────┘                │  └──────────┬───────────┘  │
+                                    │             │              │
+                                    │  ┌──────────▼───────────┐  │
+                                    │  │  Enqueue tasks due   │  │
+                                    │  │  for execution       │  │
+                                    │  └──────────┬───────────┘  │
+                                    └─────────────┼──────────────┘
+                                                  │
+                                                  ▼
+                                    ┌──────────────────────────┐
+                                    │  Task Queue              │
+                                    │  (Kafka / Redis Streams  │
+                                    │   with priority lanes)   │
+                                    └─────────────┬────────────┘
+                                                  │
+                           ┌──────────────────────┼──────────────────┐
+                           │                      │                  │
+                           ▼                      ▼                  ▼
+                    ┌─────────────┐        ┌─────────────┐    ┌─────────────┐
+                    │  Worker 1   │        │  Worker 2   │    │  Worker N   │
+                    │  - Pull task│        │  - Pull task│    │  - Pull task│
+                    │  - Execute  │        │  - Execute  │    │  - Execute  │
+                    │  - Report   │        │  - Report   │    │  - Report   │
+                    └─────────────┘        └─────────────┘    └─────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: The Tick Engine — Ensuring Tasks Fire On Time
+
+The scheduler must continuously scan for tasks that are due and enqueue them.
+
+**Approach: Database polling with partitioned ownership**
+
+```
+Every 1 second, each scheduler instance:
+
+1. Acquire ownership of a shard of tasks (by hash range):
+   Scheduler 0 owns tasks where hash(task_id) % N == 0
+   Scheduler 1 owns tasks where hash(task_id) % N == 1
+   ...
+
+2. Query for tasks due in this shard:
+   SELECT * FROM tasks
+   WHERE shard = :my_shard
+     AND next_run_at <= NOW()
+     AND status = 'scheduled'
+   ORDER BY priority DESC, next_run_at ASC
+   LIMIT 1000
+   FOR UPDATE SKIP LOCKED;
+
+3. For each task:
+   a. Set status = 'enqueued'
+   b. Compute next_run_at (from cron expression) and update
+   c. Publish to task queue
+```
+
+**`FOR UPDATE SKIP LOCKED`** is critical — it allows multiple scheduler instances to scan concurrently without blocking each other or double-picking.
+
+**Why not a delay queue / timer wheel?**
+
+| Approach | Pros | Cons |
+|----------|------|------|
+| **DB polling** | Simple, durable, tasks survive restarts | Polling overhead, slightly less precise |
+| **Timer wheel (in-memory)** | Very precise, low overhead | State lost on crash; need WAL or replication |
+| **Delay queue (Redis ZSET)** | Fast, sorted by due time | Redis memory limits; less durable than DB |
+
+**Recommendation:** Database polling for durability at staff level. Use Redis ZSET as a secondary acceleration layer for sub-second precision when needed.
+
+##### Deep Dive B: Exactly-Once Cron Scheduling
+
+The hardest problem: ensuring a cron job fires exactly once per scheduled interval, even with N scheduler instances.
+
+**Approach: Idempotent schedule expansion**
+
+```
+Cron: "0 * * * *" (every hour)
+Current time: 14:00:03
+
+1. Scheduler computes: next_run_at for this cron = 14:00:00
+2. Creates an execution record with a unique key:
+   idempotency_key = "task_123:2024-01-15T14:00:00"
+3. INSERT ... ON CONFLICT (idempotency_key) DO NOTHING
+
+If two schedulers try to create the same execution at 14:00 → only one succeeds.
+The "losing" scheduler sees a conflict and does nothing.
+```
+
+**Schema:**
+
+```sql
+CREATE TABLE task_executions (
+    id               UUID PRIMARY KEY,
+    task_id          UUID NOT NULL REFERENCES tasks(id),
+    idempotency_key  VARCHAR(255) UNIQUE NOT NULL,
+    status           VARCHAR(20) NOT NULL DEFAULT 'pending',
+    scheduled_at     TIMESTAMPTZ NOT NULL,
+    started_at       TIMESTAMPTZ,
+    completed_at     TIMESTAMPTZ,
+    worker_id        VARCHAR(100),
+    attempt          INTEGER NOT NULL DEFAULT 1,
+    output           TEXT,
+    error            TEXT,
+    created_at       TIMESTAMPTZ NOT NULL
+);
+```
+
+##### Deep Dive C: Worker Execution Model
+
+```
+Worker lifecycle:
+
+1. Pull task from queue (blocking pop with timeout)
+2. Send heartbeat: "I'm working on task X" (every 10 seconds)
+3. Execute the task (invoke user function, HTTP call, container, etc.)
+4. On success: update status = 'succeeded', report result
+5. On failure: update status = 'failed', report error
+6. If max retries not reached: re-enqueue with backoff delay
+```
+
+**Heartbeats and dead worker detection:**
+
+```
+- Each worker writes heartbeats to Redis: SET worker:{id}:task:{exec_id} TTL=30s
+- A monitor process scans for expired heartbeats
+- If heartbeat expires → worker assumed dead → task re-enqueued
+```
+
+**Retry strategy:**
+
+```
+retry_delay = base_delay * (2 ^ attempt) + random_jitter
+
+Attempt 1: 1s  + jitter
+Attempt 2: 2s  + jitter
+Attempt 3: 4s  + jitter
+Attempt 4: 8s  + jitter
+...
+Max retries: configurable per task (default: 3)
+After max retries: mark as 'permanently_failed', alert owner
+```
+
+##### Deep Dive D: Task Dependencies (DAG Execution)
+
+For complex workflows, tasks can form a Directed Acyclic Graph:
+
+```
+        ┌─────┐
+        │  A  │
+        └──┬──┘
+       ┌───┴───┐
+       ▼       ▼
+    ┌─────┐ ┌─────┐
+    │  B  │ │  C  │
+    └──┬──┘ └──┬──┘
+       └───┬───┘
+           ▼
+        ┌─────┐
+        │  D  │  (runs only after B AND C succeed)
+        └─────┘
+```
+
+**Implementation:**
+
+```sql
+CREATE TABLE task_dependencies (
+    task_id          UUID REFERENCES tasks(id),
+    depends_on       UUID REFERENCES tasks(id),
+    PRIMARY KEY (task_id, depends_on)
+);
+```
+
+**Execution logic:**
+
+```
+When a task completes:
+  1. Find all tasks that depend on it
+  2. For each dependent task:
+     a. Check if ALL its dependencies are now 'succeeded'
+     b. If yes → enqueue the dependent task
+     c. If any dependency 'failed' → optionally fail the dependent (configurable)
+```
+
+---
+
+#### Step 5 — Scaling and Reliability
+
+| Concern | Solution |
+|---------|----------|
+| **Scheduler HA** | N scheduler instances, each owns a shard of tasks. If one dies, its shard is redistributed (via consistent hashing or DB-based lease). |
+| **Worker scaling** | Stateless workers; scale horizontally based on queue depth. Auto-scale using queue lag metrics. |
+| **Clock drift** | Use NTP-synchronized clocks. Store all times in UTC. For cron evaluation, use a well-tested library. |
+| **Queue backpressure** | If workers can't keep up, queue grows. Alert on queue depth. Priority lanes ensure critical tasks run first. |
+| **Long-running tasks** | Workers hold a lease (via heartbeat). If a task runs for hours, the heartbeat keeps it alive. Set a max execution timeout. |
+| **Poison pill tasks** | If a task fails immediately on every attempt (bad config, OOM), mark as permanently failed after max retries. Don't let it clog the queue. |
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How is this different from Airflow?" | Airflow is primarily a DAG scheduler for batch data pipelines with a Python DSL. This design is a general-purpose task scheduler for any workload. Airflow's scheduler is single-active (HA is limited); this design shards scheduling. |
+| "How would you handle tasks across time zones?" | Store all schedules in UTC internally. Convert at the API layer. Handle DST transitions carefully (a cron job at 2:30 AM might not exist during spring-forward). |
+| "How would you add rate limiting to task execution?" | Per-task-type rate limiter (token bucket in Redis). Workers check the rate limiter before executing. If rate exceeded, re-enqueue with a short delay. |
+| "How would you support task chaining without DAGs?" | Return value of task A is passed as input to task B. Implemented as a lightweight dependency: B depends on A, and A's output is stored and forwarded. Similar to Celery chains. |
+
+---
+
+### Solution 9: Design a Global-Scale Payment System
+
+> **Difficulty:** Staff Level
+> **Time allocation:** 45-60 minutes
+> **Real-world references:** Stripe, PayPal, Square, Adyen, internal payment platforms at Amazon/Uber
+
+---
+
+#### Opening Statement
+
+> "A payment system is one of the most challenging distributed systems to design because the cost of failure is measured in dollars, trust, and regulatory penalties. Correctness trumps performance. The system must be exactly-once for charges, fully auditable, and compliant with financial regulations. Let me clarify scope."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Accept payments** | Process credit/debit card payments, bank transfers, and digital wallets |
+| FR2 | **Idempotent charges** | Every payment request has an idempotency key — retries must not double-charge |
+| FR3 | **Refunds** | Full and partial refunds |
+| FR4 | **Multi-currency** | Support payments in 50+ currencies with real-time exchange rates |
+| FR5 | **Payment status** | Track payment lifecycle: created → processing → succeeded / failed |
+| FR6 | **Webhooks** | Notify merchants of payment events (succeeded, failed, refunded) |
+| FR7 | **Ledger** | Double-entry bookkeeping for every money movement |
+| FR8 | **Reconciliation** | Daily reconciliation between internal ledger and bank/PSP statements |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Correctness** | Zero double-charges, zero lost payments — this is non-negotiable |
+| NFR2 | **Availability** | 99.99% for the payment API |
+| NFR3 | **Latency** | < 2 seconds for payment processing (p99) |
+| NFR4 | **Throughput** | 10,000 transactions per second (TPS) peak |
+| NFR5 | **Auditability** | Every state change is logged immutably |
+| NFR6 | **Compliance** | PCI DSS Level 1, SOX, PSD2 (EU), regional regulations |
+| NFR7 | **Global** | Operate across multiple regions with data residency requirements |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Peak TPS | 10,000 |
+| Average transaction record | ~2 KB |
+| Transactions/day | 10K TPS * 86,400 = ~864M/day (peak); realistic avg: ~200M/day |
+| Storage/day (transactions) | 200M * 2 KB = ~400 GB |
+| Ledger entries/day (2 per txn) | ~400M entries, ~800 GB |
+| Storage/year | ~150 TB (transactions + ledger + audit log) |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────────────┐
+│  Merchant / App  │
+│  (API Client)    │
+└────────┬─────────┘
+         │  POST /v1/payments  (idempotency key in header)
+         ▼
+┌────────────────────────────────────────────────────────────┐
+│  API Gateway                                               │
+│  - Authentication, rate limiting, TLS termination           │
+│  - Route to Payment Service                                │
+└────────────────────────┬───────────────────────────────────┘
+                         │
+                         ▼
+┌────────────────────────────────────────────────────────────┐
+│  Payment Service (Orchestrator)                            │
+│                                                            │
+│  1. Idempotency check (has this request been seen before?) │
+│  2. Validate payment details                               │
+│  3. Risk / Fraud check                                     │
+│  4. Route to Payment Service Provider (PSP)                │
+│  5. Record result in ledger                                │
+│  6. Send webhook to merchant                               │
+└────────┬──────────┬──────────┬──────────┬──────────────────┘
+         │          │          │          │
+         ▼          ▼          ▼          ▼
+  ┌───────────┐ ┌────────┐ ┌────────┐ ┌───────────────────┐
+  │ Idempotency│ │ Risk   │ │ PSP    │ │ Ledger Service    │
+  │ Store     │ │ Engine │ │ Router │ │ (double-entry)    │
+  │ (Redis +  │ │        │ │        │ └─────────┬─────────┘
+  │  DB)      │ │ ML +   │ │Stripe, │           │
+  └───────────┘ │ Rules  │ │Adyen,  │    ┌──────▼──────┐
+                └────────┘ │Bank API│    │  Ledger DB  │
+                           └───┬────┘    │ (PostgreSQL │
+                               │         │  append-only)│
+                               ▼         └─────────────┘
+                    ┌────────────────┐
+                    │  External PSPs │
+                    │  / Banks       │
+                    └────────────────┘
+
+┌────────────────────────────────────────────────┐
+│  Async Workers                                  │
+│  - Webhook delivery (with retry)               │
+│  - Reconciliation (batch, daily)               │
+│  - Settlement processing                       │
+│  - Reporting and analytics                     │
+└────────────────────────────────────────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Idempotency — Preventing Double Charges
+
+This is the single most critical design element. Network failures, client retries, and load balancer retries can all cause a payment request to arrive multiple times.
+
+**Mechanism:**
+
+```
+1. Client sends: POST /v1/payments
+   Header: Idempotency-Key: "ik_abc123"
+
+2. Payment Service checks idempotency store:
+   a. Key exists AND status = 'succeeded' → return cached response (200 OK)
+   b. Key exists AND status = 'processing' → return 409 Conflict (in-flight)
+   c. Key not found → proceed with payment, store key with status='processing'
+
+3. After PSP response:
+   a. Update idempotency record: status='succeeded' or 'failed', store response
+   b. Return response to client
+```
+
+**Storage:**
+
+```sql
+CREATE TABLE idempotency_keys (
+    key              VARCHAR(255) PRIMARY KEY,
+    merchant_id      UUID NOT NULL,
+    request_hash     VARCHAR(64) NOT NULL,
+    status           VARCHAR(20) NOT NULL,
+    response_code    INTEGER,
+    response_body    JSONB,
+    created_at       TIMESTAMPTZ NOT NULL,
+    expires_at       TIMESTAMPTZ NOT NULL
+);
+```
+
+- TTL of 24-48 hours (clients should not reuse idempotency keys after this)
+- The `request_hash` ensures the same key can't be reused with different payment parameters (prevents misuse)
+
+**Database transaction wrapping:**
+
+```
+BEGIN TRANSACTION;
+  INSERT INTO idempotency_keys (key, status) VALUES ('ik_abc123', 'processing')
+    ON CONFLICT DO NOTHING;
+  -- if insert succeeded (rows affected = 1): continue
+  -- if conflict (rows affected = 0): another request is handling this; return
+  
+  INSERT INTO payments (...) VALUES (...);
+  INSERT INTO ledger_entries (...) VALUES (...);
+COMMIT;
+```
+
+The idempotency insert and the payment record creation happen in the same transaction — no window for inconsistency.
+
+##### Deep Dive B: Double-Entry Ledger
+
+Every money movement is recorded as two balanced entries. This is how banks and financial systems have worked for centuries.
+
+```
+Payment of $100 from customer to merchant:
+
+┌──────────────┬──────────────┬────────┬────────┐
+│ Account      │ Entry Type   │ Amount │ Txn ID │
+├──────────────┼──────────────┼────────┼────────┤
+│ customer_123 │ DEBIT        │ $100   │ tx_001 │
+│ merchant_456 │ CREDIT       │ $100   │ tx_001 │
+└──────────────┴──────────────┴────────┴────────┘
+
+Invariant: SUM(debits) = SUM(credits) — ALWAYS.
+```
+
+**With fees:**
+
+```
+Customer pays $100, platform takes 2.9% + $0.30:
+
+│ customer_123       │ DEBIT  │ $100.00 │ tx_001 │
+│ platform_fees      │ CREDIT │ $3.20   │ tx_001 │  (2.9% + $0.30)
+│ merchant_456       │ CREDIT │ $96.80  │ tx_001 │
+```
+
+**Ledger schema (append-only, immutable):**
+
+```sql
+CREATE TABLE ledger_entries (
+    id               BIGSERIAL PRIMARY KEY,
+    transaction_id   UUID NOT NULL,
+    account_id       UUID NOT NULL,
+    entry_type       VARCHAR(6) NOT NULL CHECK (entry_type IN ('DEBIT', 'CREDIT')),
+    amount           BIGINT NOT NULL,
+    currency         CHAR(3) NOT NULL,
+    description      TEXT,
+    created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+-- CRITICAL: amount stored in smallest unit (cents) as BIGINT
+-- $100.00 → 10000 (avoids floating point errors)
+-- No UPDATE or DELETE allowed on this table (append-only)
+```
+
+**Refund as a reversal:**
+
+```
+Refund of $100 payment:
+
+│ merchant_456 │ DEBIT  │ $96.80  │ tx_002 │  (reverse the credit)
+│ platform_fees│ DEBIT  │ $3.20   │ tx_002 │  (reverse the fee)
+│ customer_123 │ CREDIT │ $100.00 │ tx_002 │  (money back to customer)
+```
+
+Never modify the original entries — always create new reversal entries. This maintains the full audit trail.
+
+##### Deep Dive C: Payment State Machine
+
+```
+                ┌──────────┐
+                │ CREATED  │
+                └────┬─────┘
+                     │  validate, fraud check
+                     ▼
+                ┌──────────┐
+           ┌────│PROCESSING│────┐
+           │    └──────────┘    │
+           │                    │
+    PSP succeeded          PSP declined
+           │                    │
+           ▼                    ▼
+    ┌──────────┐         ┌──────────┐
+    │SUCCEEDED │         │ FAILED   │
+    └────┬─────┘         └──────────┘
+         │
+         │  merchant requests refund
+         ▼
+    ┌──────────┐
+    │REFUNDING │
+    └────┬─────┘
+         │
+    ┌────┴─────┐
+    ▼          ▼
+┌────────┐ ┌────────────┐
+│REFUNDED│ │REFUND_FAILED│
+└────────┘ └────────────┘
+```
+
+Every state transition is:
+1. Validated (can only move along defined edges)
+2. Persisted atomically with the ledger entry
+3. Published as an event (for webhooks, analytics)
+4. Audited (who, when, why)
+
+##### Deep Dive D: PSP Routing and Failover
+
+When a payment is processed, it's sent to an external Payment Service Provider (Stripe, Adyen, bank API). The PSP Router makes intelligent decisions:
+
+```
+PSP Selection Logic:
+  1. Card type + region → eligible PSPs (Visa in EU → Adyen or Stripe)
+  2. Cost optimization → cheapest PSP for this transaction type
+  3. Success rate → route away from PSPs with degraded success rates
+  4. Failover → if primary PSP fails, retry with secondary
+  5. Load balancing → spread across PSPs to avoid concentration risk
+```
+
+**Handling PSP ambiguity (the hardest failure):**
+
+```
+Scenario: We send a charge to Stripe, network times out. Did Stripe charge the card?
+
+Solution:
+  1. We assigned our own idempotency key to the Stripe request
+  2. We retry the same request to Stripe with the same key
+  3. Stripe's idempotency guarantees:
+     - If the original succeeded → returns the same success response
+     - If the original never arrived → processes it now
+  4. We never send to a DIFFERENT PSP after a timeout (would double-charge)
+```
+
+This is why idempotency keys flow end-to-end: client → our system → PSP.
+
+##### Deep Dive E: Reconciliation
+
+Daily reconciliation ensures our ledger matches reality.
+
+```
+┌─────────────────┐     ┌──────────────────────────┐
+│ Internal Ledger │     │ PSP Settlement Report    │
+│ (our records)   │     │ (Stripe daily report)    │
+└────────┬────────┘     └───────────┬──────────────┘
+         │                          │
+         └──────────┬───────────────┘
+                    │
+              ┌─────▼──────┐
+              │ Reconciler │
+              │ (batch job)│
+              └─────┬──────┘
+                    │
+         ┌──────────┼──────────┐
+         │          │          │
+    Matched    Unmatched    Unmatched
+    (OK)       (ours only)  (PSP only)
+                    │          │
+              Investigate  Investigate
+              (missed      (charge we
+               webhook?)    don't know about?)
+```
+
+Mismatches are flagged for manual review. Common causes: delayed webhooks, timezone boundary issues, currency conversion rounding.
+
+---
+
+#### Step 5 — Scaling, Reliability, and Compliance
+
+| Concern | Solution |
+|---------|----------|
+| **Data residency** | EU payments processed and stored in EU region. Route based on card issuer country. Separate database clusters per region. |
+| **PCI DSS compliance** | Never store raw card numbers. Use PSP tokenization. The cardholder data environment (CDE) is isolated with strict network controls. |
+| **High availability** | Multi-AZ deployment. Active-passive database with synchronous replication (zero data loss). If primary AZ fails, promote standby. |
+| **Exactly-once semantics** | Idempotency keys end-to-end. Database transactions for state changes. Ledger append-only (no updates). |
+| **Monitoring** | Track: payment success rate (by PSP, by card type, by region), latency p50/p99, failed reconciliation count, PSP error rates. |
+| **Disaster recovery** | RPO = 0 (no data loss). RTO < 5 minutes. Tested quarterly with chaos engineering. |
+| **Fraud prevention** | Real-time ML scoring on payment attributes (amount, velocity, device fingerprint, geo). Block or 3D-Secure challenge if risk score exceeds threshold. |
+| **Cost optimization** | Route to cheapest PSP for each transaction type while maintaining success rate SLO. A/B test PSP routing changes. |
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How do you handle currency conversion?" | Convert at the PSP (they handle the FX). Record both the original and converted amounts in the ledger. Lock the exchange rate at the time of charge. |
+| "How do you handle partial captures (auth then capture)?" | Two-step: authorize (hold funds) → capture (settle). Authorization expires after ~7 days. Supports partial captures for e-commerce (ship partial order). |
+| "What happens if reconciliation finds a mismatch?" | Alert the finance ops team. Common resolutions: re-fetch the webhook, adjust ledger with a correction entry (never mutate existing entries), escalate to PSP support. |
+| "How would you add subscriptions / recurring billing?" | Separate subscription service with a state machine (active, past_due, cancelled). Scheduler triggers charges on billing dates. Handle card expiry, retry logic for declined charges, dunning emails. |
+
+---
+
+### Solution 10: Design a Multi-Tenant SaaS Platform
+
+> **Difficulty:** Staff Level
+> **Time allocation:** 45-60 minutes
+> **Real-world references:** Salesforce, Slack, Atlassian, AWS (internal multi-tenancy), Grafana Cloud
+
+---
+
+#### Opening Statement
+
+> "Multi-tenancy is an architectural decision with deep implications for data isolation, performance, cost, and operational complexity. The fundamental question is: how do we serve hundreds or thousands of customers on shared infrastructure while making each one feel like they have their own dedicated system? Let me clarify the context."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Tenant onboarding** | Self-service signup creates an isolated tenant with its own workspace |
+| FR2 | **Data isolation** | Tenant A can never see or access Tenant B's data |
+| FR3 | **Per-tenant configuration** | Custom branding, feature flags, retention policies per tenant |
+| FR4 | **Tiered plans** | Free, Pro, Enterprise with different limits and features |
+| FR5 | **Admin panel** | Platform operators can manage tenants, view usage, disable accounts |
+| FR6 | **RBAC per tenant** | Each tenant has its own users, roles, and permissions |
+| FR7 | **API access** | Each tenant gets API keys scoped to their data |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Noisy neighbor protection** | One tenant's heavy usage must not degrade others |
+| NFR2 | **Scale** | Support 10,000+ tenants (ranging from 1 user to 100K users) |
+| NFR3 | **Data residency** | Enterprise tenants may require data stored in a specific region |
+| NFR4 | **Cost efficiency** | Small tenants must be cheap to serve (can't provision per-tenant infra for everyone) |
+| NFR5 | **Availability** | 99.9% for all tenants; 99.99% SLA for Enterprise tier |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Total tenants | 10,000 |
+| Tenant size distribution | 90% small (< 100 users), 9% medium (100-10K), 1% large (10K-100K) |
+| Total users across all tenants | ~2 million |
+| API QPS (total) | 50,000 |
+| Top 1% of tenants generate | ~50% of total QPS |
+| Storage per small tenant | ~100 MB |
+| Storage per large tenant | ~500 GB |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌───────────────────────────────────────────────────────────────────┐
+│  Tenant Users (browsers, API clients)                             │
+└────────────────────────────┬──────────────────────────────────────┘
+                             │
+                             ▼
+┌───────────────────────────────────────────────────────────────────┐
+│  Edge / API Gateway                                               │
+│  - TLS termination                                               │
+│  - Tenant identification (from subdomain, API key, or JWT)        │
+│  - Per-tenant rate limiting                                      │
+│  - Route to correct regional cluster                             │
+└────────────────────────────┬──────────────────────────────────────┘
+                             │
+                             ▼
+┌───────────────────────────────────────────────────────────────────┐
+│  Application Layer (Stateless)                                    │
+│                                                                   │
+│  ┌─────────────────┐  ┌──────────────────┐  ┌────────────────┐   │
+│  │ Tenant Context  │  │ Feature Flag     │  │ RBAC           │   │
+│  │ Middleware      │  │ Service          │  │ Service        │   │
+│  │ (injects        │  │ (per-tenant      │  │ (per-tenant    │   │
+│  │  tenant_id into │  │  feature gates)  │  │  roles/perms)  │   │
+│  │  every request) │  │                  │  │                │   │
+│  └─────────────────┘  └──────────────────┘  └────────────────┘   │
+└────────────────────────────┬──────────────────────────────────────┘
+                             │
+              ┌──────────────┼──────────────┐
+              │              │              │
+              ▼              ▼              ▼
+    ┌──────────────┐  ┌───────────┐  ┌──────────────┐
+    │ Shared Pool  │  │ Dedicated │  │ Shared Queue │
+    │ Database     │  │ Database  │  │ (Kafka)      │
+    │ (small/med   │  │ (large    │  │              │
+    │  tenants)    │  │  tenants) │  │              │
+    └──────────────┘  └───────────┘  └──────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Tenant Data Isolation Models
+
+The most critical architectural decision. Three models exist on a spectrum:
+
+**Model 1: Shared Database, Shared Schema (with tenant_id column)**
+
+```sql
+CREATE TABLE projects (
+    id          UUID PRIMARY KEY,
+    tenant_id   UUID NOT NULL,      ← every table has this
+    name        VARCHAR(255),
+    ...
+);
+
+-- Every query MUST include tenant_id:
+SELECT * FROM projects WHERE tenant_id = 'tenant_123' AND ...
+
+-- Row-Level Security (PostgreSQL):
+CREATE POLICY tenant_isolation ON projects
+    USING (tenant_id = current_setting('app.current_tenant')::UUID);
+```
+
+| Pros | Cons |
+|------|------|
+| Most cost-efficient (one DB for all tenants) | One bug in a query can leak data across tenants |
+| Simple operations (one DB to backup, monitor) | Noisy neighbor risk (one tenant's query slows all) |
+| Easy cross-tenant analytics for the platform | Schema migrations affect all tenants at once |
+
+**Model 2: Shared Database, Separate Schema**
+
+```
+Database: saas_platform
+
+Schema: tenant_123
+  - projects
+  - users
+  - settings
+
+Schema: tenant_456
+  - projects
+  - users
+  - settings
+```
+
+| Pros | Cons |
+|------|------|
+| Stronger isolation than shared schema | Thousands of schemas = operational overhead |
+| Per-tenant migrations possible | Connection pooling harder (one pool per schema) |
+| Easy to export/drop a tenant's data | PostgreSQL may struggle with 10K+ schemas |
+
+**Model 3: Separate Database per Tenant**
+
+```
+Database: tenant_123_db → Cluster A
+Database: tenant_456_db → Cluster A
+Database: tenant_789_db → Cluster B (large tenant, dedicated)
+```
+
+| Pros | Cons |
+|------|------|
+| Strongest isolation | Expensive (small tenants don't justify a whole DB) |
+| Per-tenant performance tuning | Operational nightmare at scale (10K databases) |
+| Easy data residency compliance | Cross-tenant queries impossible |
+
+**Recommended hybrid approach (staff-level answer):**
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  Tier       │  Isolation Model   │  Why                      │
+├─────────────┼────────────────────┼───────────────────────────┤
+│  Free/Small │  Shared schema     │  Cost efficient; RLS for  │
+│  (90%)      │  (tenant_id col)   │  isolation                │
+├─────────────┼────────────────────┼───────────────────────────┤
+│  Medium     │  Shared DB,        │  Better isolation with    │
+│  (9%)       │  separate schema   │  manageable overhead      │
+├─────────────┼────────────────────┼───────────────────────────┤
+│  Enterprise │  Dedicated DB      │  Maximum isolation; meets │
+│  (1%)       │  (own cluster)     │  compliance requirements  │
+└─────────────┴────────────────────┴───────────────────────────┘
+```
+
+A **tenant routing service** maps each tenant_id to its storage location:
+
+```json
+{
+  "tenant_123": { "model": "shared", "cluster": "shared-us-east-1", "schema": "public" },
+  "tenant_789": { "model": "dedicated", "cluster": "ent-tenant-789-eu-west-1" }
+}
+```
+
+This mapping is cached in every application instance and refreshed on tenant provisioning events.
+
+##### Deep Dive B: Noisy Neighbor Protection
+
+The biggest operational challenge in multi-tenancy.
+
+**Layer 1: API Gateway rate limiting (per tenant)**
+
+```yaml
+rate_limits:
+  free:
+    requests_per_minute: 60
+    burst: 10
+  pro:
+    requests_per_minute: 600
+    burst: 100
+  enterprise:
+    requests_per_minute: 6000
+    burst: 1000
+```
+
+**Layer 2: Query-level resource limits**
+
+```sql
+-- PostgreSQL per-tenant statement timeout
+SET statement_timeout = '5s';  -- free tier
+SET statement_timeout = '30s'; -- enterprise
+
+-- Connection pool limits per tenant
+-- Free: max 5 connections
+-- Pro: max 20 connections
+-- Enterprise: dedicated pool
+```
+
+**Layer 3: Compute isolation**
+
+| Strategy | Description |
+|----------|-------------|
+| **Per-tenant thread pools** | Each tenant gets a bounded thread pool. One tenant's slow requests don't starve others. |
+| **Fair-share scheduling** | Weighted round-robin across tenants when resources are contested. |
+| **Dedicated worker pools** | Enterprise tenants route to dedicated pods/instances. |
+| **Circuit breaker per tenant** | If a tenant's requests repeatedly time out, temporarily throttle them. |
+
+**Layer 4: Background job isolation**
+
+Tenant-triggered async jobs (exports, imports, bulk operations) run in isolated queues with per-tenant concurrency limits.
+
+##### Deep Dive C: Tenant-Aware Feature Flags
+
+```json
+{
+  "feature": "advanced_analytics",
+  "rules": [
+    { "tenant_tier": "enterprise", "enabled": true },
+    { "tenant_tier": "pro", "enabled": true },
+    { "tenant_tier": "free", "enabled": false },
+    { "tenant_ids": ["tenant_beta_1", "tenant_beta_2"], "enabled": true }
+  ]
+}
+```
+
+Feature flags control:
+- Which UI features are visible
+- Which API endpoints are accessible
+- Which backend capabilities are active (e.g., SSO, audit logs, custom RBAC)
+- Gradual rollouts of new features (enable for 10% of tenants, then 50%, then 100%)
+
+##### Deep Dive D: Tenant Onboarding and Offboarding
+
+**Onboarding (< 30 seconds for free tier, minutes for enterprise):**
+
+```
+1. Create tenant record in tenant registry
+2. Provision resources based on tier:
+   - Free: assign to shared pool, create tenant_id row
+   - Enterprise: spin up dedicated database, configure networking
+3. Create admin user account
+4. Apply default configuration (branding, limits, feature flags)
+5. Send welcome notification
+```
+
+**Offboarding (tenant deletion):**
+
+```
+1. Soft-delete: mark tenant as 'disabled' → all API calls return 403
+2. Grace period: 30 days (in case of accidental deletion)
+3. Data export: provide downloadable archive to tenant admin
+4. Hard-delete after grace period:
+   - Shared schema: DELETE FROM ... WHERE tenant_id = X (cascade)
+   - Separate schema: DROP SCHEMA tenant_X CASCADE
+   - Dedicated DB: decommission cluster
+5. Purge from all caches, queues, and search indexes
+6. Audit log entry for compliance
+```
+
+---
+
+#### Step 5 — Scaling and Operations
+
+| Concern | Solution |
+|---------|----------|
+| **Tenant routing** | Centralized tenant registry (cached locally). On each request, middleware resolves tenant_id → storage location. |
+| **Database scaling** | Shared pool: vertical scaling + read replicas. When a shared pool gets too large, split tenants across multiple pools (shard by tenant_id range). |
+| **Tenant migration** | Move a growing tenant from shared to dedicated. Use logical replication or dual-write to migrate without downtime. |
+| **Monitoring per tenant** | Tag all metrics, logs, and traces with tenant_id. Dashboards for per-tenant health, usage, and cost. |
+| **Cost attribution** | Track resource usage per tenant (API calls, storage, compute time). Feed into billing and capacity planning. |
+| **Compliance** | Tenant data export (GDPR), data residency routing, audit logs per tenant, encryption at rest with per-tenant keys (enterprise). |
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How do you handle tenant-specific customizations?" | Config-driven (not code forks). Per-tenant settings in a JSON config store. For deep customizations (Enterprise), use a plugin/extension system. |
+| "How do you handle cross-tenant data sharing?" | Explicit sharing model: Tenant A grants Tenant B read access to specific resources. Implemented via access control policies, not by weakening isolation. |
+| "How do you bill tenants?" | Metered billing: track API calls, storage, seats via a usage tracking service. Aggregate daily. Integrate with Stripe Billing for invoicing. |
+| "What if a single large tenant outgrows the platform?" | Migrate to a dedicated cluster (single-tenant deployment with the same codebase). Use the same API, different infrastructure. |
+
+---
+
+### Solution 11: Design a Real-Time Collaborative Editor (Google Docs)
+
+> **Difficulty:** Staff Level
+> **Time allocation:** 45-60 minutes
+> **Real-world references:** Google Docs, Notion, Figma, VS Code Live Share, Etherpad
+
+---
+
+#### Opening Statement
+
+> "A collaborative editor is one of the hardest distributed systems problems because multiple users are simultaneously editing the same document and every user must see a consistent view in real time. The core algorithm challenge — conflict resolution for concurrent edits — is the heart of this design. Let me clarify the scope."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Real-time co-editing** | Multiple users edit the same document simultaneously with < 200ms visible latency |
+| FR2 | **Conflict resolution** | Concurrent edits are merged automatically without data loss |
+| FR3 | **Cursor presence** | See other users' cursors and selections in real time |
+| FR4 | **Version history** | Full revision history with the ability to view/restore any past version |
+| FR5 | **Offline editing** | Users can edit offline; changes sync when reconnected |
+| FR6 | **Rich text** | Support formatting (bold, italic, headers, lists, tables, images) |
+| FR7 | **Permissions** | Owner, editor, commenter, viewer roles per document |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Latency** | < 100ms for local edit to appear on collaborator's screen (same region) |
+| NFR2 | **Consistency** | All users converge to the same document state (eventual consistency with strong convergence) |
+| NFR3 | **Scale** | 100M documents; up to 100 concurrent editors per document |
+| NFR4 | **Availability** | 99.9%; offline mode for resilience |
+| NFR5 | **Durability** | Zero document loss |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Total documents | 100 million |
+| Documents with active editors right now | 500,000 |
+| Edits per second (global) | ~2 million (avg 4 edits/sec per active doc) |
+| Average document size | 50 KB |
+| Total storage | 100M * 50 KB = ~5 TB (documents) + version history |
+| WebSocket connections (concurrent) | ~2 million users online |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  Client (Browser)                                                │
+│  ┌─────────────────────────────────────────────────────────┐     │
+│  │  Local Document Model (in-memory)                       │     │
+│  │  + Local Operation Buffer (unacknowledged ops)          │     │
+│  │  + CRDT / OT Engine (merge remote ops)                  │     │
+│  └──────────────────────────┬──────────────────────────────┘     │
+└─────────────────────────────┼────────────────────────────────────┘
+                              │  WebSocket (bidirectional)
+                              ▼
+┌──────────────────────────────────────────────────────────────────┐
+│  Collaboration Service (Stateful — one session per document)     │
+│                                                                  │
+│  ┌──────────────────┐  ┌─────────────────────────────────────┐   │
+│  │ WebSocket Server │  │ Document Session Manager            │   │
+│  │ (handles          │  │ - Maintains in-memory document state│   │
+│  │  connections)    │  │ - Applies + broadcasts operations   │   │
+│  └──────────────────┘  │ - Manages cursor presence           │   │
+│                        └──────────────────┬──────────────────┘   │
+└───────────────────────────────────────────┼──────────────────────┘
+                                            │
+                         ┌──────────────────┼──────────────────┐
+                         │                  │                  │
+                         ▼                  ▼                  ▼
+              ┌──────────────────┐  ┌──────────────┐  ┌──────────────────┐
+              │ Document Store   │  │ Operations   │  │ Presence Service │
+              │ (S3 + Postgres)  │  │ Log          │  │ (Redis Pub/Sub)  │
+              │                  │  │ (append-only)│  │                  │
+              │ - Latest snapshot│  │ - All ops    │  │ - Who is online  │
+              │ - Version history│  │   since last │  │ - Cursor positions│
+              │                  │  │   snapshot   │  │                  │
+              └──────────────────┘  └──────────────┘  └──────────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Conflict Resolution — OT vs CRDT
+
+This is **the** core algorithmic challenge.
+
+**The problem:** User A and User B both edit position 5 at the same time. User A inserts "X" and User B deletes the character at position 5. How do we merge these into a consistent document?
+
+**Approach 1: Operational Transformation (OT) — used by Google Docs**
+
+```
+Original document: "ABCDE"
+
+User A (at position 2): Insert "X"  → operation: Insert(2, "X")
+User B (at position 4): Delete(4)   → operation: Delete(4)
+
+Without transformation:
+  A applies own op: "ABXCDE"
+  A applies B's op: Delete(4) → "ABXCE"  (deleted 'D')
+
+  B applies own op: "ABCD"
+  B applies A's op: Insert(2, "X") → "ABXCD"
+
+  DIVERGED! A has "ABXCE", B has "ABXCD"
+
+With OT — transform B's op against A's op:
+  A inserted at position 2 (before B's position 4)
+  → B's Delete(4) becomes Delete(5) (shifted by 1)
+  
+  A: "ABXCDE" → Delete(5) → "ABXCE"  ✓
+  B: "ABCD"   → Insert(2,"X") → "ABXCD" → wait...
+
+Actually, both sides must transform each other's ops:
+  Server acts as the single source of truth for operation ordering.
+```
+
+**OT with a central server:**
+
+```
+1. Client generates operation locally (instant feedback)
+2. Sends operation to server
+3. Server transforms the operation against any concurrent ops it has received
+4. Server broadcasts the transformed operation to all other clients
+5. Clients transform and apply the incoming operation against their pending local ops
+```
+
+| Pros | Cons |
+|------|------|
+| Well-proven (Google Docs uses this since 2010) | Complex transformation functions (one per operation type pair) |
+| Central server simplifies correctness | Server is a single point of ordering — harder to decentralize |
+| Works well for text and rich text | Difficult to implement correctly for complex data types |
+
+**Approach 2: CRDTs (Conflict-free Replicated Data Types) — used by Figma, Yjs**
+
+Instead of transforming operations, use a data structure that **merges automatically** without conflicts.
+
+**Text CRDT (e.g., YATA algorithm in Yjs):**
+
+```
+Each character has a unique, immutable ID: (clientID, clock)
+
+"HELLO" is stored as:
+  (A,0)='H'  (A,1)='E'  (A,2)='L'  (A,3)='L'  (A,4)='O'
+
+User A inserts 'X' between 'E' and 'L':
+  New char: (A,5)='X', parent=(A,1), right=(A,2)
+
+User B inserts 'Y' between 'E' and 'L':
+  New char: (B,0)='Y', parent=(A,1), right=(A,2)
+
+Both insertions are at the same position. The CRDT uses a deterministic
+tie-breaking rule (e.g., higher clientID wins left position):
+  Result: "HE" + Y + X + "LLO" = "HEYXLLO" (or "HEXYLLO" depending on rule)
+  Both clients arrive at the same result WITHOUT a central server.
+```
+
+| Pros | Cons |
+|------|------|
+| Works peer-to-peer (no central server needed) | Higher memory overhead (metadata per character) |
+| Offline-first by design | Tombstone accumulation (deleted chars are marked, not removed) |
+| Mathematically guaranteed convergence | Complex to implement from scratch |
+| Libraries exist (Yjs, Automerge) | Performance tuning needed for large documents |
+
+**Recommendation:** Use a **CRDT library (Yjs)** with a **central relay server** for simplicity. The server doesn't need to understand the CRDT — it just relays and persists operations. This gets the best of both: decentralized correctness with centralized simplicity.
+
+##### Deep Dive B: Real-Time Communication Layer
+
+```
+Client connects to Collaboration Service via WebSocket:
+
+1. Client opens document → WebSocket handshake
+2. Server loads document state (from snapshot + pending ops)
+3. Server sends current state + version vector to client
+4. Client syncs local state
+
+Ongoing editing:
+  Client → Server: { type: "op", doc_id: "d_123", ops: [...], version: 42 }
+  Server → All other clients: { type: "op", doc_id: "d_123", ops: [...transformed...], version: 43 }
+
+Presence:
+  Client → Server: { type: "cursor", doc_id: "d_123", position: 156, user: "Alice" }
+  Server → All other clients: (broadcast cursor position)
+```
+
+**Scaling WebSocket connections:**
+
+| Challenge | Solution |
+|-----------|----------|
+| Single server can't hold all connections | Shard by document: all editors of doc X connect to the same server (via consistent hashing or a routing table) |
+| Server crash loses document session | WAL of operations. New server replays from last snapshot + ops log. |
+| Cross-server communication (rare: admin broadcasts) | Redis Pub/Sub for signaling between servers |
+| Sticky sessions | API Gateway routes WebSocket connections by doc_id to the assigned server |
+
+##### Deep Dive C: Persistence and Version History
+
+**Snapshot strategy:**
+
+```
+Timeline:
+  Op1 → Op2 → Op3 → [Snapshot v1] → Op4 → Op5 → [Snapshot v2] → Op6 → ...
+
+Snapshot every N operations (e.g., every 1000 ops) or every T minutes (e.g., every 5 min).
+
+To load a document:
+  1. Load the latest snapshot
+  2. Replay all operations since that snapshot
+  3. Result: current document state
+```
+
+**Storage:**
+
+```
+Documents Table (PostgreSQL):
+  id, title, owner_id, current_version, created_at, updated_at
+
+Snapshots (S3):
+  s3://docs/{doc_id}/snapshots/{version}.json
+  (compressed full document state)
+
+Operations Log (PostgreSQL or Cassandra):
+  doc_id, version (sequential), operation_data, user_id, timestamp
+
+Version History (for user-facing "see revision history"):
+  Periodically (every 30 min or on significant changes) save a named version.
+  Users can browse, compare, and restore.
+```
+
+##### Deep Dive D: Offline Editing
+
+```
+1. Client goes offline
+2. User continues editing → operations stored in local buffer (IndexedDB)
+3. Client reconnects
+4. Client sends buffered operations to server with its last known version
+5. Server merges using CRDT (automatic conflict resolution)
+6. Server sends any operations the client missed
+7. Client is now in sync
+```
+
+CRDTs make offline editing natural — they're designed for exactly this scenario. OT-based systems struggle more with offline because the central server must order all operations.
+
+---
+
+#### Step 5 — Scaling and Reliability
+
+| Concern | Solution |
+|---------|----------|
+| **Hot documents** (many editors) | A single server handles one document session. For documents with 100+ editors, the server must be beefy. Limit concurrent editors (Google Docs caps at ~100). |
+| **Server failure** | Operations are persisted to a durable log. New server replays from last snapshot. In-flight ops may be re-sent by clients (idempotent via version/clock). |
+| **Global latency** | Deploy collaboration servers in multiple regions. For same-region editors: < 50ms. Cross-region: relay through a primary server or use CRDT (which tolerates latency natively). |
+| **Large documents** | Chunk documents into blocks/pages. Only load and sync the visible portion. Lazy-load the rest. |
+| **Storage growth** | Periodically compact operations into snapshots. Archive old versions to cold storage. Tombstone collection for CRDTs. |
+| **Permissions** | Enforced at the server: reject operations from users without edit permission. Read-only users receive ops but can't send them. |
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How would you add commenting?" | Comments are anchored to a text range (identified by CRDT character IDs, not positions). As text is edited around a comment, the anchor moves with it. Comments stored separately, linked by anchor IDs. |
+| "How would you add real-time formatting?" | Formatting is represented as operations: `format(range, bold=true)`. The CRDT/OT handles concurrent formatting changes the same way as text changes. |
+| "How does Google Docs handle this at scale?" | OT with a central server (Operational Transformation). Each document has one "server" (can be a microservice instance). Jupiter OT algorithm. Server is the single source of truth for operation ordering. |
+| "How would you support tables or complex objects?" | Model the document as a tree of blocks (paragraphs, tables, images). Each block is a CRDT. Table cells are nested documents. Operations are scoped to a block. |
+
+---
+
+### Solution 12: Design a Distributed Cache (Redis Cluster)
+
+> **Difficulty:** Staff Level
+> **Time allocation:** 45-60 minutes
+> **Real-world references:** Redis Cluster, Memcached, Amazon ElastiCache, Hazelcast, Couchbase
+
+---
+
+#### Opening Statement
+
+> "A distributed cache serves as the performance backbone for virtually every high-scale system. The key design challenges are partitioning data across nodes, maintaining consistency during node failures, handling hot keys, and achieving sub-millisecond latency. Let me clarify what we're designing."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **GET / SET / DEL** | Basic key-value operations with sub-millisecond latency |
+| FR2 | **TTL** | Keys expire after a configurable time-to-live |
+| FR3 | **Rich data structures** | Support strings, hashes, lists, sets, sorted sets |
+| FR4 | **Atomic operations** | INCR, CAS (compare-and-swap), Lua scripts for transactional logic |
+| FR5 | **Pub/Sub** | Publish/subscribe messaging for real-time events |
+| FR6 | **Cluster mode** | Data partitioned across multiple nodes transparently |
+| FR7 | **Persistence** | Optional durability (RDB snapshots, AOF append-only file) |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Latency** | < 1ms for GET/SET (p99) within same datacenter |
+| NFR2 | **Throughput** | 100K+ operations per second per node |
+| NFR3 | **Availability** | Survive single node failure with no data loss and no downtime |
+| NFR4 | **Scalability** | Scale to 100+ nodes, petabytes of data |
+| NFR5 | **Memory efficiency** | Maximize useful data per GB of RAM |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Total data size | 10 TB (in-memory) |
+| Nodes (128 GB usable RAM each, 60% fill) | ~130 data nodes |
+| Replication factor | 2 (1 primary + 1 replica) → ~260 nodes total |
+| Operations per second (total) | 10 million |
+| Average key size | 50 bytes |
+| Average value size | 500 bytes |
+| Total keys | ~18 billion |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────────────┐     ┌──────────────────┐
+│  Application     │     │  Application     │
+│  Server 1        │     │  Server 2        │
+│  ┌────────────┐  │     │  ┌────────────┐  │
+│  │ Cache Client│  │     │  │ Cache Client│  │
+│  │ (smart)    │  │     │  │ (smart)    │  │
+│  └─────┬──────┘  │     │  └─────┬──────┘  │
+└────────┼─────────┘     └────────┼─────────┘
+         │                        │
+         │  Client knows the hash slot mapping;
+         │  sends request directly to the correct node.
+         │                        │
+         ▼                        ▼
+┌────────────────────────────────────────────────────────────────┐
+│                     Cache Cluster                              │
+│                                                                │
+│  Hash Slots: 0 ─────────────────────────────────── 16383      │
+│                                                                │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
+│  │  Node A          │  │  Node B          │  │  Node C      │ │
+│  │  Slots: 0-5460   │  │  Slots: 5461-10922│ │  Slots:      │ │
+│  │  (Primary)       │  │  (Primary)       │  │  10923-16383 │ │
+│  │                  │  │                  │  │  (Primary)   │ │
+│  │  Replica: Node D │  │  Replica: Node E │  │  Replica: F  │ │
+│  └──────────────────┘  └──────────────────┘  └──────────────┘ │
+│                                                                │
+│  ┌──────────────────┐  ┌──────────────────┐  ┌──────────────┐ │
+│  │  Node D          │  │  Node E          │  │  Node F      │ │
+│  │  Replica of A    │  │  Replica of B    │  │  Replica of C│ │
+│  └──────────────────┘  └──────────────────┘  └──────────────┘ │
+│                                                                │
+│  Gossip Protocol: nodes exchange health + slot mapping info    │
+└────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Hash Slot Partitioning
+
+Unlike generic consistent hashing, Redis Cluster uses **fixed hash slots** (16,384 slots):
+
+```
+slot = CRC16(key) % 16384
+
+Key "user:123"   → CRC16 = 7894  → slot 7894 → Node B
+Key "session:abc"→ CRC16 = 2301  → slot 2301 → Node A
+```
+
+**Why 16,384 slots instead of consistent hashing?**
+
+| Aspect | Hash Slots | Consistent Hashing |
+|--------|------------|-------------------|
+| Slot reassignment | Move specific slots between nodes | Virtual nodes make this less predictable |
+| Client routing | Client caches slot→node mapping (small table: 16K entries) | Client must know the full hash ring |
+| Resharding | Move slots one at a time with live migration | Rebalancing can be complex |
+| Simplicity | Easy to reason about and debug | More abstract |
+
+**Hash tags for co-location:**
+
+```
+Keys "user:{123}:profile" and "user:{123}:settings"
+both hash on "{123}" → same slot → same node
+
+This enables multi-key operations (MGET, Lua scripts, transactions)
+on related keys without cross-node coordination.
+```
+
+##### Deep Dive B: Replication and Failover
+
+```
+Normal operation:
+  Client → Node A (primary, slots 0-5460)
+  Node A replicates to Node D (asynchronous)
+
+Node A fails:
+  1. Node D detects A is unreachable (missed heartbeats for N seconds)
+  2. Node D starts an election:
+     - Requests votes from other primary nodes
+     - Needs majority of primaries to agree
+  3. Node D becomes the new primary for slots 0-5460
+  4. Clients receive MOVED redirect → update slot mapping
+  5. Failover complete in seconds
+
+Node A recovers:
+  - Joins as a replica of Node D
+  - Syncs missed data
+```
+
+**The async replication trade-off:**
+
+```
+Client writes to Primary A → A responds "OK" → A replicates to D (async)
+
+If A crashes after responding but BEFORE replicating:
+  → That write is LOST.
+
+Mitigation options:
+  1. WAIT command: client blocks until N replicas acknowledge (sync replication)
+     → Trades latency for durability
+  2. Accept the small data loss window (usually < 1 second of data)
+     → Appropriate for cache (data can be re-fetched from the source)
+  3. For critical data, don't use cache as the source of truth
+```
+
+##### Deep Dive C: Hot Key Problem
+
+A single extremely popular key (celebrity tweet, flash sale item) can overwhelm one node.
+
+```
+"product:iphone15:stock" → slot 8842 → Node B
+Black Friday: 1M reads/sec on this single key → Node B is crushed
+```
+
+**Solutions:**
+
+| Strategy | How | Trade-off |
+|----------|-----|-----------|
+| **Client-side local cache** | Cache hot keys in application memory (LRU, TTL = 1-5 seconds) | Slightly stale data; simple and very effective |
+| **Read from replicas** | Route reads to replicas (READONLY mode) | Spreads load; eventually consistent |
+| **Key replication / sharding** | Create N copies: `product:iphone15:stock:{0..9}`. Write to all, read from random. | Write amplification; application complexity |
+| **Proxy-based caching** | A caching proxy (like Twemproxy or Envoy) in front of the cluster with local caching | Extra hop; good for read-heavy |
+
+**Recommendation:** Client-side local caching with short TTL is the simplest and most effective. For extreme cases, combine with read-from-replica.
+
+##### Deep Dive D: Eviction Policies
+
+When memory is full, the cache must decide what to evict.
+
+| Policy | Algorithm | Best For |
+|--------|-----------|----------|
+| **noeviction** | Return error on write when full | When every cached item is critical |
+| **allkeys-lru** | Evict least recently used key | General purpose (most common) |
+| **allkeys-lfu** | Evict least frequently used key | When access frequency is more predictive than recency |
+| **volatile-lru** | LRU only among keys with TTL set | Mix of permanent and temporary keys |
+| **volatile-ttl** | Evict keys closest to expiration | When short-TTL items are least valuable |
+| **allkeys-random** | Random eviction | When all keys are equally valuable |
+
+**LRU approximation (Redis approach):**
+
+True LRU requires tracking access order for every key (expensive). Redis uses **sampled LRU**: pick N random keys (default 5), evict the one with the oldest access time. Surprisingly effective — with N=10, it closely approximates true LRU.
+
+##### Deep Dive E: Persistence Options
+
+| Mode | How | Recovery Time | Data Loss Risk |
+|------|-----|---------------|----------------|
+| **RDB (snapshot)** | Periodic full dump to disk (fork + serialize) | Fast (load single file) | Up to the snapshot interval (minutes) |
+| **AOF (append-only file)** | Log every write command to disk | Slower (replay all commands) | ~1 second (with fsync every second) |
+| **RDB + AOF** | Both | Moderate | Minimal — AOF for completeness, RDB for fast restart |
+| **None** | Pure in-memory | Instant (but cold cache) | All data lost on restart |
+
+**Fork overhead for RDB snapshots:**
+
+```
+Redis forks the process to create a snapshot. The forked child writes the snapshot
+while the parent continues serving requests.
+
+Problem: fork() copies page tables → can cause a latency spike (10-100ms)
+         Copy-on-write means memory usage can temporarily double
+
+Mitigation: Schedule snapshots during low traffic. Use replicas for persistence
+            (replica does the snapshot, primary stays lean).
+```
+
+---
+
+#### Step 5 — Scaling and Operations
+
+| Concern | Solution |
+|---------|----------|
+| **Resharding** | Move hash slots between nodes with live migration. Redis pauses briefly on the last key batch per slot. Plan reshards during low traffic. |
+| **Adding nodes** | New node joins empty. Assign slots from existing nodes. Data migrates live. |
+| **Memory fragmentation** | Redis uses jemalloc. Monitor `mem_fragmentation_ratio`. If > 1.5, consider restarting the node (replica takes over). |
+| **Thundering herd** | When a popular cache key expires, hundreds of requests hit the DB simultaneously. Solution: lock-based refresh (one request rebuilds, others wait) or probabilistic early expiration. |
+| **Cache stampede prevention** | Use `SETNX` to acquire a lock. Winner refreshes the cache. Losers wait or serve stale data briefly. |
+| **Monitoring** | Track: hit rate, memory usage, eviction rate, connected clients, replication lag, slow log, command latency histograms. |
+| **Cache warming** | On deployment or node replacement, pre-populate frequently accessed keys from the database to avoid cold cache performance dip. |
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How do you choose between Redis and Memcached?" | Redis: richer data types, persistence, replication, Lua scripting. Memcached: simpler, multi-threaded (better per-node throughput for simple GET/SET), no persistence. Use Redis for most cases; Memcached for simple, extreme-throughput caching. |
+| "How do you handle cache invalidation?" | Three patterns: TTL-based (simple, stale window), event-driven (publish invalidation on write), write-through (update cache on every write). TTL + event-driven is the most common combination. |
+| "How would you build a cache for a multi-region setup?" | Option A: cache per region, independent (simplest, highest cache miss rate after failover). Option B: replicate cache across regions (complex, uses cross-region replication). Option C: tiered — local L1 cache + regional L2 cache. |
+| "How is this different from the Key-Value Store (Solution 4)?" | A cache is in-memory, optimized for speed, and tolerant of data loss (data can be refetched). A KV store is disk-backed, focused on durability, and is the source of truth. |
+
+---
+
+### Solution 13: Design a Search Engine (Google-scale)
+
+> **Difficulty:** Staff Level
+> **Time allocation:** 45-60 minutes
+> **Real-world references:** Google Search, Bing, Elasticsearch, Apache Solr, Meilisearch
+
+---
+
+#### Opening Statement
+
+> "Designing a web-scale search engine is arguably the most ambitious system design question. It spans web crawling, indexing petabytes of content, ranking billions of documents in milliseconds, and serving results with extreme availability. I'll focus on the core architecture and go deep on the inverted index and ranking. Let me define the scope."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Web crawling** | Continuously discover and fetch web pages |
+| FR2 | **Indexing** | Process crawled pages and build a searchable index |
+| FR3 | **Search** | Given a text query, return the top-K most relevant documents ranked by relevance |
+| FR4 | **Autocomplete** | Suggest queries as the user types |
+| FR5 | **Snippet generation** | Show a relevant text excerpt from each result |
+| FR6 | **Freshness** | Recently published or updated content should be findable within minutes to hours |
+| FR7 | **Spell correction** | "Did you mean..." suggestions for misspelled queries |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Index size** | 100 billion web pages |
+| NFR2 | **Query latency** | < 500ms (p99) for first page of results |
+| NFR3 | **QPS** | 100,000 search queries per second |
+| NFR4 | **Availability** | 99.99% |
+| NFR5 | **Freshness** | Breaking news indexed within minutes |
+| NFR6 | **Relevance** | High-quality ranking (precision and recall) |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Web pages indexed | 100 billion |
+| Average page size (after cleaning) | 50 KB |
+| Raw content | 100B * 50 KB = 5 PB |
+| Inverted index size | ~20% of content = ~1 PB |
+| Index with replication (3x) | ~3 PB |
+| Search QPS | 100,000 |
+| Crawl rate | ~10,000 pages/sec (to refresh index weekly) |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          OFFLINE PIPELINE                               │
+│                                                                         │
+│  ┌──────────┐    ┌──────────────┐    ┌──────────────┐    ┌───────────┐ │
+│  │  URL     │───▶│  Web Crawler │───▶│  Content     │───▶│  Indexer  │ │
+│  │  Frontier│    │  (distributed│    │  Processor   │    │  (build   │ │
+│  │          │    │   fetch)     │    │  (parse,     │    │   inverted│ │
+│  │          │◀───│              │    │   clean,     │    │   index)  │ │
+│  │  (priority    └──────────────┘    │   extract)   │    └─────┬─────┘ │
+│  │   queue)  │                       └──────────────┘          │       │
+│  └──────────┘                                                  │       │
+│                                                                ▼       │
+│                                                    ┌──────────────────┐│
+│                                        ┌──────────▶│  Index Segments  ││
+│                                        │           │  (distributed    ││
+│  ┌──────────────┐    ┌────────────┐    │           │   sharded files) ││
+│  │  PageRank /  │───▶│  Link      │────┘           └──────────────────┘│
+│  │  Ranking     │    │  Graph DB  │                                    │
+│  │  Computation │    │            │                                    │
+│  └──────────────┘    └────────────┘                                    │
+└─────────────────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────┐
+│                          ONLINE SERVING                                 │
+│                                                                         │
+│  ┌──────────┐    ┌──────────────┐    ┌──────────────────────────────┐   │
+│  │  User    │───▶│  Query       │───▶│  Search Frontend             │   │
+│  │  (browser│    │  Service     │    │  - Parse query               │   │
+│  │   / app) │◀───│  (API GW)   │◀───│  - Spell correct             │   │
+│  └──────────┘    └──────────────┘    │  - Fan out to index shards   │   │
+│                                      │  - Merge + rank results      │   │
+│                                      │  - Generate snippets         │   │
+│                                      └──────────┬───────────────────┘   │
+│                                                  │                      │
+│                               ┌──────────────────┼────────────────┐     │
+│                               │                  │                │     │
+│                               ▼                  ▼                ▼     │
+│                        ┌────────────┐     ┌────────────┐  ┌──────────┐ │
+│                        │Index Shard │     │Index Shard │  │Index     │ │
+│                        │    0       │     │    1       │  │Shard N   │ │
+│                        │(replica A) │     │(replica A) │  │(repl. A) │ │
+│                        │(replica B) │     │(replica B) │  │(repl. B) │ │
+│                        └────────────┘     └────────────┘  └──────────┘ │
+└─────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Web Crawler
+
+**URL Frontier (priority queue of URLs to crawl):**
+
+```
+┌──────────────────────────────────────────────┐
+│  URL Frontier                                │
+│                                              │
+│  Priority Queue:                             │
+│  ┌───────────────────────────────────┐       │
+│  │ Priority 1: News sites (crawl    │       │
+│  │             every 5 min)         │       │
+│  ├───────────────────────────────────┤       │
+│  │ Priority 2: Popular sites (crawl │       │
+│  │             every hour)          │       │
+│  ├───────────────────────────────────┤       │
+│  │ Priority 3: Long-tail pages      │       │
+│  │             (crawl weekly)       │       │
+│  └───────────────────────────────────┘       │
+│                                              │
+│  Politeness Queue (per domain):              │
+│  ┌──────────────────────────────────────┐    │
+│  │ example.com: min 1s between requests │    │
+│  │ news.com:    min 0.5s               │    │
+│  └──────────────────────────────────────┘    │
+└──────────────────────────────────────────────┘
+```
+
+**Crawler design:**
+
+```
+1. Dequeue URL from frontier
+2. Check robots.txt (cached per domain)
+3. Fetch page (HTTP GET with timeout)
+4. Detect duplicates:
+   a. URL dedup (have we crawled this URL recently?)
+   b. Content dedup (SimHash / MinHash fingerprint — detect near-duplicate content)
+5. Extract links → add new URLs to frontier
+6. Send content to Content Processor pipeline
+```
+
+**Distributed crawling at scale:**
+
+- Partition URLs by domain (one crawler instance per domain set) to enforce politeness
+- Use a distributed URL dedup store (Bloom filter or Redis set)
+- Respect `Crawl-delay` in robots.txt
+- Handle traps: infinite calendars, session IDs in URLs, spider traps — use max depth and URL pattern detection
+
+##### Deep Dive B: Inverted Index
+
+The inverted index is the core data structure that makes search fast.
+
+**Forward index (what the crawler produces):**
+
+```
+doc_1: "the quick brown fox"
+doc_2: "the lazy brown dog"
+doc_3: "quick fox jumps"
+```
+
+**Inverted index (what the search engine queries):**
+
+```
+Term          → Posting List (doc_id, term_frequency, positions)
+─────────────────────────────────────────────────────────
+"brown"       → [(doc_1, tf=1, pos=[2]), (doc_2, tf=1, pos=[2])]
+"dog"         → [(doc_2, tf=1, pos=[3])]
+"fox"         → [(doc_1, tf=1, pos=[3]), (doc_3, tf=1, pos=[1])]
+"jumps"       → [(doc_3, tf=1, pos=[2])]
+"lazy"        → [(doc_2, tf=1, pos=[1])]
+"quick"       → [(doc_1, tf=1, pos=[1]), (doc_3, tf=1, pos=[0])]
+"the"         → [(doc_1, tf=1, pos=[0]), (doc_2, tf=1, pos=[0])]
+```
+
+**Query processing:**
+
+```
+Query: "quick brown fox"
+
+1. Look up posting lists for each term:
+   quick → [doc_1, doc_3]
+   brown → [doc_1, doc_2]
+   fox   → [doc_1, doc_3]
+
+2. AND query: intersect posting lists
+   doc_1 appears in all three → candidate
+
+3. Rank candidates using scoring function (TF-IDF, BM25, etc.)
+
+4. Return top-K results
+```
+
+**Posting list compression:**
+
+Posting lists for common terms ("the", "is", "of") contain billions of doc_ids. Compression is essential:
+
+| Technique | How | Compression Ratio |
+|-----------|-----|-------------------|
+| **Variable-byte encoding (VByte)** | Store delta between consecutive doc_ids using variable-length bytes | 2-4x |
+| **PForDelta** | Pack blocks of deltas into fixed-width frames | 4-8x |
+| **Roaring Bitmaps** | Hybrid bitmap representation for dense posting lists | 10x+ for dense sets |
+
+**Index sharding:**
+
+```
+Strategy 1: Document-based sharding
+  Shard 0: documents 0-999,999
+  Shard 1: documents 1,000,000-1,999,999
+  → Each shard has a complete inverted index for its document subset
+  → Query fans out to ALL shards, each returns top-K, then merge
+
+Strategy 2: Term-based sharding
+  Shard 0: terms A-F
+  Shard 1: terms G-M
+  → A single query may only hit a few shards
+  → But multi-term queries require cross-shard joins (complex)
+
+Google uses document-based sharding (simpler query path).
+```
+
+##### Deep Dive C: Ranking
+
+**Two-phase ranking:**
+
+```
+Phase 1: Retrieval + Lightweight Scoring (per shard)
+  - BM25 or TF-IDF on the inverted index
+  - Return top 1000 candidates per shard
+  - Runs in milliseconds using the inverted index
+
+Phase 2: Re-ranking (centralized)
+  - ML model (LambdaMART, neural ranker, or transformer-based)
+  - Uses 200+ features per document:
+    - Text relevance (BM25 score)
+    - PageRank (link authority)
+    - Freshness (recency of content)
+    - User signals (click-through rate, dwell time)
+    - Page quality (spam score, readability)
+    - Domain authority
+  - Re-rank top candidates, return top 10 for page 1
+```
+
+**BM25 scoring (the workhorse of text retrieval):**
+
+```
+BM25(q, d) = Σ IDF(term) * (tf * (k1 + 1)) / (tf + k1 * (1 - b + b * |d| / avgdl))
+
+Where:
+  tf = term frequency in document d
+  |d| = document length
+  avgdl = average document length in the corpus
+  k1 = 1.2 (tuning: term frequency saturation)
+  b = 0.75 (tuning: length normalization)
+  IDF(term) = log((N - df + 0.5) / (df + 0.5))
+  N = total documents, df = documents containing the term
+```
+
+**PageRank (link analysis):**
+
+```
+Every page has a score based on the link graph:
+  PR(A) = (1-d) + d * Σ (PR(T) / L(T))
+  
+  d = damping factor (0.85)
+  T = pages that link to A
+  L(T) = number of outbound links from T
+
+Computed offline in a batch MapReduce/Spark job over the link graph.
+Pages linked by many high-authority pages get higher PageRank.
+```
+
+##### Deep Dive D: Query Processing Pipeline
+
+```
+User types: "best coffea shops neer me"
+                │
+                ▼
+┌───────────────────────┐
+│ 1. Spell Correction   │  "coffea" → "coffee", "neer" → "near"
+│    (Norvig's model /  │
+│     neural speller)   │
+└───────────┬───────────┘
+            │  "best coffee shops near me"
+            ▼
+┌───────────────────────┐
+│ 2. Query Parsing      │  Tokenize, stem, remove stop words
+│    + Intent Detection │  Detect: local search intent → use geo ranking
+└───────────┬───────────┘
+            │  tokens: ["best", "coffee", "shop", "near"]
+            ▼
+┌───────────────────────┐
+│ 3. Query Expansion    │  Add synonyms: "coffee" → "coffee", "cafe"
+│                       │  Add personalization: user's location
+└───────────┬───────────┘
+            │
+            ▼
+┌───────────────────────┐
+│ 4. Fan-out to Index   │  Send query to all shards in parallel
+│    Shards             │  Each shard returns top-K (e.g., K=1000)
+└───────────┬───────────┘
+            │
+            ▼
+┌───────────────────────┐
+│ 5. Merge + Re-rank    │  Merge results from all shards
+│                       │  Apply ML ranker on top candidates
+└───────────┬───────────┘
+            │
+            ▼
+┌───────────────────────┐
+│ 6. Generate Snippets  │  For top 10 results, extract the most relevant
+│                       │  text fragment containing query terms
+└───────────┬───────────┘
+            │
+            ▼
+┌───────────────────────┐
+│ 7. Return Results     │  10 results + snippets + spell suggestion +
+│                       │  autocomplete suggestions + ads
+└───────────────────────┘
+```
+
+---
+
+#### Step 5 — Scaling and Reliability
+
+| Concern | Solution |
+|---------|----------|
+| **Index serving at scale** | Document-sharded index across thousands of machines. Each shard replicated 3x. Route queries to the least-loaded replica. |
+| **Index freshness** | Dual index: a large "base" index (rebuilt weekly) + a small "real-time" index (updated within minutes). Merge results from both. |
+| **Query latency** | Cache popular queries (30% of queries are repeats). Terminate early if top results have high-enough scores. Skip low-quality shards. |
+| **Crawler politeness** | Per-domain rate limiting. Respect robots.txt. Distributed URL frontier to avoid overloading any single site. |
+| **Spam/SEO manipulation** | ML-based spam detection at index time. Penalize link farms, keyword stuffing, cloaking. Manual quality rater feedback loop. |
+| **Availability** | Every shard replicated to 3+ nodes in multiple AZs. If a replica fails, traffic shifts instantly. No single point of failure. |
+| **Index build** | Offline batch pipeline (MapReduce / Spark). Build new index segments, then swap into serving atomically. |
+| **Cost** | Tiered storage: frequently accessed index segments in RAM, less popular segments on SSD, rare segments on HDD. |
+
+---
+
+#### Data Model
+
+```
+Document Store (metadata — distributed DB):
+  doc_id      | url                          | title              | pagerank | last_crawled
+  ------------|------------------------------|--------------------|----------|-------------
+  1           | https://example.com/page1    | "Example Page"     | 0.0023   | 2024-01-15
+  2           | https://news.com/article     | "Breaking News"    | 0.0156   | 2024-01-15
+
+Inverted Index (per shard, on disk + memory-mapped):
+  term → compressed posting list [(doc_id, tf, positions), ...]
+
+Link Graph (for PageRank, stored in graph DB or adjacency list):
+  source_doc_id → [target_doc_id_1, target_doc_id_2, ...]
+
+URL Frontier (distributed priority queue — Redis / Kafka):
+  (priority, last_crawled, url, domain)
+```
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How does autocomplete work?" | Trie of popular queries, scored by frequency and recency. As the user types, traverse the trie and return top-K completions. Serve from an in-memory index at the edge for < 50ms latency. |
+| "How would you handle personalization?" | Re-rank results based on user history (clicked results, preferred domains, language, location). Add personalization features to the ML ranker. Privacy trade-off. |
+| "How do you keep the index fresh for breaking news?" | Dedicated real-time crawl pipeline for high-priority sources (news sites, Twitter). Small "real-time index" updated within minutes. Merged with the base index at query time. |
+| "How does snippet generation work?" | For each result, find the text passage with the highest density of query terms. Highlight matching terms. This is done at serving time (not pre-computed, since it depends on the query). |
+| "How would you build image/video search?" | Extract visual features (embeddings from a CNN/ViT model). Build a vector index (approximate nearest neighbor — HNSW, IVF). Query: encode the query image → search the vector index. Combine with text metadata for multi-modal search. |
 
 ---
 
