@@ -19,6 +19,11 @@ A comprehensive guide to preparing for and passing system design interviews at t
 11. [Recommended Resources](#recommended-resources)
 12. [Solutions](#solutions)
     - [Solution 1: Design a Monitoring and Alerting System (Grafana + Prometheus)](#solution-1-design-a-monitoring-and-alerting-system-grafana--prometheus)
+    - [Solution 2: Design a URL Shortener (bit.ly)](#solution-2-design-a-url-shortener-bitly)
+    - [Solution 3: Design a Rate Limiter](#solution-3-design-a-rate-limiter)
+    - [Solution 4: Design a Key-Value Store](#solution-4-design-a-key-value-store)
+    - [Solution 5: Design a Notification System](#solution-5-design-a-notification-system)
+    - [Solution 6: Design a Paste Service (Pastebin)](#solution-6-design-a-paste-service-pastebin)
 
 ---
 
@@ -1126,6 +1131,1333 @@ DELETE /api/v1/silences/{id}   -- remove silence
 | "How would you handle 100x the current scale?" | Shard ingesters more aggressively, use dedicated read/write paths, heavier use of recording rules, aggressive downsampling, query result caching. |
 | "How would you migrate from a monolithic Prometheus to this distributed system?" | Run both in parallel, dual-write (or remote-write from Prometheus to the new system), gradually shift dashboards and alert rules, validate parity before cutover. |
 | "How do you prevent alert storms?" | Alert Manager grouping (batch related alerts), inhibition rules (critical suppresses warnings for same issue), rate limiting notifications per channel, escalation policies with increasing delay. |
+
+---
+
+### Solution 2: Design a URL Shortener (bit.ly)
+
+> **Difficulty:** Intermediate (Senior Warm-Up)
+> **Time allocation:** 45 minutes
+> **Real-world references:** bit.ly, TinyURL, t.co, goo.gl
+
+---
+
+#### Opening Statement
+
+> "A URL shortener seems simple on the surface, but it touches on several interesting design decisions: ID generation at scale, redirect latency optimization, and analytics. Let me clarify the scope before designing."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Shorten URL** | Given a long URL, generate a unique short URL |
+| FR2 | **Redirect** | When a user visits the short URL, redirect to the original long URL |
+| FR3 | **Custom aliases** | Optionally allow users to pick a custom short code |
+| FR4 | **Expiration** | URLs can have an optional TTL (time-to-live) |
+| FR5 | **Analytics** | Track click count, referrer, geo, device for each short URL |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Read-heavy** | 100:1 read-to-write ratio |
+| NFR2 | **Low latency** | Redirects in < 50ms (p99) |
+| NFR3 | **High availability** | 99.99% uptime (redirects must never go down) |
+| NFR4 | **Scale** | 100M new URLs/month, 10B redirects/month |
+| NFR5 | **Durability** | Once created, a short URL must always work (until it expires) |
+
+---
+
+#### Step 2 — Back-of-the-Envelope Estimation
+
+| Metric | Calculation | Value |
+|--------|-------------|-------|
+| Write QPS | 100M / (30 * 86,400) | ~40 URLs/sec |
+| Read QPS (average) | 40 * 100 | ~4,000 redirects/sec |
+| Read QPS (peak) | 4,000 * 5 | ~20,000 redirects/sec |
+| Storage per URL | short code (7B) + long URL (avg 200B) + metadata (100B) = ~300 bytes | |
+| Storage / year | 100M * 12 * 300 bytes | ~360 GB/year |
+| Storage / 5 years | | ~1.8 TB |
+| Short code keyspace | Base62, 7 characters → 62^7 | ~3.5 trillion (more than enough) |
+
+**Design implication:** Reads dominate. The system must be optimized for ultra-fast lookups. Data fits comfortably in a single database with replication, but caching is critical for latency.
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────┐       ┌──────────────┐       ┌──────────────────┐
+│  Client   │──────▶│  Load        │──────▶│  API Service     │
+│ (Browser) │◀──────│  Balancer    │◀──────│  (Stateless)     │
+└──────────┘       └──────────────┘       └────────┬─────────┘
+   301/302                                         │
+   redirect                         ┌──────────────┼──────────────┐
+                                    │              │              │
+                                    ▼              ▼              ▼
+                              ┌──────────┐  ┌──────────┐  ┌─────────────┐
+                              │  Cache   │  │ Database │  │  Analytics  │
+                              │  (Redis) │  │ (NoSQL)  │  │  Queue      │
+                              └──────────┘  └──────────┘  │  (Kafka)    │
+                                                          └──────┬──────┘
+                                                                 │
+                                                                 ▼
+                                                          ┌─────────────┐
+                                                          │  Analytics  │
+                                                          │  DB / OLAP  │
+                                                          └─────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Short Code Generation
+
+This is the core design challenge. Three main approaches:
+
+**Approach 1: Hash + Truncate**
+
+```
+long_url → MD5/SHA256 → take first 7 characters (Base62 encoded)
+```
+
+| Pros | Cons |
+|------|------|
+| Deterministic: same URL always gets same code | Hash collisions (must check DB and retry with salt) |
+| No coordination needed | Not truly random — if input is predictable, output is guessable |
+
+**Approach 2: Counter-Based (Pre-generated IDs)**
+
+```
+Auto-increment counter → Base62 encode → short code
+Counter: 1000000001 → Base62: "1LY7VK"
+```
+
+| Pros | Cons |
+|------|------|
+| No collisions guaranteed | Single counter = single point of failure |
+| Predictable, sequential codes | Sequential codes are guessable (security concern) |
+
+Scale solution: Use **range-based ID allocation**. A coordination service (ZooKeeper or a DB row) assigns ID ranges to each application server:
+
+```
+Server A gets range [1M, 2M)
+Server B gets range [2M, 3M)
+...each server increments locally, no coordination on each write
+```
+
+**Approach 3: Snowflake-style ID (Recommended)**
+
+```
+┌──────────┬───────────┬──────────┬──────────┐
+│ timestamp │ machine_id│ sequence │          │
+│ (41 bits) │ (10 bits) │ (12 bits)│          │
+└──────────┴───────────┴──────────┴──────────┘
+64-bit ID → Base62 encode → 7-character short code
+```
+
+| Pros | Cons |
+|------|------|
+| No collision, no coordination | Slightly more complex to implement |
+| Roughly time-sorted | IDs are still somewhat guessable |
+| Distributed by design | Requires clock synchronization |
+
+**Recommendation:** Use Snowflake-style IDs for the default path and allow custom aliases (validated for uniqueness) as an optional feature.
+
+##### Deep Dive B: Read Path (Redirect Optimization)
+
+The redirect path is called 100x more than the write path. Every millisecond matters.
+
+```
+GET /abc1234
+
+1. Check local in-process cache (LRU) → hit? return 301
+2. Check Redis cache → hit? return 301, populate local cache
+3. Check database → found? return 301, populate Redis + local cache
+4. Not found → return 404
+```
+
+**301 vs 302 redirect:**
+
+| Code | Meaning | Implication |
+|------|---------|-------------|
+| 301 | Permanent redirect | Browser caches it — fewer requests to our servers, but we lose analytics visibility |
+| 302 | Temporary redirect | Browser always comes back to us — we can track every click |
+
+**Recommendation:** Use 302 if analytics matter; 301 if you want to minimize server load. Most URL shorteners use 302.
+
+**Cache strategy:**
+
+- **Cache-aside** pattern: check cache first, fall back to DB, write result to cache
+- TTL on cache entries: 24 hours (most clicks happen in the first few hours after sharing)
+- Hot URLs (viral content) will naturally stay in cache via LRU
+- Cache hit ratio target: > 95% (the Pareto principle — a small % of URLs get most traffic)
+
+##### Deep Dive C: Database Choice
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **DynamoDB / Cassandra** | Fast key-value lookups, horizontally scalable, high write throughput | No complex queries (fine for this use case) |
+| **PostgreSQL** | ACID, flexible queries for analytics | Harder to scale horizontally |
+| **MongoDB** | Flexible schema, decent performance | Less predictable latency at extreme scale |
+
+**Recommendation:** DynamoDB or Cassandra. The access pattern is purely key-value (short_code → long_url). No joins, no complex queries needed.
+
+**Schema:**
+
+```
+Table: urls
+┌──────────────┬───────────────────────────────────────────┬─────────┬─────────────┬──────────┐
+│ short_code   │ long_url                                  │ user_id │ created_at  │ expires_at│
+│ (PK)         │                                           │         │             │ (TTL)    │
+├──────────────┼───────────────────────────────────────────┼─────────┼─────────────┼──────────┤
+│ "abc1234"    │ "https://example.com/very/long/path?..."  │ "u_123" │ 2024-01-15  │ null     │
+│ "xyz9876"    │ "https://another.com/article/..."         │ "u_456" │ 2024-01-15  │ 2024-07  │
+└──────────────┴───────────────────────────────────────────┴─────────┴─────────────┴──────────┘
+```
+
+For detecting duplicate long URLs (optional), add a **secondary index** or a separate lookup table:
+
+```
+Table: url_lookup
+┌──────────────────────┬──────────────┐
+│ url_hash (PK)        │ short_code   │
+│ SHA256(long_url)     │              │
+├──────────────────────┼──────────────┤
+│ "a1b2c3d4..."        │ "abc1234"    │
+└──────────────────────┴──────────────┘
+```
+
+---
+
+#### Step 5 — Scaling and Reliability
+
+| Concern | Solution |
+|---------|----------|
+| **Read scaling** | Redis cluster + read replicas of the database |
+| **Write scaling** | Range-based ID allocation eliminates write contention; DynamoDB auto-scales |
+| **Hot URLs** | Redis handles hot keys naturally; add CDN for extremely viral URLs |
+| **Expiration cleanup** | DynamoDB TTL auto-deletes expired items; or a nightly batch job |
+| **Availability** | Multi-AZ deployment; redirect path depends only on cache + DB (no external deps) |
+| **Analytics pipeline** | Async: log clicks to Kafka → consume into ClickHouse/BigQuery for analytics dashboards |
+| **Abuse prevention** | Rate limit URL creation per user/IP; scan URLs against blocklists for malicious content |
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How do you handle a URL that goes viral (billions of clicks)?" | CDN caching the redirect at the edge; Redis handles the rest. The short code doesn't change, so caching is trivial. |
+| "How would you support custom domains?" | Store domain + short code as the composite key. Tenant provides a CNAME record pointing to our infrastructure. |
+| "How would you prevent abuse?" | Rate limiting, URL content scanning (Google Safe Browsing API), CAPTCHA on creation, abuse reporting. |
+| "What if the database goes down?" | Cache serves reads (high hit ratio). Writes can be buffered in a queue. Alert and recover. |
+
+---
+
+### Solution 3: Design a Rate Limiter
+
+> **Difficulty:** Intermediate (Senior Warm-Up)
+> **Time allocation:** 45 minutes
+> **Real-world references:** API gateways (Kong, Envoy), Cloudflare, Stripe API rate limiting
+
+---
+
+#### Opening Statement
+
+> "Rate limiting is a critical defense mechanism for any API-facing service. It protects against abuse, prevents resource exhaustion, and ensures fair usage. Let me clarify what kind of rate limiter we're designing — is this a standalone service, middleware, or built into an API gateway?"
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Limit requests** | Throttle requests that exceed a configured rate (e.g., 100 req/min per user) |
+| FR2 | **Multiple rules** | Support different limits per endpoint, per user tier, per API key |
+| FR3 | **Informative response** | Return HTTP 429 with headers: `X-RateLimit-Limit`, `X-RateLimit-Remaining`, `X-RateLimit-Reset` |
+| FR4 | **Rule configuration** | Rules can be updated without restarting the service |
+| FR5 | **Distributed** | Rate limiting must work across multiple API server instances (not per-server) |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Latency** | < 1ms overhead per request (rate limiting must be nearly invisible) |
+| NFR2 | **Accuracy** | Small over-allowance is acceptable; must never severely under-limit |
+| NFR3 | **Availability** | If the rate limiter is unavailable, fail open (allow requests) rather than blocking all traffic |
+| NFR4 | **Scale** | Handle 1M+ requests per second across all API servers |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| API servers | 100 instances |
+| Total QPS | 1,000,000 |
+| Unique rate limit keys (users/API keys) | 10 million |
+| Memory per counter | ~100 bytes (key + counter + window metadata) |
+| Total memory for all counters | 10M * 100B = ~1 GB |
+
+**Design implication:** The entire counter set fits in memory. Redis is a natural choice for the centralized counter store.
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────┐       ┌────────────────────────────────────────────────┐
+│  Client   │──────▶│  API Server                                    │
+└──────────┘       │  ┌──────────────────────────────────────────┐  │
+                   │  │  Rate Limiter Middleware                  │  │
+                   │  │  (check before processing the request)   │  │
+                   │  └──────────────┬───────────────────────────┘  │
+                   │                 │                               │
+                   │         ┌───────▼────────┐                     │
+                   │         │  Local Cache   │ (optional,          │
+                   │         │  (in-process)  │  for recently       │
+                   │         └───────┬────────┘  denied keys)       │
+                   │                 │                               │
+                   └─────────────────┼───────────────────────────────┘
+                                     │
+                              ┌──────▼──────┐
+                              │   Redis     │  (centralized
+                              │   Cluster   │   counter store)
+                              └──────┬──────┘
+                                     │
+                              ┌──────▼──────┐
+                              │   Rules     │  (rate limit
+                              │   Config DB │   configuration)
+                              └─────────────┘
+```
+
+**Where to place the rate limiter:**
+
+| Option | Pros | Cons |
+|--------|------|------|
+| **API Gateway / Load Balancer** | Centralized, catches traffic early | Less flexibility for per-endpoint rules |
+| **Middleware in each API server** | Fine-grained control per route, easy to customize | Every server must coordinate via shared store |
+| **Standalone sidecar service** | Decoupled, reusable across services | Extra network hop |
+
+**Recommendation:** Middleware approach with Redis as the shared backend. This gives per-route flexibility while keeping the architecture simple.
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Rate Limiting Algorithms
+
+**Algorithm 1: Token Bucket (Recommended for most use cases)**
+
+```
+Bucket: { tokens: float, last_refill: timestamp, capacity: int, refill_rate: float }
+
+On each request:
+  1. Calculate tokens to add since last_refill:
+     tokens_to_add = (now - last_refill) * refill_rate
+  2. tokens = min(capacity, tokens + tokens_to_add)
+  3. last_refill = now
+  4. If tokens >= 1: tokens -= 1, ALLOW
+     Else: REJECT (429)
+```
+
+| Pros | Cons |
+|------|------|
+| Allows short bursts up to bucket capacity | Requires storing two values per key (tokens + timestamp) |
+| Smooth average rate over time | Slightly more complex than fixed window |
+| Memory efficient | |
+
+**Algorithm 2: Fixed Window Counter**
+
+```
+Key: "user_123:2024-01-15T10:05" (1-minute window)
+On each request:
+  1. INCR key
+  2. If count > limit: REJECT
+  3. Set TTL on key = window_size
+```
+
+| Pros | Cons |
+|------|------|
+| Simple to implement (single Redis INCR) | Boundary spike: 100 requests at 10:04:59 + 100 at 10:05:00 = 200 in 2 seconds |
+| Low memory | Uneven distribution near window boundaries |
+
+**Algorithm 3: Sliding Window Log**
+
+```
+Store timestamp of every request in a sorted set:
+  1. Remove all entries older than (now - window_size)
+  2. Count remaining entries
+  3. If count < limit: add new entry, ALLOW
+     Else: REJECT
+```
+
+| Pros | Cons |
+|------|------|
+| Most accurate — no boundary issues | High memory: storing every request timestamp |
+| Perfectly smooth window | Expensive: O(N) cleanup per check |
+
+**Algorithm 4: Sliding Window Counter (Best balance)**
+
+```
+Weighted count from two adjacent fixed windows:
+  current_window_count * weight + previous_window_count * (1 - weight)
+  weight = elapsed_time_in_current_window / window_size
+
+Example (limit=100/min, checking at 10:05:40):
+  Previous window (10:04-10:05): 80 requests
+  Current window  (10:05-10:06): 30 requests so far
+  Weight = 40/60 = 0.67
+  Estimate = 30 * 0.67 + 80 * (1 - 0.67) = 20.1 + 26.4 = 46.5
+  46.5 < 100 → ALLOW
+```
+
+| Pros | Cons |
+|------|------|
+| Good accuracy without storing every timestamp | Approximate (but very close in practice) |
+| Only 2 counters per key per window | Slightly more complex than fixed window |
+| Memory efficient | |
+
+**Recommendation:** Token Bucket for general API rate limiting (allows bursts); Sliding Window Counter when you need strict per-window limits.
+
+##### Deep Dive B: Distributed Rate Limiting with Redis
+
+**Atomic operations are critical.** A naive check-then-increment has a race condition:
+
+```
+BAD (race condition):
+  count = GET key           ← two servers read "99"
+  if count < 100:
+    INCR key                ← both increment to 100, but 101 requests were allowed
+```
+
+**Solution: Redis Lua script for atomicity**
+
+```lua
+-- Token Bucket implemented as atomic Redis Lua script
+local key = KEYS[1]
+local capacity = tonumber(ARGV[1])
+local refill_rate = tonumber(ARGV[2])  -- tokens per second
+local now = tonumber(ARGV[3])
+
+local bucket = redis.call('HMGET', key, 'tokens', 'last_refill')
+local tokens = tonumber(bucket[1]) or capacity
+local last_refill = tonumber(bucket[2]) or now
+
+-- Refill tokens
+local elapsed = now - last_refill
+tokens = math.min(capacity, tokens + elapsed * refill_rate)
+
+if tokens >= 1 then
+    tokens = tokens - 1
+    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
+    redis.call('EXPIRE', key, math.ceil(capacity / refill_rate) * 2)
+    return {1, tokens}  -- allowed, remaining
+else
+    redis.call('HMSET', key, 'tokens', tokens, 'last_refill', now)
+    return {0, 0}       -- rejected, remaining
+end
+```
+
+This entire script executes atomically in Redis — no race conditions.
+
+##### Deep Dive C: Handling Failures
+
+| Failure | Behavior |
+|---------|----------|
+| **Redis is down** | **Fail open** — allow all requests. Better to temporarily lose rate limiting than to block all users. Alert the team. |
+| **Redis is slow** | Set a strict timeout (5-10ms). On timeout, fall back to a local in-process counter (approximate, per-server) |
+| **Clock skew between servers** | Use Redis server time (`redis.call('TIME')`) inside the Lua script instead of client-provided time |
+| **Network partition to Redis** | Same as Redis down — fail open with local fallback |
+
+##### Deep Dive D: Multi-Tier Rate Limiting
+
+Real-world systems apply rate limits at multiple levels:
+
+```
+┌─────────────────────────────────────────────────────────┐
+│ Tier 1: Global rate limit (per IP)       1000 req/min  │
+│ Tier 2: Per-user rate limit              100 req/min   │
+│ Tier 3: Per-endpoint rate limit          20 req/min    │
+│ Tier 4: Per-user-per-endpoint            10 req/min    │
+└─────────────────────────────────────────────────────────┘
+Request must pass ALL tiers to be allowed.
+```
+
+**Rule storage:**
+
+```yaml
+rules:
+  - key: "ip:{client_ip}"
+    limit: 1000
+    window: 60s
+  - key: "user:{user_id}"
+    limit: 100
+    window: 60s
+  - key: "endpoint:{method}:{path}"
+    limit: 5000
+    window: 60s
+  - key: "user_endpoint:{user_id}:{method}:{path}"
+    limit: 10
+    window: 60s
+```
+
+---
+
+#### Step 5 — API and Response Headers
+
+```
+HTTP/1.1 429 Too Many Requests
+Content-Type: application/json
+X-RateLimit-Limit: 100
+X-RateLimit-Remaining: 0
+X-RateLimit-Reset: 1705276860
+Retry-After: 30
+
+{
+  "error": {
+    "code": "rate_limit_exceeded",
+    "message": "Rate limit of 100 requests per minute exceeded. Try again in 30 seconds."
+  }
+}
+```
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How do you rate limit in a multi-region setup?" | Option A: Global Redis (high latency). Option B: Per-region rate limiting (faster, but total across regions can exceed the limit). Option C: Eventual consistency — sync counters between regions asynchronously. |
+| "How do you handle rate limiting for a free vs paid tier?" | Look up the user's tier, apply different rule sets. Cache the tier in the token/session to avoid a DB lookup per request. |
+| "What if a single user uses multiple API keys?" | Rate limit per user ID (not per API key). Also apply per-IP limits as a secondary defense. |
+| "How would you do rate limiting without Redis?" | Local in-memory counters with a token bucket per server. Divide the global limit by server count. Less accurate but zero network dependency. |
+
+---
+
+### Solution 4: Design a Key-Value Store
+
+> **Difficulty:** Intermediate (Senior Warm-Up)
+> **Time allocation:** 45 minutes
+> **Real-world references:** Redis, Memcached, DynamoDB, etcd, Riak
+
+---
+
+#### Opening Statement
+
+> "A key-value store is one of the most fundamental building blocks in distributed systems. The design space is huge — it ranges from a simple in-memory cache to a fully distributed, persistent, strongly consistent store. Let me understand what part of that spectrum we're targeting."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **put(key, value)** | Store a key-value pair |
+| FR2 | **get(key)** | Retrieve the value for a given key |
+| FR3 | **delete(key)** | Remove a key-value pair |
+| FR4 | **TTL support** | Keys can have an optional expiration time |
+| FR5 | **Replicated** | Data is replicated across multiple nodes for durability |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Latency** | < 10ms for get/put (p99) |
+| NFR2 | **Throughput** | 100K+ operations per second per node |
+| NFR3 | **Availability** | AP system — favor availability over strong consistency (tunable) |
+| NFR4 | **Scale** | Data size exceeds a single machine (must partition/shard) |
+| NFR5 | **Durability** | Data persisted to disk; survives node crashes |
+| NFR6 | **Key size** | Up to 256 bytes |
+| NFR7 | **Value size** | Up to 1 MB |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Total data size | 10 TB |
+| Average key-value pair | 1 KB |
+| Total entries | ~10 billion |
+| Nodes (16 GB RAM each) | ~50 nodes (data + replicas) |
+| Replication factor | 3 |
+| Read/Write QPS per node | 100K |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────┐      ┌────────────────────────────────────────────────────┐
+│  Client   │─────▶│  Client Library / SDK                              │
+│           │◀─────│  (consistent hashing, handles routing + retries)   │
+└──────────┘      └──────────────────┬─────────────────────────────────┘
+                                     │
+                    Knows which node owns the key
+                    via consistent hash ring
+                                     │
+                  ┌──────────────────┼──────────────────┐
+                  │                  │                  │
+                  ▼                  ▼                  ▼
+           ┌────────────┐    ┌────────────┐    ┌────────────┐
+           │   Node A   │    │   Node B   │    │   Node C   │
+           │            │    │            │    │            │
+           │ ┌────────┐ │    │ ┌────────┐ │    │ ┌────────┐ │
+           │ │MemTable│ │    │ │MemTable│ │    │ │MemTable│ │
+           │ └───┬────┘ │    │ └───┬────┘ │    │ └───┬────┘ │
+           │     │      │    │     │      │    │     │      │
+           │ ┌───▼────┐ │    │ ┌───▼────┐ │    │ ┌───▼────┐ │
+           │ │  WAL   │ │    │ │  WAL   │ │    │ │  WAL   │ │
+           │ └───┬────┘ │    │ └───┬────┘ │    │ └───┬────┘ │
+           │     │      │    │     │      │    │     │      │
+           │ ┌───▼────┐ │    │ ┌───▼────┐ │    │ ┌───▼────┐ │
+           │ │SSTables│ │    │ │SSTables│ │    │ │SSTables│ │
+           │ │ (disk) │ │    │ │ (disk) │ │    │ │ (disk) │ │
+           │ └────────┘ │    │ └────────┘ │    │ └────────┘ │
+           └────────────┘    └────────────┘    └────────────┘
+                  │                  │                  │
+                  └──────── Replication (gossip) ───────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Data Partitioning — Consistent Hashing
+
+**Problem:** We have 10 TB of data and need to distribute it across ~50 nodes. When nodes join or leave, we want to move as little data as possible.
+
+**Consistent hashing with virtual nodes:**
+
+```
+Hash ring: 0 ────────────────────────────────── 2^128
+
+Physical nodes mapped to multiple virtual nodes:
+  Node A: hash("A-vn0")=100, hash("A-vn1")=4500, hash("A-vn2")=8900, ...
+  Node B: hash("B-vn0")=350, hash("B-vn1")=5100, hash("B-vn2")=7200, ...
+  Node C: hash("C-vn0")=800, hash("C-vn1")=3200, hash("C-vn2")=9500, ...
+
+Key "user_123" → hash = 420 → walks clockwise → lands on Node B (vn0 at 5100)
+```
+
+Each physical node has 100-200 virtual nodes for even distribution. When a node is added, it only takes over a fraction of keys from its neighbors.
+
+**Replication:** For replication factor N=3, a key is stored on the N nodes found by walking clockwise from its position. Ensure the N nodes are on different physical machines (skip virtual nodes on the same physical host).
+
+##### Deep Dive B: Storage Engine — LSM Tree
+
+The Log-Structured Merge Tree (LSM) is used by Cassandra, RocksDB, LevelDB, and HBase.
+
+**Write path (optimized for fast writes):**
+
+```
+put("user_123", "{name: 'Alice'}")
+        │
+        ▼
+┌──────────────┐
+│ 1. Write to  │  (append-only log on disk, for crash recovery)
+│    WAL       │
+└──────┬───────┘
+       │
+       ▼
+┌──────────────┐
+│ 2. Write to  │  (sorted in-memory balanced tree: red-black or skip list)
+│    MemTable  │
+└──────┬───────┘
+       │  when MemTable reaches threshold (e.g., 64 MB)
+       ▼
+┌──────────────┐
+│ 3. Flush to  │  (immutable sorted file on disk)
+│    SSTable   │
+└──────────────┘
+```
+
+**Read path:**
+
+```
+get("user_123")
+        │
+        ▼
+┌──────────────┐
+│ 1. MemTable  │  → found? return
+└──────┬───────┘
+       │ miss
+       ▼
+┌──────────────┐
+│ 2. Bloom     │  → for each SSTable (newest first):
+│    Filters   │     bloom filter says "definitely not here" → skip
+└──────┬───────┘     bloom filter says "maybe here" → check SSTable
+       │
+       ▼
+┌──────────────┐
+│ 3. SSTable   │  → binary search in the sparse index, read data block
+│    Lookup    │
+└──────────────┘
+```
+
+**Compaction:** Background process that merges SSTables, removes deleted keys (tombstones), and reduces read amplification.
+
+| Compaction Strategy | Description | Best For |
+|---------------------|-------------|----------|
+| **Size-tiered** | Merge SSTables of similar size | Write-heavy workloads |
+| **Leveled** | Organize SSTables into levels with size limits | Read-heavy workloads (fewer files to check) |
+
+##### Deep Dive C: Replication and Consistency
+
+**Tunable consistency with quorum:**
+
+```
+N = number of replicas (e.g., 3)
+W = write quorum (how many replicas must acknowledge a write)
+R = read quorum (how many replicas must respond to a read)
+
+Strong consistency: W + R > N
+  Example: N=3, W=2, R=2 → at least one node has the latest value
+
+Eventual consistency: W=1, R=1
+  Fastest, but may read stale data
+```
+
+| Configuration | Consistency | Latency | Use Case |
+|---------------|-------------|---------|----------|
+| W=3, R=1 | Strong for reads after write confirms | Slow writes, fast reads | Read-heavy, consistency matters |
+| W=1, R=3 | Reads always get latest | Fast writes, slow reads | Write-heavy |
+| W=2, R=2 | Balanced | Moderate | General purpose |
+| W=1, R=1 | Eventual | Fastest | Caching, non-critical data |
+
+**Conflict resolution (when writes happen concurrently to different replicas):**
+
+| Strategy | How It Works |
+|----------|-------------|
+| **Last-write-wins (LWW)** | Highest timestamp wins. Simple but may lose data. Used by Cassandra. |
+| **Vector clocks** | Track causal history per key. Detect conflicts and let the application resolve. Used by Riak/DynamoDB. |
+| **CRDTs** | Conflict-free data types that merge automatically (counters, sets). No conflicts by design. |
+
+##### Deep Dive D: Failure Detection and Handling
+
+**Gossip protocol** for membership and failure detection:
+
+```
+Every 1 second, each node:
+  1. Picks a random peer
+  2. Sends its membership list (node → heartbeat counter)
+  3. Peer merges the list (higher heartbeat wins)
+  4. If a node's heartbeat hasn't incremented for T seconds → mark "suspected down"
+  5. If confirmed down by multiple nodes → mark "failed"
+```
+
+**Handling node failures:**
+
+| Technique | Description |
+|-----------|-------------|
+| **Hinted handoff** | If a replica is down, another node temporarily stores writes for it. When it comes back, the stored hints are replayed. Handles short outages. |
+| **Anti-entropy (Merkle trees)** | Periodically compare Merkle tree hashes of key ranges between replicas. If hashes differ, sync only the diverged ranges. Handles long outages and data drift. |
+| **Read repair** | During a read, if replicas return different values, update the stale ones. Passive background consistency. |
+
+---
+
+#### Step 5 — Summary Table
+
+| Component | Design Choice | Rationale |
+|-----------|---------------|-----------|
+| Partitioning | Consistent hashing + virtual nodes | Even distribution, minimal data movement on scaling |
+| Storage engine | LSM tree (WAL + MemTable + SSTables) | Optimized for high write throughput |
+| Replication | Quorum-based, tunable N/W/R | Flexible consistency vs latency trade-off |
+| Conflict resolution | Vector clocks (or LWW for simplicity) | Detect and resolve concurrent writes |
+| Failure detection | Gossip protocol | Decentralized, scalable |
+| Failure recovery | Hinted handoff + Merkle tree anti-entropy | Short and long outage recovery |
+| Reads | Bloom filters + sparse index + block cache | Minimize disk I/O |
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How would you support range queries?" | Ordered partitioning (range-based sharding instead of hash-based). Trade-off: risk of hot partitions. |
+| "How is this different from Redis?" | Redis is primarily in-memory; this design uses disk-backed LSM trees for large datasets. Redis offers richer data structures (lists, sets, sorted sets). |
+| "How would you add transactions?" | Add a coordination layer (two-phase commit or Raft-based consensus per partition). Significantly increases complexity and latency. |
+| "How would you handle a 100 MB value?" | Chunk the value and store chunks separately. Store a manifest under the original key pointing to chunk keys. |
+
+---
+
+### Solution 5: Design a Notification System
+
+> **Difficulty:** Intermediate (Senior Warm-Up)
+> **Time allocation:** 45 minutes
+> **Real-world references:** Firebase Cloud Messaging, Amazon SNS, Twilio, SendGrid
+
+---
+
+#### Opening Statement
+
+> "A notification system can mean many things — push notifications, SMS, email, in-app notifications. The core challenge is building a reliable, multi-channel delivery system that handles millions of notifications per day with priority, user preferences, and retry logic. Let me clarify the scope."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Multi-channel delivery** | Push notification (iOS/Android), SMS, email, in-app |
+| FR2 | **User preferences** | Users can opt-in/out per channel and per notification type |
+| FR3 | **Template system** | Notifications use templates with variable substitution |
+| FR4 | **Priority levels** | Critical (OTP, security alerts), high, normal, low |
+| FR5 | **Scheduling** | Support "send at" for scheduled notifications |
+| FR6 | **Delivery tracking** | Track sent, delivered, opened, failed for each notification |
+| FR7 | **Rate limiting** | Don't spam users — limit notifications per user per channel per hour |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Throughput** | 10 million notifications/day (peak: 1,000/sec) |
+| NFR2 | **Latency** | Critical notifications delivered in < 5 seconds; normal < 30 seconds |
+| NFR3 | **Reliability** | At-least-once delivery — a notification must never be silently dropped |
+| NFR4 | **Availability** | 99.9% uptime |
+| NFR5 | **Exactly-once from user perspective** | Deduplication to prevent duplicate pushes/SMS |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| Notifications/day | 10 million |
+| Average QPS | ~115/sec |
+| Peak QPS | ~1,000/sec |
+| Channel split | Push: 50%, Email: 30%, In-app: 15%, SMS: 5% |
+| Notification record size | ~500 bytes |
+| Storage/day | 10M * 500B = ~5 GB |
+| Storage/year | ~1.8 TB |
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────────────────┐
+│  Upstream Services    │  (order service, auth service, marketing, etc.)
+│  trigger: "notify     │
+│  user X about Y"      │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│  Notification API    │  (validate, authenticate, rate limit)
+│  Service             │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────┐
+│  Priority Queue      │  (Kafka / SQS with priority topics)
+│  ┌────┐ ┌────┐      │
+│  │ P0 │ │ P1 │ ...  │  P0 = critical, P1 = high, P2 = normal
+│  └────┘ └────┘      │
+└──────────┬───────────┘
+           │
+           ▼
+┌──────────────────────────────────────────────────────────────┐
+│  Notification Processor (Workers)                            │
+│                                                              │
+│  1. Fetch user preferences   → skip if opted out             │
+│  2. Rate limit check         → defer if over limit           │
+│  3. Render template          → fill in variables             │
+│  4. Deduplicate              → check if already sent         │
+│  5. Route to channel handler                                 │
+│                                                              │
+│  ┌──────────────┬──────────────┬──────────────┬───────────┐  │
+│  │ Push Handler │ Email Handler│ SMS Handler  │ In-App    │  │
+│  │              │              │              │ Handler   │  │
+│  └──────┬───────┴──────┬───────┴──────┬───────┴─────┬─────┘  │
+└─────────┼──────────────┼──────────────┼─────────────┼────────┘
+          │              │              │             │
+          ▼              ▼              ▼             ▼
+   ┌────────────┐ ┌────────────┐ ┌──────────┐ ┌──────────────┐
+   │ APNs/FCM   │ │ SendGrid / │ │ Twilio / │ │ Notification │
+   │ (Push)     │ │ SES (Email)│ │ Vonage   │ │ Store (DB)   │
+   └────────────┘ └────────────┘ └──────────┘ └──────────────┘
+                                                     │
+                                               ┌─────▼─────┐
+                                               │ In-App    │
+                                               │ via WS /  │
+                                               │ SSE / Poll│
+                                               └───────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Reliability — At-Least-Once Delivery
+
+The biggest risk in a notification system is **silently dropping notifications**. A user misses a 2FA code or a fraud alert, and trust is broken.
+
+**Delivery state machine:**
+
+```
+CREATED → QUEUED → PROCESSING → SENT → DELIVERED → READ
+                        │                    │
+                        ▼                    ▼
+                     FAILED ──▶ RETRY ──▶ SENT
+                        │
+                     (after max retries)
+                        ▼
+                   PERMANENTLY_FAILED
+```
+
+**Every state transition is persisted to the database.** If a worker crashes mid-processing, the message is re-delivered from the queue (at-least-once semantics via Kafka consumer offsets or SQS visibility timeout).
+
+**Retry strategy per channel:**
+
+| Channel | Retry Strategy | Max Retries | Backoff |
+|---------|----------------|-------------|---------|
+| Push (APNs/FCM) | Retry on timeout, 5xx from provider | 3 | 1s, 5s, 30s |
+| Email (SES/SendGrid) | Retry on 429, 5xx | 5 | 10s, 30s, 2m, 10m, 1h |
+| SMS (Twilio) | Retry on 5xx; do NOT retry on invalid number | 2 | 5s, 30s |
+| In-App | Write to DB; client pulls — inherently reliable | N/A | N/A |
+
+##### Deep Dive B: User Preferences and Rate Limiting
+
+**Preferences model:**
+
+```
+Table: user_notification_preferences
+┌──────────┬─────────────────────┬─────────┬──────────┬──────────┐
+│ user_id  │ notification_type   │ push    │ email    │ sms      │
+├──────────┼─────────────────────┼─────────┼──────────┼──────────┤
+│ u_123    │ order_update        │ true    │ true     │ false    │
+│ u_123    │ marketing           │ false   │ true     │ false    │
+│ u_123    │ security_alert      │ true    │ true     │ true     │  ← cannot opt out
+└──────────┴─────────────────────┴─────────┴──────────┴──────────┘
+```
+
+Some notification types are **mandatory** (security alerts, legal notices) — users cannot opt out.
+
+**Rate limiting per user:**
+
+```
+Rules:
+  - Max 3 push notifications per hour per user
+  - Max 10 emails per day per user
+  - Max 2 SMS per day per user
+  - Critical notifications bypass rate limits
+
+Key in Redis: "ratelimit:push:u_123:2024-01-15T10"
+              → INCR, check against limit
+```
+
+When rate-limited, the notification is either dropped (marketing) or deferred to the next window (transactional).
+
+##### Deep Dive C: Template Engine
+
+```json
+{
+  "template_id": "order_shipped",
+  "channels": {
+    "push": {
+      "title": "Your order has shipped!",
+      "body": "Order #{{order_id}} is on its way. Track: {{tracking_url}}"
+    },
+    "email": {
+      "subject": "Order #{{order_id}} Shipped",
+      "html_template": "order_shipped.html",
+      "variables": ["order_id", "tracking_url", "delivery_date", "customer_name"]
+    },
+    "sms": {
+      "body": "Order #{{order_id}} shipped. Track at {{tracking_url}}"
+    }
+  }
+}
+```
+
+Templates are stored in a database, cached in-memory, and versioned. Changes are propagated to workers via a config change event.
+
+##### Deep Dive D: In-App Notification Delivery
+
+Unlike push/email/SMS, in-app notifications are pulled by the client.
+
+```
+Table: in_app_notifications
+┌──────────┬──────────┬─────────────────────────────┬──────────┬──────────┐
+│ user_id  │ id       │ content                     │ read     │ created  │
+│ (PK)     │ (SK)     │                             │          │          │
+├──────────┼──────────┼─────────────────────────────┼──────────┼──────────┤
+│ u_123    │ n_001    │ "Your order shipped..."     │ false    │ 10:00    │
+│ u_123    │ n_002    │ "New message from Alice"    │ false    │ 10:05    │
+└──────────┴──────────┴─────────────────────────────┴──────────┴──────────┘
+```
+
+**Real-time delivery options:**
+
+| Method | How | Trade-off |
+|--------|-----|-----------|
+| **Long polling** | Client polls every N seconds | Simple, but wastes resources if nothing new |
+| **Server-Sent Events (SSE)** | Server pushes over HTTP/1.1 | Unidirectional, simple, good for notifications |
+| **WebSocket** | Full duplex persistent connection | Best latency, but higher server resource cost |
+
+**Recommendation:** WebSocket for apps that already have a real-time connection (chat, live updates); SSE for simpler notification-only use cases.
+
+---
+
+#### Step 5 — Scaling and Reliability
+
+| Concern | Solution |
+|---------|----------|
+| **Throughput** | Kafka partitions (partition by user_id for ordering); scale workers horizontally |
+| **Priority handling** | Separate Kafka topics per priority level; critical topics have more consumer instances |
+| **Third-party outages** | Circuit breaker per provider; fallback channel (email down → retry email later, don't switch to SMS unless configured) |
+| **Duplicate prevention** | Idempotency key per notification (event_type + user_id + entity_id + timestamp window). Check against a dedup store (Redis SET with TTL) before sending |
+| **Delivery confirmation** | APNs/FCM provide delivery receipts; email has delivery/bounce webhooks; SMS has delivery reports. Update notification status in DB. |
+| **Analytics** | Stream delivery events to a data warehouse for open rates, click rates, channel effectiveness |
+
+---
+
+#### Data Model
+
+```sql
+CREATE TABLE notifications (
+    id              UUID PRIMARY KEY,
+    user_id         UUID NOT NULL,
+    type            VARCHAR(50) NOT NULL,
+    channel         VARCHAR(20) NOT NULL,
+    priority        SMALLINT NOT NULL DEFAULT 2,
+    template_id     VARCHAR(100),
+    variables       JSONB,
+    status          VARCHAR(20) NOT NULL DEFAULT 'created',
+    idempotency_key VARCHAR(255) UNIQUE,
+    scheduled_at    TIMESTAMPTZ,
+    sent_at         TIMESTAMPTZ,
+    delivered_at    TIMESTAMPTZ,
+    read_at         TIMESTAMPTZ,
+    failed_reason   TEXT,
+    retry_count     SMALLINT DEFAULT 0,
+    created_at      TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX idx_notifications_user_status ON notifications(user_id, status);
+CREATE INDEX idx_notifications_scheduled ON notifications(scheduled_at) WHERE status = 'created';
+```
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How do you handle millions of push notifications for a broadcast?" | Fan-out on write: pre-generate a notification per user and enqueue. Or fan-out on read: store once, deliver when the user opens the app. For push, fan-out on write is required (you must call APNs/FCM per device). Batch API calls to FCM (up to 500 per request). |
+| "How do you handle timezone-aware scheduling?" | Store `scheduled_at` in UTC. A scheduler job periodically scans for notifications where `scheduled_at <= now()` and enqueues them. |
+| "What if we need to recall a sent notification?" | In-app: mark as deleted in DB. Push: can't un-push. Email: can't un-send. Best you can do is send a follow-up correction. For in-app, support a `revoked` status. |
+| "How do you measure notification effectiveness?" | Track funnel: sent → delivered → opened → clicked (for email) or sent → delivered → tapped (for push). Report per notification type and channel. |
+
+---
+
+### Solution 6: Design a Paste Service (Pastebin)
+
+> **Difficulty:** Intermediate (Senior Warm-Up)
+> **Time allocation:** 45 minutes
+> **Real-world references:** Pastebin, GitHub Gist, Hastebin, Ghostbin
+
+---
+
+#### Opening Statement
+
+> "A paste service is conceptually similar to a URL shortener, but instead of redirecting, we're storing and serving content. The interesting design challenges are handling potentially large text content, access control, syntax highlighting, and content moderation. Let me confirm the scope."
+
+---
+
+#### Step 1 — Requirements Clarification
+
+##### Functional Requirements
+
+| ID | Requirement | Description |
+|----|-------------|-------------|
+| FR1 | **Create paste** | User submits text content, gets a unique URL |
+| FR2 | **Read paste** | Anyone with the URL can view the paste (raw or formatted) |
+| FR3 | **Syntax highlighting** | Auto-detect or user-specified language for highlighting |
+| FR4 | **Expiration** | Pastes can expire after a configurable duration (10 min, 1 hour, 1 day, never) |
+| FR5 | **Visibility** | Public (listed), unlisted (accessible via link only), private (requires auth) |
+| FR6 | **Edit / Delete** | Authenticated users can edit or delete their own pastes |
+| FR7 | **Raw view** | Serve the raw text without formatting (for `curl` / scripting) |
+
+##### Non-Functional Requirements
+
+| ID | Requirement | Target |
+|----|-------------|--------|
+| NFR1 | **Read-heavy** | 5:1 read-to-write ratio |
+| NFR2 | **Low latency** | Read a paste in < 200ms (p99) |
+| NFR3 | **Max paste size** | 10 MB |
+| NFR4 | **Availability** | 99.9% |
+| NFR5 | **Scale** | 1 million new pastes/day |
+| NFR6 | **Retention** | Non-expiring pastes stored indefinitely |
+
+---
+
+#### Step 2 — Estimation
+
+| Metric | Value |
+|--------|-------|
+| New pastes/day | 1 million |
+| Write QPS (avg) | ~12/sec |
+| Read QPS (avg) | ~60/sec |
+| Read QPS (peak) | ~300/sec |
+| Average paste size | 10 KB |
+| Storage/day | 1M * 10 KB = ~10 GB |
+| Storage/year | ~3.6 TB |
+| Storage/5 years | ~18 TB |
+| Metadata per paste | ~500 bytes |
+| Metadata storage/year | 1M * 365 * 500B = ~183 GB |
+
+**Design implication:** The content (text) should be stored separately from the metadata. Content goes to object storage (cheap, scalable); metadata goes to a database (fast lookups, indexing).
+
+---
+
+#### Step 3 — High-Level Architecture
+
+```
+┌──────────┐        ┌──────────────┐        ┌────────────────────┐
+│  Client   │───────▶│  Load        │───────▶│  API Service       │
+│ (Browser/ │◀───────│  Balancer    │◀───────│  (Stateless)       │
+│  curl)    │        └──────────────┘        └────────┬───────────┘
+└──────────┘                                          │
+                                       ┌──────────────┼──────────────┐
+                                       │              │              │
+                                       ▼              ▼              ▼
+                                ┌──────────┐  ┌──────────────┐  ┌──────────┐
+                                │  Cache   │  │  Metadata DB │  │  Object  │
+                                │  (Redis) │  │  (Postgres)  │  │  Storage │
+                                └──────────┘  └──────────────┘  │  (S3)    │
+                                                                └──────────┘
+                                                                      │
+                                                                ┌─────▼──────┐
+                                                                │    CDN     │
+                                                                │(CloudFront)│
+                                                                └────────────┘
+
+             ┌───────────────────────────────────────────────────────┐
+             │  Background Workers                                   │
+             │  - Expiration cleanup (delete expired pastes)         │
+             │  - Content moderation (scan for malware / abuse)      │
+             │  - Syntax detection (auto-detect language)            │
+             └───────────────────────────────────────────────────────┘
+```
+
+---
+
+#### Step 4 — Deep Dives
+
+##### Deep Dive A: Paste ID Generation and Storage Design
+
+**Paste ID:** Same approach as URL shortener — Base62-encoded Snowflake ID or random 8-character string.
+
+```
+Paste URL: https://paste.example.com/Xk9mP2aQ
+                                      ^^^^^^^^
+                                      8-char Base62 ID
+                                      62^8 = 218 trillion combinations
+```
+
+**Metadata (PostgreSQL):**
+
+```sql
+CREATE TABLE pastes (
+    id              VARCHAR(12) PRIMARY KEY,
+    title           VARCHAR(255),
+    language        VARCHAR(50),
+    visibility      VARCHAR(10) NOT NULL DEFAULT 'unlisted',
+    user_id         UUID,
+    content_key     VARCHAR(255) NOT NULL,
+    size_bytes      INTEGER NOT NULL,
+    expires_at      TIMESTAMPTZ,
+    burn_after_read BOOLEAN DEFAULT FALSE,
+    created_at      TIMESTAMPTZ NOT NULL,
+    updated_at      TIMESTAMPTZ NOT NULL
+);
+
+CREATE INDEX idx_pastes_user ON pastes(user_id, created_at DESC);
+CREATE INDEX idx_pastes_expires ON pastes(expires_at) WHERE expires_at IS NOT NULL;
+CREATE INDEX idx_pastes_public ON pastes(created_at DESC) WHERE visibility = 'public';
+```
+
+**Content (S3/Object Storage):**
+
+```
+Bucket: paste-content
+Key:    {paste_id}/{version}
+        e.g., "Xk9mP2aQ/1"
+
+Content-Type: text/plain
+Content-Encoding: gzip (compress before storing)
+```
+
+**Why separate metadata from content?**
+
+| Concern | Why Separation Helps |
+|---------|---------------------|
+| **Cost** | Storing 10 MB text blobs in PostgreSQL is expensive and slows queries. S3 is 10-100x cheaper per GB. |
+| **Performance** | Metadata queries (list user's pastes, check expiration) don't need to load content. |
+| **CDN caching** | Content served from S3 can be fronted by CloudFront. Metadata doesn't need a CDN. |
+| **Size limits** | PostgreSQL rows have practical size limits; S3 handles multi-MB objects natively. |
+
+##### Deep Dive B: Read Path Optimization
+
+```
+GET /api/pastes/Xk9mP2aQ
+
+1. Check Redis cache (key: "paste:Xk9mP2aQ")
+   → Cache HIT: return metadata + content from cache
+   → Cache MISS: continue
+
+2. Query PostgreSQL for metadata
+   → Not found? → 404
+   → Expired? → 410 Gone (and enqueue async cleanup)
+   → Burn-after-read? → return content, then delete
+
+3. Fetch content from S3 (via CDN if public)
+   → Decompress (gzip)
+
+4. Populate Redis cache:
+   - Small pastes (< 100 KB): cache the full content
+   - Large pastes (> 100 KB): cache metadata only, content served from S3/CDN
+
+5. Return response
+   - Browser request → render with syntax highlighting (server-side or client-side)
+   - curl / raw request → return plain text
+```
+
+**Content-Type negotiation:**
+
+```
+GET /Xk9mP2aQ                    → HTML with syntax-highlighted content
+GET /Xk9mP2aQ/raw                → text/plain
+GET /api/v1/pastes/Xk9mP2aQ      → JSON metadata + content
+```
+
+##### Deep Dive C: Expiration and Cleanup
+
+**Two-phase approach:**
+
+1. **Lazy expiration (on read):** When a paste is read and `expires_at < now()`, return 410 and enqueue a delete task. This handles the common case with zero background cost.
+
+2. **Active cleanup (background job):** A scheduled job runs every few minutes:
+
+```sql
+SELECT id, content_key FROM pastes
+WHERE expires_at IS NOT NULL
+  AND expires_at < NOW() - INTERVAL '1 hour'
+LIMIT 1000;
+```
+
+For each batch: delete from S3, then delete from PostgreSQL, then invalidate cache.
+
+**Why the 1-hour buffer?** Gives lazy expiration a chance to handle reads first. Avoids races where a user is viewing a paste right at its expiration time.
+
+**Burn-after-read:**
+
+```
+1. Acquire a row-level lock: SELECT ... FOR UPDATE
+2. Read content from S3
+3. Delete from S3
+4. Delete from PostgreSQL
+5. Invalidate cache
+6. Return content to user
+
+(Steps 1-5 ensure exactly-once read even with concurrent requests)
+```
+
+##### Deep Dive D: Syntax Highlighting
+
+| Approach | Where | Pros | Cons |
+|----------|-------|------|------|
+| **Server-side** (Pygments, highlight.js via SSR) | Server renders HTML | Works without JavaScript, better for SEO/sharing | Higher server CPU cost |
+| **Client-side** (highlight.js, Prism.js) | Browser renders | Zero server cost, richer interactivity | Requires JavaScript, slower first paint for large files |
+| **Hybrid** | Server detects language; client highlights | Best of both: fast detection, rich rendering | More complexity |
+
+**Recommendation:** Client-side highlighting with server-side language detection. The server returns the raw text with a `language` hint; the JavaScript library does the rest.
+
+**Language detection:**
+
+1. User-specified language (highest priority)
+2. File extension hint (if provided)
+3. Auto-detection using heuristics (shebang line, keywords, statistical analysis)
+
+---
+
+#### Step 5 — Scaling and Reliability
+
+| Concern | Solution |
+|---------|----------|
+| **Read scaling** | CDN for public pastes (content from S3 is easily CDN-cacheable). Redis cache for metadata. Read replicas of PostgreSQL. |
+| **Write scaling** | Writes are low QPS (~12/sec). Single PostgreSQL primary is sufficient for years. |
+| **Large pastes** | S3 handles multi-MB objects. For >10 MB, reject at the API layer (413 Payload Too Large). |
+| **Abuse / Spam** | Rate limit paste creation per IP and per user. Content scanning for malware, phishing links, and illegal content (async via a moderation worker). CAPTCHA for anonymous users. |
+| **Storage cost** | Compress content (gzip → ~5x reduction for text). Lifecycle policies on S3: move expired content to cheaper storage tiers before deletion. |
+| **Availability** | Stateless API servers behind a load balancer. Redis cluster mode. PostgreSQL with streaming replication and automatic failover. S3 is inherently highly available (99.99%). |
+| **Backup** | PostgreSQL: daily automated backups. S3: enable versioning and cross-region replication for critical data. |
+
+---
+
+#### API Design
+
+```
+POST /api/v1/pastes
+Body: {
+  "content": "def hello():\n    print('hello world')",
+  "title": "My Script",
+  "language": "python",
+  "visibility": "unlisted",
+  "expires_in": "1h"
+}
+Response: 201 Created
+{
+  "id": "Xk9mP2aQ",
+  "url": "https://paste.example.com/Xk9mP2aQ",
+  "raw_url": "https://paste.example.com/Xk9mP2aQ/raw",
+  "expires_at": "2024-01-15T11:00:00Z"
+}
+
+GET /api/v1/pastes/{id}
+Response: 200 OK
+{
+  "id": "Xk9mP2aQ",
+  "title": "My Script",
+  "content": "def hello():\n    print('hello world')",
+  "language": "python",
+  "visibility": "unlisted",
+  "size_bytes": 42,
+  "created_at": "2024-01-15T10:00:00Z",
+  "expires_at": "2024-01-15T11:00:00Z"
+}
+
+PUT /api/v1/pastes/{id}      (auth required, owner only)
+DELETE /api/v1/pastes/{id}   (auth required, owner only)
+
+GET /api/v1/users/{id}/pastes?page=1&limit=20  (list user's pastes)
+```
+
+---
+
+#### Common Follow-Up Questions
+
+| Question | Key Points |
+|----------|------------|
+| "How would you add paste versioning (like Gist)?" | Store each version as a separate S3 object (`{id}/{version}`). Metadata table tracks versions. Diff computed between versions on read. |
+| "How would you add collaborative editing?" | Operational Transformation or CRDTs (like Google Docs). This fundamentally changes the architecture — the paste becomes a real-time document. Significantly more complex. |
+| "How would you add search across all public pastes?" | Index public paste content in Elasticsearch. Provide full-text search with language and date filters. Rebuild the index from S3 if needed. |
+| "How do you prevent sensitive data leaks?" | Scan pastes for patterns (API keys, passwords, credit card numbers) using regex + ML. Flag or auto-expire matches. Offer client-side encryption for private pastes. |
 
 ---
 
