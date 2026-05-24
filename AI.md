@@ -27,6 +27,7 @@ tags: [AI, Prompt, GEMs]
 
 ## [ABACUS.AI](https://abacus.ai/chat_llm-ent)
 
+## [make.com](make.com)
 
 # Prompts
 
