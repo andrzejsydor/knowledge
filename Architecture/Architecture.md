@@ -8,12 +8,13 @@ tags:
 # #Architecture
 _Never shoot for the best architecture, but rather the least worst architecture._
 
-In system design, prioritizing a pragmatically sufficient architecture over an idealized model often results in more sustainable and maintainable solutions. Focusing on the least suboptimal approach ensures practicality and facilitates effective implementation.
+In system design, prioritizing a pragmatically sufficient architecture over an idealized model often results in more sustainable and maintainable solutions. Focusing on the least suboptimal approach acknowledges trade-offs and real-world constraints.
 
 
 - [Architecture](#Architecture)
 	- [DDD](./DDD.md)
 	- [CQRS](./CQRS.md)
+	- [Human-Friendly IDs](./Human-Friendly-IDs.md)
 - [Docs](#Docs)
 - [C4](#C4)
 - [Tools](#Tools)
@@ -22,9 +23,9 @@ In system design, prioritizing a pragmatically sufficient architecture over an i
 
 
 
-**Outbox Pattern** #Outbox_Pattern  - it ensures that a message was sent (e.g. to a queue) successfully at least once. With this pattern, instead of directly publishing a message to the queue, we store it in temporary storage (e.g. database table).
+**Outbox Pattern** #Outbox_Pattern  - it ensures that a message was sent (e.g. to a queue) successfully at least once. With this pattern, instead of directly publishing a message to the queue, we first save it in a dedicated table inside the same database transaction as the business update. A separate process then reads pending records and publishes them. This avoids the inconsistency where the database commit succeeds but the message publish fails.
 
-**Inbox Pattern** #Inbox_Pattern - it is similar to Outbox Pattern. It’s used to handle incoming messages (e.g. from a queue). Accordingly, we have a table in which we’re storing incoming events. Contrary to outbox pattern, we first save the event in the database, then we’re returning ACK to queue
+**Inbox Pattern** #Inbox_Pattern - it is similar to Outbox Pattern. It’s used to handle incoming messages (e.g. from a queue). Accordingly, we have a table in which we’re storing incoming events and tracking whether they were already processed. This helps guarantee idempotent handling and prevents duplicate processing.
 
 
 ![](https://event-driven.io/static/614379d9263d1b1395bf8ad305047ed3/a331c/2020-12-30-outbox.png)
@@ -79,10 +80,10 @@ ADR statuses:
 
 ### ShedLock
 
-ShedLock — a Java library that makes sure our scheduled tasks run only once at the same time **and is an alternative to [Quartz](https://www.baeldung.com/quartz)**
+ShedLock — a Java library that makes sure our scheduled tasks run only once at the same time **and is an alternative to [Quartz](https://www.baeldung.com/quartz)**
 
 ### #TOGAF 
-[The Open Group Architecture Framework](https://en.wikipedia.org/wiki/The_Open_Group_Architecture_Framework#:~:text=TOGAF%20is%20a%20high%2Dlevel,existing%2C%20proven%20technologies%20and%20products.) -  [Enterprise architecture framework](https://en.wikipedia.org/wiki/Enterprise_Architecture_framework "Enterprise Architecture framework") for [Enterprise Architecture](https://en.wikipedia.org/wiki/Enterprise_architecture "Enterprise architecture")  that provides an approach for designing, planning, implementing, and governing an enterprise information technology architecture. TOGAF is a high-level approach to design. It is typically modeled at four levels: Business, Application, Data, and Technology. It relies heavily on modularization, standardization, and already existing, proven technologies and products.
+[The Open Group Architecture Framework](https://en.wikipedia.org/wiki/The_Open_Group_Architecture_Framework#:~:text=TOGAF%20is%20a%20high%2Dlevel,existing%2C%20proven%20technologies%20and%20produc[...]
 
 
 # Links

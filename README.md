@@ -4,7 +4,7 @@
 
 [HELP/Obsidian/GitHub Markdown](./HELP/Obsidian.md)
 
--- [Collaborative Tools](collaborative.md) / [JVM](jvm.md) / [IntelliJ](./dev/IntelliJ/IntelliJ.md) / [Docker](Docker.md) / [Git](dev/git.md) / [Hibernate](Hibernate.md) / [Browser Plugins](browser-plugins.md) / [MacOS](MacOS.md) / [WSL](wsl.md)
+-- [Collaborative Tools](collaborative.md) / [JVM](jvm.md) / [IntelliJ](./dev/IntelliJ/IntelliJ.md) / [Docker](Docker.md) / [Git](dev/git.md) / [Hibernate](Hibernate.md) / [Browser Plugins](browser[...]
 
 - [dev](https://github.com/andrzejsydor/knowledge#dev)
 
@@ -92,6 +92,8 @@
 
 [Architecture](./Architecture/Architecture.md)
 
+[Human-Friendly IDs](./Architecture/Human-Friendly-IDs.md)
+
 ## dev roadmaps
 
 [https://github.com/andrzejsydor/developer-roadmap](https://github.com/andrzejsydor/developer-roadmap)
@@ -162,7 +164,7 @@ zip -r -e -P 'YOUR_PASSWORD_HERE' output.zip /path/to/folder/
 
 ## curl: Unknown error
 
-[curl: Unknown error (0x80092012) - The revocation function was unable to check revocation for the certificate](https://stackoverflow.com/questions/54938026/curl-unknown-error-0x80092012-the-revocation-function-was-unable-to-check-r)
+[curl: Unknown error (0x80092012) - The revocation function was unable to check revocation for the certificate](https://stackoverflow.com/questions/54938026/curl-unknown-error-0x80092012-the-revo[...]
 
 ```
 curl "https://www.example.com" --ssl-no-revoke -x 127.0.0.1:8081
