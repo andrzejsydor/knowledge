@@ -167,7 +167,7 @@ public class OktaJwtConfig {
     }
     
     @Bean
-    public JwtValidator jwtValidator() {
+    public OAuth2TokenValidator<Jwt> jwtValidator() {
         return new DelegatingOAuth2TokenValidator<>(
             new JwtTimestampValidator(),
             new JwtIssuerValidator(issuerUri),

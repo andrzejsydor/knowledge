@@ -178,8 +178,8 @@ public class AuthorizationServerConfig {
     }
     
     @Bean
-    public ProviderSettings providerSettings() {
-        return ProviderSettings.builder()
+    public AuthorizationServerSettings authorizationServerSettings() {
+        return AuthorizationServerSettings.builder()
             .issuer("http://localhost:9000")
             .build();
     }
@@ -206,7 +206,7 @@ public class JwtConfig {
     }
     
     @Bean
-    public JwtValidator jwtValidator() {
+    public OAuth2TokenValidator<Jwt> jwtValidator() {
         return new DelegatingOAuth2TokenValidator<>(
             new JwtTimestampValidator(),
             new JwtIssuerValidator("https://your-auth-server"),
@@ -456,8 +456,12 @@ public class TestSecurityConfig {
     @Bean
     @Primary
     public JwtDecoder jwtDecoder() {
-        // Return a mock JWT decoder for testing
-        return new NimbusJwtDecoder(new MockJwtDecoder());
+        // Return a stub JWT decoder for testing
+        return token -> Jwt.withTokenValue(token)
+            .header("alg", "none")
+            .claim("sub", "test-user")
+            .claim("scope", "read")
+            .build();
     }
 }
 ```

@@ -451,6 +451,8 @@ sequenceDiagram
     ResourceServer-->>Client: Return resource
 ```
 
+</details>
+
 # Spring Security OAuth2
 
 Spring Security provides comprehensive support for OAuth 2.0 and JWT through Spring Security OAuth2 Resource Server and Authorization Server.

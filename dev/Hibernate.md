@@ -27,6 +27,11 @@ tags:
 <details>
 <summary>Spring JPA - generate statistics</summary>
 
+```properties
+spring.jpa.properties.hibernate.generate_statistics=true
+```
+
+</details>
 
 <details>
 <summary>get vs load</summary>
@@ -104,12 +109,6 @@ tags:
 [Hibernate Dirty Checking Explained: How Entity State Changes Are Detected](https://www.javacodegeeks.com/2025/07/hibernate-dirty-checking-explained-how-entity-state-changes-are-detected.html)
 
 # #Tips
-
-## Spring JPA - generate statistics
-```
-spring.jpa.properties.hibernate.generate_statistics=true
-```
-</details>
 
 ## Don’t use show_sql to log SQL queries
 Better way

@@ -42,7 +42,7 @@ aliases:
 
 [Logseq](https://logseq.com/)
 
-[Capacities](capacities.io)
+[Capacities](https://capacities.io/)
 
 [recall](https://www.getrecall.ai/pricing)
 

@@ -1,30 +1,30 @@
 # Knowledge - content
 
-- [Tools](https://github.com/andrzejsydor/knowledge#tools) 
+- [Tools](#tools)
 
 [HELP/Obsidian/GitHub Markdown](./HELP/Obsidian.md)
 
--- [Collaborative Tools](collaborative.md) / [JVM](jvm.md) / [IntelliJ](./dev/IntelliJ/IntelliJ.md) / [Docker](Docker.md) / [Git](dev/git.md) / [Hibernate](Hibernate.md) / [Browser Plugins](browser[...]
+-- [JVM](./dev/jvm.md) / [IntelliJ](./dev/IntelliJ/IntelliJ.md) / [Docker](./dev/Docker.md) / [Git](./dev/git.md) / [Hibernate](./dev/Hibernate.md) / [MacOS](MacOS.md)
 
-- [dev](https://github.com/andrzejsydor/knowledge#dev)
+- [dev](#dev)
 
-- [repos](https://github.com/andrzejsydor/knowledge#repos)
+- [repos](#repos)
 
-- [Problems](https://github.com/andrzejsydor/knowledge#problems)
+- [Problems](Problems.md) / [Tips & Problems](#tips--problems)
 
-- [Links](https://github.com/andrzejsydor/knowledge#links)
+- [Links](#links-link)
 
-- [Courses](https://github.com/andrzejsydor/knowledge#courses)
+- [Courses](#courses)
 
-- [Blogs](https://github.com/andrzejsydor/knowledge#blogs)
+- [Blogs](#blogs-link)
 
-- [Awesome](https://github.com/andrzejsydor/knowledge/blob/main/AWESOME.md)
+- [Awesome](AWESOME.md)
 
-- [Tags](https://github.com/andrzejsydor/knowledge#tags)
+- [Tags](#tags)
 
 ## pages
 
-- [Books](https://github.com/andrzejsydor/knowledge/blob/main/BOOKS.md)
+- [Books](BOOKS.md)
 
 - [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/)
 
@@ -45,7 +45,7 @@
 
 [SoapUI](https://www.soapui.org/downloads/soapui/)
 
-[JMeter](JMeter/JMeter.md)
+[JMeter](https://jmeter.apache.org/)
 
 [Locust](https://locust.io/)
 

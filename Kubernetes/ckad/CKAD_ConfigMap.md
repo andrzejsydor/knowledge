@@ -1,4 +1,4 @@
-# Secret
+# ConfigMap
 
 https://kubernetes.io/docs/concepts/configuration/configmap/
 
@@ -34,19 +34,19 @@ spec:
       image: alpine
       command: ["sleep", "3600"]
       env:
-        - PLAYER_INITIAL_LIVES
+        - name: PLAYER_INITIAL_LIVES
           valueFrom:
             configMapKeyRef:
               name: game-demo
               key: player_initial_lives
-        - UI_PROPERTIES_FILE_NAME
+        - name: UI_PROPERTIES_FILE_NAME
           valueFrom:
             configMapKeyRef:
               name: game-demo
               key: ui_properties_file_name
       volumeMounts:
       - name: config
-        mouthPath: "/config"
+        mountPath: "/config"
         readOnly: true
   volumes:
   - name: config

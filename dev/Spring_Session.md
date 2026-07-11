@@ -68,10 +68,10 @@ spring.session.redis.flush-mode=on_save
 spring.session.redis.namespace=spring:session
 spring.session.timeout=1800s
 
-# Redis Connection
-spring.redis.host=localhost
-spring.redis.port=6379
-spring.redis.password=
+# Redis Connection (Spring Boot 3.x: spring.data.redis.*)
+spring.data.redis.host=localhost
+spring.data.redis.port=6379
+spring.data.redis.password=
 ```
 
 ### application.yml (Redis)
@@ -84,10 +84,11 @@ spring:
     redis:
       namespace: spring:session
       flush-mode: on_save
-  redis:
-    host: ${REDIS_HOST:localhost}
-    port: ${REDIS_PORT:6379}
-    password: ${REDIS_PASSWORD:}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:}
 ```
 
 ### JDBC Configuration

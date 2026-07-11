@@ -18,6 +18,9 @@ tags:
 - [Examples to visualize](#examples-to-visualize)
 - [Glossary](#glossary)
 - [Super-condensed recap](#super-condensed-recap)
+- [Deep comparison](#deep-comparison)
+- [Operational considerations](#operational-considerations)
+- [Implementation guidance & recommendations](#implementation-guidance--recommendations)
 - [Mermaid](#mermaid)
   - [Sequence diagram](#sequence-diagram)
   - [Flowchart](#flowchart)
@@ -157,6 +160,50 @@ Note: Both can emulate the other pattern with extra setup, but it’s less scala
 ## Super-condensed recap
 - Kafka: stream, fan-out, replay, producer-chosen partitions, offsets, very high throughput, consistent small events.
 - RabbitMQ: queue, one-to-one tasks, exchange routing, acknowledgements/redelivery, handles long/variable tasks and bursts.
+
+---
+
+## Deep comparison
+
+| Category | Kafka | RabbitMQ |
+|-----------|--------|-----------|
+| **Delivery Model** | Pull-based (consumer offset) | Push-based (broker controls flow) |
+| **Ordering Guarantee** | Per partition | Per queue |
+| **Durability** | Disk persistence (retention) | ACKs + optional persistence |
+| **Throughput** | Millions/sec | Hundreds–thousands/sec |
+| **Replay old messages** | Yes | No (requires custom logic) |
+| **Routing Flexibility** | Basic (key-based) | Advanced exchange logic |
+| **Scaling Strategy** | Horizontal, partitioned | Clusters/mirrors |
+| **Operational Complexity** | Higher | Moderate |
+| **Common Use Cases** | Event Streams, Analytics, ETL | Job Queues, Integration, RPC |
+
+---
+
+## Operational considerations
+
+**Kafka**
+- Capacity planning based on partitions, replication factor, and retention periods.
+- Requires consumer lag monitoring; offset mismanagement can cause replay storms.
+- Use schema registry for contract evolution.
+
+**RabbitMQ**
+- Channel reuse and connection pooling reduce overhead.
+- Queues should be auto-scaling; idle-queue policies reduce resource waste.
+- Federation supports multi-region deployments with message TTL & DLQ for robustness.
+
+---
+
+## Implementation guidance & recommendations
+
+| Scenario | Recommended Platform | Design Tips |
+|-----------|----------------------|--------------|
+| Event stream processing | Kafka | Use compacted topics and schema registry |
+| Job queueing or RPC patterns | RabbitMQ | Employ prefetch limits and DLQs |
+| Analytics ingestion | Kafka | Long retention enables backfill |
+| User notifications / fanout | RabbitMQ | Topic exchange routing is optimal |
+| Cross-system audit logs | Kafka | Event immutability preserves traceability |
+
+---
 
 ## Mermaid
 

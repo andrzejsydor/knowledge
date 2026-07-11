@@ -78,8 +78,6 @@ Act as my personal **IT & Business English Coach**. My goal is to master specifi
 
 **Let's start.** Please give me the first sentence in Polish regarding a **Status Update**.
 
-#### 
-
 ### Please explain in ${lang}: "${selection}"
 Please explain in English: "Kafka"
 

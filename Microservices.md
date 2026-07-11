@@ -20,9 +20,9 @@ tags:
 
 ## #Tools
 
-[Dapr - APIs for Building Secure and Reliable Microservices](APIs for Building Secure and Reliable Microservices)
+[Dapr - APIs for Building Secure and Reliable Microservices](https://dapr.io/)
 
-[Istio - Service Mesh - Easily build cloud native workloads securely and reliably with Istio, with or without sidecars.(https://istio.io/)
+[Istio - Service Mesh - Easily build cloud native workloads securely and reliably with Istio, with or without sidecars.](https://istio.io/)
 
 
 

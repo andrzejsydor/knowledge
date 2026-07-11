@@ -13,7 +13,7 @@ k create ns ckad
 - create service 'nginx' expose `nginx`
 
 ```
-k run nginx --image nginx -p 80 -l app=nginx -n demo
+k run nginx --image nginx -p 80 -l app=nginx -n ckad
 
 ```
 

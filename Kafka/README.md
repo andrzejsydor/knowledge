@@ -5,18 +5,18 @@ tags:
 
 # #Kafka
 
-- [Tools](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#tools)
+- [Tools](#tools)
 
-- [Problems](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#problems)
+- [Problems](#problem)
   - Poison Pill
   - Consumer Group offset change
 
-- [Links](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#links)
+- [Links](#links)
   - [Kafka Visualisation](https://softwaremill.com/kafka-visualisation/)
   - [Kafka Deep Dive](https://lucid.app/lucidchart/5580e561-c75f-495d-b480-e303a74d84e1/view)
   - [Zero Copy Basics](https://blog.2minutestreaming.com/p/apache-kafka-zero-copy-operating-system-optimization)
 
-- [Certification](https://github.com/andrzejsydor/knowledge/blob/main/Kafka.md#certification)
+- [Certification](#certification)
 
 
 # Tools
@@ -55,7 +55,7 @@ Resetting options:
 
 # #Links
 
-[https://kafka.apache.org/quickstart](quickstart)
+[Kafka Quickstart](https://kafka.apache.org/quickstart)
 
 [Kafka Documentation](https://kafka.apache.org/documentation/)
 
@@ -79,6 +79,8 @@ Resetting options:
 
 # Scripts
 
+Note: since Kafka 3.x the CLI tools use `--bootstrap-server` (ZooKeeper is deprecated and removed in Kafka 4.0 in favour of KRaft).
+
 ### Topics:
 
 
@@ -87,27 +89,27 @@ Topic Options
 
 Create a topic only if a topic with the same name doesn't exist: 
 
-	bin/kafka-topics.sh --zookeeper zookeeper1:2181/kafka --create --topic test_topic --replication-factor 2 --partitions 2 --if-not-exists
+	bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic test_topic --replication-factor 2 --partitions 2 --if-not-exists
 
 List the topics: 
 
-	bin/kafka-topics.sh --zookeeper zookeeper1:2181/kafka --list
+	bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
 
 Describe the topic: 
 
-	bin/kafka-topics.sh --zookeeper zookeeper1:2181/kafka --topic test_topic --describe
+	bin/kafka-topics.sh --bootstrap-server localhost:9092 --topic test_topic --describe
 
 Alter the number of partitions: 
 
-	bin/kafka-topics.sh --zookeeper zookeeper1:2181/kafka --alter --topic test_topic --partitions 3
+	bin/kafka-topics.sh --bootstrap-server localhost:9092 --alter --topic test_topic --partitions 3
 
 Delete a topic: 
 
-	bin/kafka-topics.sh --zookeeper zookeeper1:2181/kafka --delete --topic test_topic
+	bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic test_topic
 
 Create a topic with more replications than available brokers: 
 
-	bin/kafka-topics.sh --zookeeper zookeeper1:2181/kafka --create --topic test_topic --replication-factor 4 --partitions 2
+	bin/kafka-topics.sh --bootstrap-server localhost:9092 --create --topic test_topic --replication-factor 4 --partitions 2
 
 Dump the log segments: 
 
@@ -115,5 +117,5 @@ Dump the log segments:
 
 Rotate the logs: 
 
-	bin/kafka-configs.sh --zookeeper zookeeper1:2181/kafka --alter --entity-type topics --entity-name topic-1 --add-config segment.ms=60000
+	bin/kafka-configs.sh --bootstrap-server localhost:9092 --alter --entity-type topics --entity-name topic-1 --add-config segment.ms=60000
 
