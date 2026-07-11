@@ -55,6 +55,10 @@ Resetting options:
 
 # #Links
 
+[Kafka vs RabbitMQ — comparison & cheat sheet](Kafka_vs_RabbitMQ.md)
+
+[Kafka vs RabbitMQ — System Design Interview Guide](Kafka_vs_RabbitMQ_Interview_Guide.md)
+
 [Kafka Quickstart](https://kafka.apache.org/quickstart)
 
 [Kafka Documentation](https://kafka.apache.org/documentation/)

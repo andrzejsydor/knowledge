@@ -29,7 +29,7 @@ tags: [AI, Prompt, GEMs]
 
 ## [https://www.netlify.com/](https://www.netlify.com/)
 
-## [make.com](make.com)
+## [make.com](https://www.make.com/)
 
 # Prompts
 

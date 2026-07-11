@@ -30,6 +30,8 @@ tags:
 - Kafka = stream processing for high-throughput events and fan-out;
 - RabbitMQ = traditional message queue for task processing, complex routing, and one-to-one delivery.
 
+See also: [System Design Interview Guide](Kafka_vs_RabbitMQ_Interview_Guide.md) (outbox/inbox patterns, exactly-once, interview scenarios).
+
 ---
 
 ## Big picture
