@@ -48,3 +48,19 @@ document. For each sentence, include:
    any vocabulary issues)
 
 Number each sentence, and give me the file to download.
+
+# Prompt 3
+
+Wrap up all the sentences from this practice session into a RemNote-
+importable flashcard file (plain text).
+
+Format as a flat list, one sentence per line:
+Polish sentence :: English translation [Grammar topic — concise structure]
+
+Rules:
+- Polish always comes first, then "::", then the English translation
+- Append the grammar topic and structure in square brackets at the end
+- Use a tab before each sentence line so it nests under the title when pasted into RemNote
+- Give me the file to download
+
+  
