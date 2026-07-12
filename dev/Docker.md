@@ -23,8 +23,6 @@ tags:
   - [wait](#wait)
   - [Multiple Commands in Docker Run](#multiple-commands-in-docker-run)
 - [Docker Security](#docker-security)
-- [Anchore Engine](#anchore-engine)
-  - [Understanding UID and GID in Docker Containers](#understanding-uid-and-gid-in-docker-containers)
 - [Copy files](#copy-files)
   - [Container -> Local Host](#container---local-host)
   - [Local Host -> Container](#local-host---container)
@@ -254,15 +252,6 @@ ENTRYPOINT ["sh", "-c", "whoami && date"]
 [Clair](https://github.com/quay/clair)
 
 [Snyk](https://snyk.io/product/container-vulnerability-management/)
-
-## Anchore Engine
-
-[https://hub.docker.com/r/anchore/anchore-engine/](https://hub.docker.com/r/anchore/anchore-engine/)
-
-[https://docs.anchore.com/current/docs/engine/quickstart/](https://docs.anchore.com/current/docs/engine/quickstart/)
-
-[https://docs.anchore.com/current/](https://docs.anchore.com/current/)
-
 
 ### Understanding UID and GID in Docker Containers
 
