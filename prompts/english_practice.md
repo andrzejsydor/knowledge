@@ -47,5 +47,4 @@ document. For each sentence, include:
 5. Short explanation (why my version was right or wrong, including 
    any vocabulary issues)
 
-Number each sentence, include my final score at the top of the 
-document, and give me the file to download.
+Number each sentence, and give me the file to download.
