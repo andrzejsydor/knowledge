@@ -47,13 +47,8 @@ Resources:
 ```bash
 brew install --cask iterm2
 brew install --cask visual-studio-code
-brew install --cask postman
-brew install --cask intellij-idea
 brew install --cask google-chrome
 brew install --cask drawio
-# Optional:
-# brew install --cask rectangle
-# brew install plantuml
 ```
 
 ## Tips
@@ -75,12 +70,6 @@ promo code: **CMNDRMT-30**
 [Rectangle](https://rectangleapp.com/)
 
 [Magnet](https://apps.apple.com/us/app/magnet/id441258766?mt=12)
-
-### System Stats
-
-```bash
-brew install --cask stats
-```
 
 ## Problems
 
