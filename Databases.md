@@ -40,6 +40,41 @@ This document provides an overview of different database types and their use cas
 
 ## Database Types
 
+### Mind map
+
+15 types are hard to recall as a flat list — remember **7 groups by purpose** instead, then unfold the leaves (each leaf carries an anchor product):
+
+```mermaid
+mindmap
+  root((Databases))
+    Transactions
+      rel[Relational — PostgreSQL, MySQL]
+      nsql[NewSQL — CockroachDB, Spanner]
+    Analytics
+      col[Columnar — ClickHouse, BigQuery]
+      ts[Time-series — Prometheus, InfluxDB]
+    Speed
+      kv[Key-Value — Redis, DynamoDB]
+      mem[In-memory — Redis, Memcached]
+    Flexible scale
+      doc[Document — MongoDB]
+      wide[Wide-Column — Cassandra, HBase]
+      multi[Multi-model — ArangoDB, Cosmos DB]
+    Relationships
+      graph[Graph — Neo4j]
+    Search and AI
+      txt[Text-search — Elasticsearch]
+      vec[Vector — pgvector, Qdrant]
+      geo[Geospatial — PostGIS]
+    Files and audit
+      blob[Blob — S3, MinIO]
+      ledger[Immutable Ledger — QLDB, immudb]
+```
+
+Memory hooks:
+- Ask "what is the workload?" — the group answers itself: money → Transactions, dashboards → Analytics, latency → Speed, evolving schema at scale → Flexible scale, "who knows whom" → Relationships, "find similar/near/matching" → Search & AI, "just keep it / prove it" → Files & audit.
+- Redis appearing twice (Key-Value *and* In-memory) is not a mistake — categories describe *data model* vs *storage medium*, and one product can span both. Same for PostgreSQL, which reaches into Geospatial (PostGIS) and Vector (pgvector).
+
 ### Relational
 
 Traditional row-and-column databases, great for structured data and transactions.
